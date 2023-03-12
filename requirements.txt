@@ -1,0 +1,2 @@
+splunk_sdk==1.7.3
+splunklib==1.0.0
