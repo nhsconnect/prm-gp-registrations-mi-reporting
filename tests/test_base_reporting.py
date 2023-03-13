@@ -16,43 +16,8 @@ def test_reporting_window_then_return_event_within():
     path = os.path.join(os.path.dirname(__file__), '../queries', 'gp2gp_reporting_window.splunk')
     index = get_or_create_index("test_index")
 
-    example_events = [{
-        "eventId":str(uuid.uuid4()),
-        "eventGeneratedDateTime":"2023-03-10T12:53:01",
-        "eventType":"READY_TO_INTEGRATE_STATUSES",
-        "reportingSystemSupplier":"200000000260",
-        "reportingPracticeOdsCode":"A00029",
-        "requestingPracticeOdsCode":"A00029",
-        "requestingPracticeName":"GP A",
-        "requestingPracticeIcbOdsCode":None,
-        "requestingPracticeIcbName":None,
-        "sendingPracticeOdsCode":"B00157",
-        "sendingPracticeName":"GP B",
-        "sendingPracticeIcbOdsCode":None,
-        "sendingPracticeIcbName":None,
-        "conversationId":"WITHIN_REPORT_WINDOW",
-        "registrationEventDateTime":"2023-03-10T12:53:01",
-        "payload":None
-    }, {
-        "eventId":str(uuid.uuid4()),
-        "eventGeneratedDateTime":"2023-03-20T12:53:01",
-        "eventType":"READY_TO_INTEGRATE_STATUSES",
-        "reportingSystemSupplier":"200000000260",
-        "reportingPracticeOdsCode":"A00029",
-        "requestingPracticeOdsCode":"A00029",
-        "requestingPracticeName":"GP A",
-        "requestingPracticeIcbOdsCode":None,
-        "requestingPracticeIcbName":None,
-        "sendingPracticeOdsCode":"B00157",
-        "sendingPracticeName":"GP B",
-        "sendingPracticeIcbOdsCode":None,
-        "sendingPracticeIcbName":None,
-        "conversationId":"OUTSIDE_REPORT_WINDOW",
-        "registrationEventDateTime":"2023-03-10T12:53:01",
-        "payload":None
-    }]
-    for event in example_events:
-        index.submit(json.dumps(event), sourcetype="myevent")
+    index.submit(json.dumps(create_sample_event("WITHIN_REPORT_WINDOW")), sourcetype="myevent")
+    index.submit(json.dumps(create_sample_event("OUTSIDE_REPORT_WINDOW")), sourcetype="myevent")
 
     test_query = open(path).read()
     test_query = set_variables_on_query(test_query, {
@@ -66,6 +31,27 @@ def test_reporting_window_then_return_event_within():
     service.indexes.delete("test_index")
     
     assert len(telemetry) == 1
+
+
+def create_sample_event(conversationId):
+    return {
+        "eventId":str(uuid.uuid4()),
+        "eventGeneratedDateTime":"2023-03-20T12:53:01",
+        "eventType":"READY_TO_INTEGRATE_STATUSES",
+        "reportingSystemSupplier":"200000000260",
+        "reportingPracticeOdsCode":"A00029",
+        "requestingPracticeOdsCode":"A00029",
+        "requestingPracticeName":"GP A",
+        "requestingPracticeIcbOdsCode":None,
+        "requestingPracticeIcbName":None,
+        "sendingPracticeOdsCode":"B00157",
+        "sendingPracticeName":"GP B",
+        "sendingPracticeIcbOdsCode":None,
+        "sendingPracticeIcbName":None,
+        "conversationId":conversationId,
+        "registrationEventDateTime":"2023-03-10T12:53:01",
+        "payload":None
+    }
 
 
 def get_or_create_index(index_id):
