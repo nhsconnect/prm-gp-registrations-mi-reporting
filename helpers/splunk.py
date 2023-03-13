@@ -67,8 +67,9 @@ def get_or_create_index(index_id, service):
     return service.indexes.create(index_id)
 
 
-def set_variables_on_query(search_query, index, vars):
-    result = re.sub(r'index=[^|\s]+', f'index={index}', search_query)
+def set_variables_on_query(search_query, vars):
+    # result = re.sub(r'index=[^|\s]+', f'index={index}', search_query)
+    result = search_query
     for key in vars:
         result = result.replace(key, vars[key])
     return result
