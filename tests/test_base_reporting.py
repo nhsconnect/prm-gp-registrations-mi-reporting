@@ -44,7 +44,7 @@ def test_reporting_window_then_return_event_within():
 
     sleep(2)
 
-    telemetry = get_telemetry_from_splunk("search "+test_query, service)
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
     
     assert len(telemetry) == 1
     assert jq.first('.[]._raw | fromjson.conversationId', telemetry) == 'WITHIN_REPORT_WINDOW'
@@ -91,3 +91,7 @@ def test_reporting_window_as_savedsearch():
 def get_search(search_name):
     path = os.path.join(os.path.dirname(__file__), '../queries', f'{search_name}.splunk')
     return open(path).read()
+
+
+def savedsearch(test_query):
+    return "search "+test_query
