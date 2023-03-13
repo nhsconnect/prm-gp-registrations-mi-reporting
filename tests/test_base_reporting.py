@@ -6,6 +6,7 @@ import uuid
 from splunklib.binding import HTTPError
 from splunklib import client
 import splunklib.results as results
+import jq
 
 splunk_token = os.environ['SPLUNK_TOKEN']
 splunk_host = os.environ.get('SPLUNK_HOST')
@@ -16,8 +17,8 @@ def test_reporting_window_then_return_event_within():
     path = os.path.join(os.path.dirname(__file__), '../queries', 'gp2gp_reporting_window.splunk')
     index = get_or_create_index("test_index")
 
-    index.submit(json.dumps(create_sample_event("WITHIN_REPORT_WINDOW")), sourcetype="myevent")
-    index.submit(json.dumps(create_sample_event("OUTSIDE_REPORT_WINDOW")), sourcetype="myevent")
+    index.submit(json.dumps(create_sample_event(conversationId = "WITHIN_REPORT_WINDOW")), sourcetype="myevent")
+    index.submit(json.dumps(create_sample_event(conversationId = "OUTSIDE_REPORT_WINDOW")), sourcetype="myevent")
 
     test_query = open(path).read()
     test_query = set_variables_on_query(test_query, {
@@ -31,9 +32,10 @@ def test_reporting_window_then_return_event_within():
     service.indexes.delete("test_index")
     
     assert len(telemetry) == 1
+    assert jq.first('.[]._raw | fromjson.conversationId', telemetry) == 'WITHIN_REPORT_WINDOW'
 
 
-def create_sample_event(conversationId):
+def create_sample_event(conversationId=str(uuid.uuid4())):
     return {
         "eventId":str(uuid.uuid4()),
         "eventGeneratedDateTime":"2023-03-20T12:53:01",
