@@ -22,17 +22,19 @@ def test_reporting_window_then_return_event_within():
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId = "WITHIN_REPORT_WINDOW",
-                registrationEventDateTime = "2023-03-10T00:00:00"
+                conversationId="WITHIN_REPORT_WINDOW",
+                registrationEventDateTime="2023-03-10T00:00:00",
+                eventType="READY_TO_INTEGRATE_STATUSES"
             )),
-            sourcetype="myevent")
+        sourcetype="myevent")
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId = "OUTSIDE_REPORT_WINDOW",
-                registrationEventDateTime = "2023-03-20T00:00:00"
+                conversationId="OUTSIDE_REPORT_WINDOW",
+                registrationEventDateTime="2023-03-20T00:00:00",
+                eventType="READY_TO_INTEGRATE_STATUSES"
             )),
-            sourcetype="myevent")
+        sourcetype="myevent")
 
     test_query = get_search('gp2gp_reporting_window')
     test_query = set_variables_on_query(test_query, {
@@ -45,30 +47,34 @@ def test_reporting_window_then_return_event_within():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    
+
     assert len(telemetry) == 1
-    assert jq.first('.[]._raw | fromjson.conversationId', telemetry) == 'WITHIN_REPORT_WINDOW'
+    assert jq.first('.[]._raw | fromjson.conversationId',
+                    telemetry) == 'WITHIN_REPORT_WINDOW'
 
 
 def test_reporting_window_as_savedsearch():
     index = get_or_create_index("test_index", service)
 
-    service.saved_searches.create('gp2gp_reporting_window', get_search('gp2gp_reporting_window'))
+    service.saved_searches.create(
+        'gp2gp_reporting_window', get_search('gp2gp_reporting_window'))
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId = "WITHIN_REPORT_WINDOW",
-                registrationEventDateTime = "2023-03-10T00:00:00"
+                conversationId="WITHIN_REPORT_WINDOW",
+                registrationEventDateTime="2023-03-10T00:00:00",
+                eventType="READY_TO_INTEGRATE_STATUSES"
             )),
-            sourcetype="myevent")
+        sourcetype="myevent")
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId = "OUTSIDE_REPORT_WINDOW",
-                registrationEventDateTime = "2023-03-20T00:00:00"
+                conversationId="OUTSIDE_REPORT_WINDOW",
+                registrationEventDateTime="2023-03-20T00:00:00",
+                eventType="READY_TO_INTEGRATE_STATUSES"
             )),
-            sourcetype="myevent")
+        sourcetype="myevent")
 
     test_query = get_search('gp2gp_reporting_proccess')
     test_query = set_variables_on_query(test_query, {
@@ -83,15 +89,88 @@ def test_reporting_window_as_savedsearch():
     telemetry = get_telemetry_from_splunk(test_query, service)
     service.saved_searches.delete('gp2gp_reporting_window')
     print(jq.all('.[]._raw | fromjson.registrationEventDateTime', telemetry))
-    
+
     assert len(telemetry) == 1
-    assert jq.first('.[]._raw | fromjson.conversationId', telemetry) == 'WITHIN_REPORT_WINDOW'
+    assert jq.first('.[]._raw | fromjson.conversationId',
+                    telemetry) == 'WITHIN_REPORT_WINDOW'
 
 
 def get_search(search_name):
-    path = os.path.join(os.path.dirname(__file__), '../queries', f'{search_name}.splunk')
+    path = os.path.join(os.path.dirname(__file__),
+                        '../queries', f'{search_name}.splunk')
     return open(path).read()
 
 
 def savedsearch(test_query):
     return "search "+test_query
+
+
+def test_business_process_report_integrated_within_8_days():
+
+    index = get_or_create_index("test_index", service)
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversationId="INTEGRATED_WITHIN_8_DAYS",
+                registrationEventDateTime="2023-03-10T08:00:00",
+                eventType="REGISTRATIONS",
+                conversationStart="2023-03-09"
+            )),
+        sourcetype="myevent")
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversationId="INTEGRATED_WITHIN_8_DAYS",
+                registrationEventDateTime="2023-03-10T08:19:00",
+                eventType="READY_TO_INTEGRATE_STATUSES",
+                conversationStart="2023-03-10T08:19:00"
+            )),
+        sourcetype="myevent")
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversationId="INTEGRATED_WITHIN_8_DAYS",
+                registrationEventDateTime="2023-03-14T10:00:00",
+                eventType="EHR_INTEGRATIONS",
+                conversationStart="2023-03-14T10:00:00"
+            )),
+        sourcetype="myevent")
+    
+    test_query = get_search('gp2gp_business_process_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        # "$cutoff$": "10",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-20"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+
+    print('foo:-')
+    print(telemetry)
+
+    print('bar:-')
+    print(jq.first('.[] | select( .label == "INTERGRATED_LESS_THAN_8_DAYS")', telemetry))
+
+    assert len(telemetry) == 4
+    assert jq.first('.[] | select( .label == "INTERGRATED_LESS_THAN_8_DAYS") | .count',
+                    telemetry) == '1'
+
+    
+
+
+# def test_business_process_report_not_integrated_within_8_days():
+#     pass
+
+
+# def test_business_process_report_integrated_over_8_days():
+#     pass
+
+
+# def test_business_process_report_not_integrated_over_8_days():
+#     pass
