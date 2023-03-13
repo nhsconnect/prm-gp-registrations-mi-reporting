@@ -1,2 +1,3 @@
+jq==1.4.0
 splunk_sdk==1.7.3
 splunklib==1.0.0

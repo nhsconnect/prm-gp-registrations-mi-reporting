@@ -1,6 +1,7 @@
-## Prerequirsists
+## Prerequisites
 
 - Splunk Enterprise installed
+- `pip3 install -r requirements.txt`
 
 ## Running the tests
 
