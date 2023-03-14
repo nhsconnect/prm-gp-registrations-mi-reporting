@@ -101,7 +101,7 @@ def test_reporting_window_as_savedsearch():
 def get_search(search_name):
     path = os.path.join(os.path.dirname(__file__),
                         '../queries', f'{search_name}.splunk')
-    return open(path).read()
+    return open(path, encoding="utf-8").read()
 
 
 def savedsearch(test_query):
