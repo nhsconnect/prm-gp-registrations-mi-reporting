@@ -1,0 +1,167 @@
+<form version="1.1" theme="dark">
+  <label>GP2GP Test Report</label>
+  <fieldset submitButton="false"></fieldset>
+  <row>
+    <panel>
+      <title>National Statistics</title>
+      <input type="time" token="reportTimeframe">
+        <label>Report Timeframe</label>
+        <default>
+          <earliest>1664060400</earliest>
+          <latest>1664492400</latest>
+        </default>
+      </input>
+      <input type="dropdown" token="cutoff" searchWhenChanged="true">
+        <label>Cutoff Days</label>
+        <choice value="0">0</choice>
+        <choice value="1">1</choice>
+        <choice value="2">2</choice>
+        <choice value="3">3</choice>
+        <choice value="4">4</choice>
+        <choice value="5">5</choice>
+        <choice value="6">6</choice>
+        <choice value="7">7</choice>
+        <choice value="8">8</choice>
+        <choice value="9">9</choice>
+        <choice value="10">10</choice>
+        <choice value="11">11</choice>
+        <choice value="12">12</choice>
+        <choice value="13">13</choice>
+        <choice value="14">14</choice>
+        <default>14</default>
+      </input>
+      <chart>
+        <search>
+          <query>
+            index="logs_itoc_gp2gp_dev"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| sort 0 _time
+| streamstats earliest(_time) as conversationStart by conversationId
+| where conversationStart &gt;= strptime(strftime("$reportTimeframe.earliest$", "%Y-%m-%d"), "%Y-%m-%d") AND conversationStart &lt;= strptime(strftime("$reportTimeframe.latest$", "%Y-%m-%d"), "%Y-%m-%d")
+| eval readyToIntergrateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time,null()),
+intergratedTime = if(eventType="EHR_INTEGRATIONS",_time,null()),
+cutoffDate = conversationStart + tonumber("$cutoff$")*86400
+| where _time &lt;= cutoffDate
+| transaction conversationId keeporphans=t 
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| where eventType="READY_TO_INTEGRATE_STATUSES"
+| eval timeToIntegrationStatus = case(isIntegrated == 1, intergratedTime - readyToIntergrateTime, isIntegrated == 0, cutoffDate - readyToIntergrateTime )
+| convert dur2sec(timeToIntegrationStatus) AS duration
+| eval intergrationStatus = case(isIntegrated == 1 AND duration &lt; 8*86400, "INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 1 AND duration &gt;= 8*86400, "INTERGRATED_MORE_THAN_8_DAYS", isIntegrated == 0 AND duration &lt; 8*86400, "NOT_INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 0 AND duration &gt;= 8*86400, "NOT_INTERGRATED_MORE_THAN_8_DAYS")
+| table conversationId, intergrationStatus
+| stats count(eval(intergrationStatus="INTERGRATED_LESS_THAN_8_DAYS")) as numberIntergratedInLessThan8Days, count(eval(intergrationStatus="INTERGRATED_MORE_THAN_8_DAYS")) as numberIntergratedInMoreThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_LESS_THAN_8_DAYS")) as numberNotIntergratedInLessThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_MORE_THAN_8_DAYS")) as numberNotIntergratedInMoreThan8Days, count(conversationId) as totalCount
+| eval label=mvappend("INTERGRATED_LESS_THAN_8_DAYS", "INTERGRATED_MORE_THAN_8_DAYS", "NOT_INTERGRATED_LESS_THAN_8_DAYS", "NOT_INTERGRATED_MORE_THAN_8_DAYS")
+| eval count=mvappend(numberIntergratedInLessThan8Days, numberIntergratedInMoreThan8Days, numberNotIntergratedInLessThan8Days, numberNotIntergratedInMoreThan8Days)
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+| rex field=soft_zip "(?&lt;label&gt;.*),(?&lt;count&gt;.*)"
+| table label, count</query>
+          <earliest>$reportTimeframe.earliest$</earliest>
+          <latest>+1yr@d</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>
+            index="logs_itoc_gp2gp_dev"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| sort 0 _time
+| streamstats earliest(_time) as conversationStart by conversationId
+| where conversationStart &gt;= strptime(strftime("$reportTimeframe.earliest$", "%Y-%m-%d"), "%Y-%m-%d") AND conversationStart &lt;= strptime(strftime("$reportTimeframe.latest$", "%Y-%m-%d"), "%Y-%m-%d")
+| eval readyToIntergrateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time,null()),
+intergratedTime = if(eventType="EHR_INTEGRATIONS",_time,null()),
+cutoffDate = conversationStart + tonumber("$cutoff$")*86400
+| where _time &lt;= cutoffDate
+| transaction conversationId keeporphans=t 
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| where eventType="READY_TO_INTEGRATE_STATUSES"
+| eval timeToIntegrationStatus = case(isIntegrated == 1, intergratedTime - readyToIntergrateTime, isIntegrated == 0, cutoffDate - readyToIntergrateTime )
+| convert dur2sec(timeToIntegrationStatus) AS duration
+| eval intergrationStatus = case(isIntegrated == 1 AND duration &lt; 8*86400, "INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 1 AND duration &gt;= 8*86400, "INTERGRATED_MORE_THAN_8_DAYS", isIntegrated == 0 AND duration &lt; 8*86400, "NOT_INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 0 AND duration &gt;= 8*86400, "NOT_INTERGRATED_MORE_THAN_8_DAYS")
+| table conversationId, intergrationStatus
+| stats count(eval(intergrationStatus="INTERGRATED_LESS_THAN_8_DAYS")) as numberIntergratedInLessThan8Days, count(eval(intergrationStatus="INTERGRATED_MORE_THAN_8_DAYS")) as numberIntergratedInMoreThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_LESS_THAN_8_DAYS")) as numberNotIntergratedInLessThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_MORE_THAN_8_DAYS")) as numberNotIntergratedInMoreThan8Days, count(conversationId) as totalCount
+| eval label=mvappend("INTERGRATED_LESS_THAN_8_DAYS", "INTERGRATED_MORE_THAN_8_DAYS", "NOT_INTERGRATED_LESS_THAN_8_DAYS", "NOT_INTERGRATED_MORE_THAN_8_DAYS")
+| eval count=mvappend(numberIntergratedInLessThan8Days, numberIntergratedInMoreThan8Days, numberNotIntergratedInLessThan8Days, numberNotIntergratedInMoreThan8Days)
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+| rex field=soft_zip "(?&lt;label&gt;.*),(?&lt;count&gt;.*)"
+| table label, count</query>
+          <earliest>$reportTimeframe.earliest$</earliest>
+          <latest>+1yr@d</latest>
+        </search>
+        <option name="charting.table">pie</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Practice Stats</title>
+      <input type="dropdown" token="selectedPracticeIcbName" searchWhenChanged="true">
+        <label>ICB Name</label>
+        <search>
+          <query>index="logs_itoc_gp2gp_dev"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| sort 0 _time
+| streamstats earliest(_time) as conversationStart by conversationId
+| where conversationStart &gt;= strptime(strftime("$reportTimeframe.earliest$", "%Y-%m-%d"), "%Y-%m-%d") AND conversationStart &lt;= strptime(strftime("$reportTimeframe.latest$", "%Y-%m-%d"), "%Y-%m-%d")
+| eval cutoffDate = conversationStart + tonumber("$cutoff$")*86400
+| where _time &lt;= cutoffDate
+| transaction conversationId keeporphans=t
+| dedup requestingPracticeIcbName
+| table requestingPracticeIcbName</query>
+          <earliest>$reportTimeframe.earliest$</earliest>
+          <latest>+1yr@d</latest>
+        </search>
+        <fieldForLabel>requestingPracticeIcbName</fieldForLabel>
+        <fieldForValue>requestingPracticeIcbName</fieldForValue>
+        <choice value="all">All</choice>
+        <default>all</default>
+        <initialValue>all</initialValue>
+      </input>
+      <input type="text" token="selectedPracticeOdsCode" searchWhenChanged="true">
+        <label>Practice ODS</label>
+        <delimiter> </delimiter>
+        <fieldForLabel>requestingPracticeOdsCode</fieldForLabel>
+        <fieldForValue>requestingPracticeOdsCode</fieldForValue>
+        <choice value="all">All</choice>
+        <default>all</default>
+        <initialValue>all</initialValue>
+      </input>
+      <table>
+        <search>
+          <query>index="logs_itoc_gp2gp_dev"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| sort 0 _time
+| streamstats earliest(_time) as conversationStart by conversationId
+| where conversationStart &gt;= strptime("2022-09-27", "%Y-%m-%d") AND conversationStart &lt;= strptime("2022-09-29", "%Y-%m-%d")
+| eval readyToIntergrateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time,null()),
+intergratedTime = if(eventType="EHR_INTEGRATIONS",_time,null()),
+cutoffDate = conversationStart + 6*86400
+| where _time &lt;= cutoffDate
+| transaction conversationId keeporphans=t
+| where if($selectedPracticeOdsCode|s$="all",like(requestingPracticeOdsCode,"%"),like(requestingPracticeOdsCode,$selectedPracticeOdsCode|s$))
+   OR if($selectedPracticeIcbName|s$="all",like(requestingPracticeIcbName,"%"),like(requestingPracticeIcbName,$selectedPracticeIcbName|s$))
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| where eventType="READY_TO_INTEGRATE_STATUSES"
+| eval timeToIntegrationStatus = case(isIntegrated == 1, intergratedTime - readyToIntergrateTime, isIntegrated == 0, cutoffDate - readyToIntergrateTime )
+| convert dur2sec(timeToIntegrationStatus) AS duration
+| eval intergrationStatus = case(isIntegrated == 1 AND duration &lt; 8*86400, "INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 1 AND duration &gt;= 8*86400, "INTERGRATED_MORE_THAN_8_DAYS", isIntegrated == 0 AND duration &lt; 8*86400, "NOT_INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 0 AND duration &gt;= 8*86400, "NOT_INTERGRATED_MORE_THAN_8_DAYS")
+| stats count(eval(intergrationStatus="INTERGRATED_LESS_THAN_8_DAYS")) as numberIntergratedInLessThan8Days, count(eval(intergrationStatus="INTERGRATED_MORE_THAN_8_DAYS")) as numberIntergratedInMoreThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_LESS_THAN_8_DAYS")) as numberNotIntergratedInLessThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_MORE_THAN_8_DAYS")) as numberNotIntergratedInMoreThan8Days, count(conversationId) as totalCount, first(requestingPracticeOdsCode) as requestingPracticeOdsCode, first(requestingPracticeIcbOdsCode) as requestingPracticeIcbOdsCode, first(requestingPracticeName) as requestingPracticeName, first(requestingPracticeIcbName) as requestingPracticeIcbName
+| table requestingPracticeIcbName,requestingPracticeIcbOdsCode, requestingPracticeName, requestingPracticeOdsCode, numberIntergratedInLessThan8Days, numberIntergratedInMoreThan8Days, numberNotIntergratedInLessThan8Days, numberNotIntergratedInMoreThan8Days</query>
+          <earliest>$reportTimeframe.earliest$</earliest>
+          <latest>+1yr@d</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>
+
