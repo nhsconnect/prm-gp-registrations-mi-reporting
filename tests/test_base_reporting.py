@@ -142,7 +142,7 @@ def test_business_process_report_integrated_within_8_days():
     test_query = get_search('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
-        # "$cutoff$": "10",
+        "$cutoff$": "10",
         "$report_start$": "2023-03-09",
         "$report_end$": "2023-03-20"
     })

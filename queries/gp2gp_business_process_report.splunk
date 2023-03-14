@@ -3,10 +3,10 @@ index="$index$"
 | sort 0 _time
 | streamstats earliest(_time) as conversationStart by conversationId
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
-| eval readyToIntergrateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time,null()),
-intergratedTime = if(eventType="EHR_INTEGRATIONS",_time,null()),
-cutoffDate = conversationStart + 6*86400
+| eval cutoffDate = conversationStart + tonumber("$cutoff$")*86400
 | where _time <= cutoffDate
+| eval readyToIntergrateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time,null()),
+intergratedTime = if(eventType="EHR_INTEGRATIONS",_time,null())
 | transaction conversationId keeporphans=t
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | where eventType="READY_TO_INTEGRATE_STATUSES"
