@@ -1,10 +1,11 @@
 import os
 import json
-import os
+from time import sleep
 from splunklib import client
 import jq
-from helpers.splunk import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query
-from time import sleep
+from helpers.splunk \
+import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query
+
 
 splunk_token = os.environ['SPLUNK_TOKEN']
 splunk_host = os.environ.get('SPLUNK_HOST')
@@ -13,26 +14,28 @@ service = client.connect(token=splunk_token)
 
 
 def teardown_function():
+    """Function delete test_index."""
     service.indexes.delete("test_index")
 
 
-def test_reporting_window_then_return_event_within():
+def test_reporting_window_then_return_event_within() -> None :
+    """Function create test index."""
     index = get_or_create_index("test_index", service)
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="WITHIN_REPORT_WINDOW",
-                registrationEventDateTime="2023-03-10T00:00:00",
-                eventType="READY_TO_INTEGRATE_STATUSES"
+                conversation_id="WITHIN_REPORT_WINDOW",
+                registration_event_datetime="2023-03-10T00:00:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="OUTSIDE_REPORT_WINDOW",
-                registrationEventDateTime="2023-03-20T00:00:00",
-                eventType="READY_TO_INTEGRATE_STATUSES"
+                conversation_id="OUTSIDE_REPORT_WINDOW",
+                registration_event_datetime="2023-03-20T00:00:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
 
@@ -62,17 +65,17 @@ def test_reporting_window_as_savedsearch():
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="WITHIN_REPORT_WINDOW",
-                registrationEventDateTime="2023-03-10T00:00:00",
-                eventType="READY_TO_INTEGRATE_STATUSES"
+                conversation_id="WITHIN_REPORT_WINDOW",
+                registration_event_datetime="2023-03-10T00:00:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="OUTSIDE_REPORT_WINDOW",
-                registrationEventDateTime="2023-03-20T00:00:00",
-                eventType="READY_TO_INTEGRATE_STATUSES"
+                conversation_id="OUTSIDE_REPORT_WINDOW",
+                registration_event_datetime="2023-03-20T00:00:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
 
@@ -107,38 +110,39 @@ def savedsearch(test_query):
 
 def test_business_process_report_integrated_within_8_days():
 
+    # Arrange
+
     index = get_or_create_index("test_index", service)
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="INTEGRATED_WITHIN_8_DAYS",
-                registrationEventDateTime="2023-03-10T08:00:00",
-                eventType="REGISTRATIONS",
-                conversationStart="2023-03-09"
+                conversation_id="INTEGRATED_WITHIN_8_DAYS",
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="INTEGRATED_WITHIN_8_DAYS",
-                registrationEventDateTime="2023-03-10T08:19:00",
-                eventType="READY_TO_INTEGRATE_STATUSES",
-                conversationStart="2023-03-10T08:19:00"
+                conversation_id="INTEGRATED_WITHIN_8_DAYS",
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
-                conversationId="INTEGRATED_WITHIN_8_DAYS",
-                registrationEventDateTime="2023-03-14T10:00:00",
-                eventType="EHR_INTEGRATIONS",
-                conversationStart="2023-03-14T10:00:00"
+                conversation_id="INTEGRATED_WITHIN_8_DAYS",
+                registration_event_datetime="2023-03-14T10:00:00",
+                event_type="EHR_INTEGRATIONS"
             )),
         sourcetype="myevent")
-    
+
+    # Act
+
     test_query = get_search('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
@@ -151,17 +155,11 @@ def test_business_process_report_integrated_within_8_days():
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
 
-    print('foo:-')
-    print(telemetry)
-
-    print('bar:-')
-    print(jq.first('.[] | select( .label == "INTERGRATED_LESS_THAN_8_DAYS")', telemetry))
+    # Assert
 
     assert len(telemetry) == 4
     assert jq.first('.[] | select( .label == "INTERGRATED_LESS_THAN_8_DAYS") | .count',
                     telemetry) == '1'
-
-    
 
 
 # def test_business_process_report_not_integrated_within_8_days():

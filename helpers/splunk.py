@@ -1,15 +1,15 @@
+""" Helper for use with splunk API ."""
+import uuid
 from time import sleep
 from splunklib.binding import HTTPError
 import splunklib.results as results
-import uuid
-import re
 
 
-def get_telemetry_from_splunk(search_query, service):
+def get_telemetry_from_splunk(search_query, service) -> None:
     try:
         service.parse(search_query, parse_only=True)
-    except HTTPError as e:
-        print(f"query '{search_query}' is invalid:\n\t{str(e)}", 2)
+    except HTTPError as error:
+        print(f"query '{search_query}' is invalid:\n\t{str(error)}", 2)
         return
 
     job = service.jobs.create(search_query,
@@ -39,15 +39,14 @@ def get_telemetry_from_splunk(search_query, service):
 
 
 def create_sample_event(
-    conversationId=str(uuid.uuid4()),
-    registrationEventDateTime="2023-03-10T12:53:01",
-    eventType="READY_TO_INTEGRATE_STATUSES",
-    conversationStart="2023-03-10T12:53:01"
+    conversation_id=str(uuid.uuid4()),
+    registration_event_datetime="2023-03-10T12:53:01",
+    event_type="READY_TO_INTEGRATE_STATUSES"
 ):
     return {
         "eventId": str(uuid.uuid4()),
         "eventGeneratedDateTime": "2023-03-20T12:53:01",
-        "eventType": eventType,
+        "eventType": event_type,
         "reportingSystemSupplier": "200000000260",
         "reportingPracticeOdsCode": "A00029",
         "requestingPracticeOdsCode": "A00029",
@@ -58,10 +57,9 @@ def create_sample_event(
         "sendingPracticeName": "GP B",
         "sendingPracticeIcbOdsCode": None,
         "sendingPracticeIcbName": None,
-        "conversationId": conversationId,
-        "registrationEventDateTime": registrationEventDateTime,
-        "payload": None,
-        "conversationStart": conversationStart
+        "conversationId": conversation_id,
+        "registrationEventDateTime": registration_event_datetime,
+        "payload": None
     }
 
 
@@ -72,9 +70,9 @@ def get_or_create_index(index_id, service):
     return service.indexes.create(index_id)
 
 
-def set_variables_on_query(search_query, vars):
+def set_variables_on_query(search_query, variables):
     # result = re.sub(r'index=[^|\s]+', f'index={index}', search_query)
     result = search_query
-    for key in vars:
-        result = result.replace(key, vars[key])
+    for key in variables:
+        result = result.replace(key, variables[key])
     return result
