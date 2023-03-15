@@ -7,8 +7,9 @@ import requests
 from requests.compat import urljoin
 
 # set by pipeline
-splunk_host = os.environ.get('SPLUNK_HOST')
+splunk_host = os.environ.get('SPLUNK_HOST') or 'https://localhost:8089'
 splunk_admin_username = os.environ.get('SPLUNK_ADMIN_USERNAME')
+splunk_app_id = os.environ.get('SPLUNK_APP_ID') or 'search'
 splunk_token = os.environ['SPLUNK_TOKEN']
 
 
@@ -29,7 +30,7 @@ def make_splunk_request(name, code):
     print(f'splunk_host: {splunk_host}')
 
     # API reference - https://docs.splunk.com/Documentation/Splunk/9.0.4/RESTREF
-    create_dashboard_url = f'/servicesNS/{splunk_admin_username}/search/data/ui/views'
+    create_dashboard_url = f'/servicesNS/{splunk_admin_username}/{splunk_app_id}/data/ui/views'
 
     url = urljoin(splunk_host, create_dashboard_url)
 
