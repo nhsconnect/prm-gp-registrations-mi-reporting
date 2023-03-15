@@ -1,4 +1,5 @@
 import os
+import pytest
 import json
 from time import sleep
 from splunklib import client
@@ -56,6 +57,7 @@ def test_reporting_window_then_return_event_within() -> None:
                     telemetry) == 'WITHIN_REPORT_WINDOW'
 
 
+@pytest.mark.skip(reason="need to implement test for existing saved search.")
 def test_reporting_window_as_savedsearch():
     index = get_or_create_index("test_index", service)
 
@@ -299,16 +301,16 @@ def test_business_process_report_not_integrated_over_8_days():
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
 
-    # Assert    
+    # Assert
 
     assert len(telemetry) == 4
     assert jq.first('.[] | select( .label == "NOT_INTERGRATED_MORE_THAN_8_DAYS") | .count',
                     telemetry) == '1'
-    
+
 
 def test_moa_outcome_SUCCESS_status_INTEGRATED():
 
-     # Arrange
+    # Arrange
 
     index = get_or_create_index("test_index", service)
 
@@ -331,7 +333,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
                 event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -353,27 +355,30 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(telemetry)
+    print(f'telemetry: {telemetry}')
 
-    # Assert    
+    # Assert
 
     # assert len(telemetry) == 4
-    assert jq.first('.[] | select( .outcome == "SUCCESS" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+    assert jq.first(
+        '.[] | select( .outcome == "SUCCESS" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+
 
 def test_moa_outcome_REJECTED_status_INTEGRATED():
 
-     # Arrange
+    # Arrange
 
     index = get_or_create_index("test_index", service)
 
-    conversation_id = 'OUTCOME_SUCCESS_REG_STATUS_INTEGRATION'
+    conversation_id = 'OUTCOME_REJECTED_REG_STATUS_INTEGRATED'
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type="REGISTRATIONS",
+                payload=create_sample_payload(outcome="REJECTED")
             )),
         sourcetype="myevent")
 
@@ -382,10 +387,11 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type="READY_TO_INTEGRATE_STATUSES",
+                payload=create_sample_payload(outcome="REJECTED")
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -409,7 +415,8 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(telemetry)
+    print(f'telemetry: {telemetry}')
 
     # Assert
-    assert jq.first('.[] | select( .outcome == "REJECTED" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+    assert jq.first(
+        '.[] | select( .outcome == "REJECTED" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
