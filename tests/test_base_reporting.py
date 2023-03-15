@@ -4,7 +4,7 @@ from time import sleep
 from splunklib import client
 import jq
 from helpers.splunk \
-    import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query
+    import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, create_sample_payload
 
 
 splunk_token = os.environ['SPLUNK_TOKEN']
@@ -306,7 +306,7 @@ def test_business_process_report_not_integrated_over_8_days():
                     telemetry) == '1'
     
 
-def test_moa_outcome_success_reg_status_integration():
+def test_moa_outcome_SUCCESS_status_INTEGRATED():
 
      # Arrange
 
@@ -359,3 +359,57 @@ def test_moa_outcome_success_reg_status_integration():
 
     # assert len(telemetry) == 4
     assert jq.first('.[] | select( .outcome == "SUCCESS" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+
+def test_moa_outcome_REJECTED_status_INTEGRATED():
+
+     # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_SUCCESS_REG_STATUS_INTEGRATION'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
+            )),
+        sourcetype="myevent")
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="EHR_INTEGRATIONS",
+                payload=create_sample_payload(outcome="REJECTED")
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(10)
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(telemetry)
+
+    # Assert
+    assert jq.first('.[] | select( .outcome == "REJECTED" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'

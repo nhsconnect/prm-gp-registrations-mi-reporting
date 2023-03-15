@@ -38,10 +38,18 @@ def get_telemetry_from_splunk(search_query, service) -> None:
     return telemetry
 
 
+def create_sample_payload(outcome=None):
+    return {
+        "integration": {
+            "outcome": outcome
+        }
+    }
+
 def create_sample_event(
     conversation_id=str(uuid.uuid4()),
     registration_event_datetime="2023-03-10T12:53:01",
-    event_type="READY_TO_INTEGRATE_STATUSES"
+    event_type="READY_TO_INTEGRATE_STATUSES",
+    payload = None
 ):
     return {
         "eventId": str(uuid.uuid4()),
@@ -59,7 +67,7 @@ def create_sample_event(
         "sendingPracticeIcbName": None,
         "conversationId": conversation_id,
         "registrationEventDateTime": registration_event_datetime,
-        "payload": None
+        "payload": payload
     }
 
 
