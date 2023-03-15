@@ -1,22 +1,20 @@
 index="$index$"
-```reporting window```
 | eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
 | sort 0 _time
 | streamstats earliest(_time) as conversationStart by conversationId
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
-| eval cutoffDate = conversationStart + tonumber("$cutoff$")*86400
-| where _time <= cutoffDate
 | transaction conversationId keeporphans=t
 | where eventType="EHR_INTEGRATIONS"
-| 
-```| eval timeToIntegrationStatus = case(isIntegrated == 1, intergratedTime - readyToIntergrateTime, isIntegrated == 0, cutoffDate - readyToIntergrateTime )
-| convert dur2sec(timeToIntegrationStatus) AS duration
-| eval intergrationStatus = case(isIntegrated == 1 AND duration < 8*86400, "INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 1 AND duration >= 8*86400, "INTERGRATED_MORE_THAN_8_DAYS", isIntegrated == 0 AND duration < 8*86400, "NOT_INTERGRATED_LESS_THAN_8_DAYS", isIntegrated == 0 AND duration >= 8*86400, "NOT_INTERGRATED_MORE_THAN_8_DAYS")
-| table conversationId, intergrationStatus
-| stats count(eval(intergrationStatus="INTERGRATED_LESS_THAN_8_DAYS")) as numberIntergratedInLessThan8Days, count(eval(intergrationStatus="INTERGRATED_MORE_THAN_8_DAYS")) as numberIntergratedInMoreThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_LESS_THAN_8_DAYS")) as numberNotIntergratedInLessThan8Days, count(eval(intergrationStatus="NOT_INTERGRATED_MORE_THAN_8_DAYS")) as numberNotIntergratedInMoreThan8Days, count(conversationId) as totalCount
-| eval label=mvappend("INTERGRATED_LESS_THAN_8_DAYS", "INTERGRATED_MORE_THAN_8_DAYS", "NOT_INTERGRATED_LESS_THAN_8_DAYS", "NOT_INTERGRATED_MORE_THAN_8_DAYS")
-| eval count=mvappend(numberIntergratedInLessThan8Days, numberIntergratedInMoreThan8Days, numberNotIntergratedInLessThan8Days, numberNotIntergratedInMoreThan8Days)
-| eval soft_zip = mvzip(label, count)
-| mvexpand soft_zip
-| rex field=soft_zip "(?<label>.*),(?<count>.*)"
-| table label, count```
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval registrationStatus = if(isIntegrated == 1, "INTEGRATED", "NOT_INTEGRATED")
+| spath output=integration_outcome path=payload.integration.outcome
+| eval outcome = case(
+integration_outcome = "FAILED_TO_INTEGRATE", "FAILED",
+integration_outcome = "REJECTED", "REJECTED",
+integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
+1=1, "SUCCESS")
+| eval outcomeAndStatus = mvzip(outcome, registrationStatus)
+| stats dc(conversationId) by outcomeAndStatus
+| rex field=outcomeAndStatus "(?<outcome>.*),(?<registration_status>.*)"
+| rename dc(conversationId) as count
+| table outcome, registration_status, count
