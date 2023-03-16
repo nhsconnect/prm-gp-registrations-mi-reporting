@@ -9,9 +9,10 @@ index="$index$"
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval registrationStatus = if(isIntegrated == 1, "INTEGRATED", "NOT_INTEGRATED")
 | eval outcome = case(
-integration_outcome = "FAILED_TO_INTEGRATE", "FAILED",
+```integration_outcome = "FAILED_TO_INTEGRATE", "FAILED",```
 integration_outcome = "REJECTED", "REJECTED",
 integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
+integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
 1=1, "SUCCESS")
 | eval outcomeAndStatus = mvzip(outcome, registrationStatus)
 | stats dc(conversationId) by outcomeAndStatus

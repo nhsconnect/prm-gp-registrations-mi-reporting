@@ -418,3 +418,58 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "REJECTED" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+
+def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():    
+
+     # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"               
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"                
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="EHR_INTEGRATIONS",
+                payload=create_sample_payload(outcome="FAILED_TO_INTEGRATE")
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(10)
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
