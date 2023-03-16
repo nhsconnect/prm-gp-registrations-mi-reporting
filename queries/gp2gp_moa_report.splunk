@@ -3,12 +3,15 @@ index="$index$"
 | sort 0 _time
 | streamstats earliest(_time) as conversationStart by conversationId
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
+| spath output=integration_outcome path=payload{}.integration.outcome
 | transaction conversationId keeporphans=t
 | where eventType="EHR_INTEGRATIONS"
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval registrationStatus = if(isIntegrated == 1, "INTEGRATED", "NOT_INTEGRATED")
-| spath output=integration_outcome path=payload.integration.outcome
+```| fillnull value="unknown" payload.integration.outcome```
+```| eval integration_outcome = if(isnull(integration_outcome),"NULL", integration_outcome)```
 | eval outcome = case(
+integration_outcome = "NULL","NULL",
 integration_outcome = "FAILED_TO_INTEGRATE", "FAILED",
 integration_outcome = "REJECTED", "REJECTED",
 integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",

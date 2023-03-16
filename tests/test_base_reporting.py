@@ -377,8 +377,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS",
-                payload=create_sample_payload(outcome="REJECTED")
+                event_type="REGISTRATIONS"               
             )),
         sourcetype="myevent")
 
@@ -387,8 +386,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES",
-                payload=create_sample_payload(outcome="REJECTED")
+                event_type="READY_TO_INTEGRATE_STATUSES"                
             )),
         sourcetype="myevent")
 
