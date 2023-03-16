@@ -500,7 +500,7 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type="READY_TO_INTEGRATE_STATUSES"
             )),
-        sourcetype="myevent")    
+        sourcetype="myevent")
 
     # Act
 
@@ -519,3 +519,57 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "AWAITING_INTEGRATION" ) | select( .registration_status == "READY_TO_INTEGRATE" ) | .count', telemetry) == '1'
+
+
+def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_IN_PROGRESS_REG_STATUS_EHR_SENT'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-15T18:17:00", # ToDo: set to datetime within 24 hours
+                event_type="EHR_RESPONSE"                
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "EHR_SENT" ) | .count', telemetry) == '1'
