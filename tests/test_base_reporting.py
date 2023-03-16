@@ -377,7 +377,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"               
+                event_type="REGISTRATIONS"
             )),
         sourcetype="myevent")
 
@@ -386,7 +386,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"                
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
 
@@ -419,9 +419,10 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
     assert jq.first(
         '.[] | select( .outcome == "REJECTED" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
 
-def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():    
 
-     # Arrange
+def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
+
+    # Arrange
 
     index = get_or_create_index("test_index", service)
 
@@ -432,7 +433,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"               
+                event_type="REGISTRATIONS"
             )),
         sourcetype="myevent")
 
@@ -441,7 +442,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"                
+                event_type="READY_TO_INTEGRATE_STATUSES"
             )),
         sourcetype="myevent")
 
@@ -473,3 +474,48 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "INTEGRATED" ) | .count', telemetry) == '1'
+
+
+def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_AWAITING_INTEGRATION_REG_STATUS_READY_TO_INTEGRATE'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="READY_TO_INTEGRATE_STATUSES"
+            )),
+        sourcetype="myevent")    
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "AWAITING_INTEGRATION" ) | select( .registration_status == "READY_TO_INTEGRATE" ) | .count', telemetry) == '1'

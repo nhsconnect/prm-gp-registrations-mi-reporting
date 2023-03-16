@@ -5,15 +5,19 @@ index="$index$"
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
 | spath output=integration_outcome path=payload{}.integration.outcome
 | transaction conversationId keeporphans=t
-| where eventType="EHR_INTEGRATIONS"
+| where eventType="EHR_INTEGRATIONS" OR eventType="READY_TO_INTEGRATE_STATUSES"
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
-| eval registrationStatus = if(isIntegrated == 1, "INTEGRATED", "NOT_INTEGRATED")
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+| eval registrationStatus = case(
+    isIntegrated == 1, "INTEGRATED",
+    readyToIntegrate == 1, "READY_TO_INTEGRATE",
+    1=1, "NOT_INTEGRATED")
 | eval outcome = case(
-```integration_outcome = "FAILED_TO_INTEGRATE", "FAILED",```
-integration_outcome = "REJECTED", "REJECTED",
-integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
-integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
-1=1, "SUCCESS")
+    isIntegrated==0 AND readyToIntegrate==1, "AWAITING_INTEGRATION",
+    integration_outcome = "REJECTED", "REJECTED",
+    integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
+    integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
+    1=1, "SUCCESS")
 | eval outcomeAndStatus = mvzip(outcome, registrationStatus)
 | stats dc(conversationId) by outcomeAndStatus
 | rex field=outcomeAndStatus "(?<outcome>.*),(?<registration_status>.*)"
