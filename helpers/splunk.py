@@ -38,18 +38,29 @@ def get_telemetry_from_splunk(search_query, service) -> None:
     return telemetry
 
 
-def create_sample_payload(outcome=None):
+def create_integration_payload(outcome=None):
     return {
         "integration": {
             "outcome": outcome
         }
     }
 
+
+def create_error_payload(errorCode: str, errorDescription: str, failurePoint: str):
+    return {
+        "error": {
+            "errorCode": errorCode,
+            "errorDescription": errorDescription,
+            "failurePoint": failurePoint
+        }
+    }
+
+
 def create_sample_event(
     conversation_id=str(uuid.uuid4()),
     registration_event_datetime="2023-03-10T12:53:01",
     event_type="READY_TO_INTEGRATE_STATUSES",
-    payload = None
+    payload=None
 ):
     return {
         "eventId": str(uuid.uuid4()),

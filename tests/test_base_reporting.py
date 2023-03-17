@@ -5,7 +5,8 @@ from time import sleep
 from splunklib import client
 import jq
 from helpers.splunk \
-    import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, create_sample_payload
+    import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
+    create_integration_payload,  create_error_payload
 
 
 splunk_token = os.environ['SPLUNK_TOKEN']
@@ -396,7 +397,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type="EHR_INTEGRATIONS",
-                payload=create_sample_payload(outcome="REJECTED")
+                payload=create_integration_payload(outcome="REJECTED")
             )),
         sourcetype="myevent")
 
@@ -452,7 +453,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type="EHR_INTEGRATIONS",
-                payload=create_sample_payload(outcome="FAILED_TO_INTEGRATE")
+                payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
             )),
         sourcetype="myevent")
 
@@ -520,6 +521,52 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
     assert jq.first(
         '.[] | select( .outcome == "AWAITING_INTEGRATION" ) | select( .registration_status == "READY_TO_INTEGRATE" ) | .count', telemetry) == '1'
 
+# @pytest.mark.skip(reason="debugging.")
+def test_moa_outcome_TECHNICAL_FAILURE_status_FATAL_ERROR():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_FATAL_ERROR'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type="REGISTRATIONS"
+            )),
+        sourcetype="myevent")
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type="ERROR",
+                payload = create_error_payload(errorCode="99", errorDescription="unexpected error", failurePoint="REGISTRATIONS")
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "FATAL_ERROR" ) | .count', telemetry) == '1'
+
 
 def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
 
@@ -551,7 +598,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-15T18:17:00", # ToDo: set to datetime within 24 hours
+                registration_event_datetime="2023-03-16T18:17:00", # ToDo: set to datetime within 24 hours
                 event_type="EHR_RESPONSE"                
             )),
         sourcetype="myevent")
