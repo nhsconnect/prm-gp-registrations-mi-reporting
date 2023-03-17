@@ -6,7 +6,7 @@ index="$index$"
 | spath output=integration_outcome path=payload{}.integration.outcome
 | eval ehrResponseDateTime = if(eventType="EHR_RESPONSE",_time, null())
 | spath output=errors path=payload.error{}.errorCode
-| eval hasErrors = if (errors == "{}",0,1)
+```| eval hasErrors = if (errors == "{}",0,1)```
 | transaction conversationId keeporphans=t
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
@@ -14,13 +14,13 @@ index="$index$"
 | eval twentyFourHoursAgo = relative_time(now(),"-24h")
 | eval ehrResponseWithin24Hours = if(ehrResponse ==1 AND twentyFourHoursAgo <= ehrResponseDateTime , 1, 0)
 | eval registrationStatus = case(
-    hasErrors ==1, "FATAL_ERROR",
+    ```hasErrors ==1, "FATAL_ERROR",```
     isIntegrated == 1, "INTEGRATED",
     readyToIntegrate == 1 AND ehrResponse == 0, "READY_TO_INTEGRATE",
     readyToIntegrate == 1 AND ehrResponse == 1, "EHR_SENT",
     1=1, "NOT_INTEGRATED")
 | eval outcome = case(
-    hasErrors == 1, "TECHNICAL_FAILURE",
+    ```hasErrors == 1, "TECHNICAL_FAILURE",```
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 0, "AWAITING_INTEGRATION",
     integration_outcome = "REJECTED", "REJECTED",
     integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
