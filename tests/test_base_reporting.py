@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 import pytest
 import json
 from time import sleep
@@ -8,11 +9,27 @@ from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload
 
+class EventType(Enum):
+    READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
+    REGISTRATIONS = 'REGISTRATIONS'
+    EHR_INTEGRATIONS = 'EHR_INTEGRATIONS'
+    ERROR = 'ERROR'
+    EHR_RESPONSE = 'EHR_RESPONSE'
 
 splunk_token = os.environ['SPLUNK_TOKEN']
 splunk_host = os.environ.get('SPLUNK_HOST')
 
 service = client.connect(token=splunk_token)
+
+
+def get_search(search_name):
+    path = os.path.join(os.path.dirname(__file__),
+                        '../queries', f'{search_name}.splunk')
+    return open(path, encoding="utf-8").read()
+
+
+def savedsearch(test_query):
+    return "search "+test_query
 
 
 def teardown_function():
@@ -29,7 +46,7 @@ def test_reporting_window_then_return_event_within() -> None:
             create_sample_event(
                 conversation_id="WITHIN_REPORT_WINDOW",
                 registration_event_datetime="2023-03-10T00:00:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
     index.submit(
@@ -37,7 +54,7 @@ def test_reporting_window_then_return_event_within() -> None:
             create_sample_event(
                 conversation_id="OUTSIDE_REPORT_WINDOW",
                 registration_event_datetime="2023-03-20T00:00:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -70,7 +87,7 @@ def test_reporting_window_as_savedsearch():
             create_sample_event(
                 conversation_id="WITHIN_REPORT_WINDOW",
                 registration_event_datetime="2023-03-10T00:00:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
     index.submit(
@@ -78,7 +95,7 @@ def test_reporting_window_as_savedsearch():
             create_sample_event(
                 conversation_id="OUTSIDE_REPORT_WINDOW",
                 registration_event_datetime="2023-03-20T00:00:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -101,16 +118,6 @@ def test_reporting_window_as_savedsearch():
                     telemetry) == 'WITHIN_REPORT_WINDOW'
 
 
-def get_search(search_name):
-    path = os.path.join(os.path.dirname(__file__),
-                        '../queries', f'{search_name}.splunk')
-    return open(path, encoding="utf-8").read()
-
-
-def savedsearch(test_query):
-    return "search "+test_query
-
-
 def test_business_process_report_integrated_within_8_days():
 
     # Arrange
@@ -122,7 +129,7 @@ def test_business_process_report_integrated_within_8_days():
             create_sample_event(
                 conversation_id="INTEGRATED_WITHIN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -131,7 +138,7 @@ def test_business_process_report_integrated_within_8_days():
             create_sample_event(
                 conversation_id="INTEGRATED_WITHIN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.EHR_INTEGRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -140,7 +147,7 @@ def test_business_process_report_integrated_within_8_days():
             create_sample_event(
                 conversation_id="INTEGRATED_WITHIN_8_DAYS",
                 registration_event_datetime="2023-03-14T10:00:00",
-                event_type="EHR_INTEGRATIONS"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -176,7 +183,7 @@ def test_business_process_report_not_integrated_within_8_days():
             create_sample_event(
                 conversation_id="NOT_INTERGRATED_LESS_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -185,7 +192,7 @@ def test_business_process_report_not_integrated_within_8_days():
             create_sample_event(
                 conversation_id="NOT_INTERGRATED_LESS_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -221,7 +228,7 @@ def test_business_process_report_integrated_over_8_days():
             create_sample_event(
                 conversation_id="INTERGRATED_MORE_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -230,7 +237,7 @@ def test_business_process_report_integrated_over_8_days():
             create_sample_event(
                 conversation_id="INTERGRATED_MORE_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -239,7 +246,7 @@ def test_business_process_report_integrated_over_8_days():
             create_sample_event(
                 conversation_id="INTERGRATED_MORE_THAN_8_DAYS",
                 registration_event_datetime="2023-03-19T10:00:00",
-                event_type="EHR_INTEGRATIONS"
+                event_type=EventType.EHR_INTEGRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -275,7 +282,7 @@ def test_business_process_report_not_integrated_over_8_days():
             create_sample_event(
                 conversation_id="NOT_INTERGRATED_MORE_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -284,7 +291,7 @@ def test_business_process_report_not_integrated_over_8_days():
             create_sample_event(
                 conversation_id="NOT_INTERGRATED_MORE_THAN_8_DAYS",
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -322,7 +329,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -331,7 +338,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -340,7 +347,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="EHR_INTEGRATIONS"
+                event_type=EventType.EHR_INTEGRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -378,7 +385,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -387,7 +394,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -396,7 +403,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="EHR_INTEGRATIONS",
+                event_type=EventType.EHR_INTEGRATIONS.value,
                 payload=create_integration_payload(outcome="REJECTED")
             )),
         sourcetype="myevent")
@@ -434,7 +441,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -443,7 +450,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -452,7 +459,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="EHR_INTEGRATIONS",
+                event_type=EventType.EHR_INTEGRATIONS.value,
                 payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
             )),
         sourcetype="myevent")
@@ -490,7 +497,7 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -499,7 +506,7 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -535,7 +542,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_FATAL_ERROR():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
     
@@ -544,7 +551,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_FATAL_ERROR():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="ERROR",
+                event_type=EventType.ERROR.value,
                 payload = create_error_payload(errorCode="99", errorDescription="unexpected error", failurePoint="REGISTRATIONS")
             )),
         sourcetype="myevent")
@@ -581,7 +588,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
-                event_type="REGISTRATIONS"
+                event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
 
@@ -590,7 +597,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
-                event_type="READY_TO_INTEGRATE_STATUSES"
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
 
@@ -599,7 +606,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
             create_sample_event(
                 conversation_id,
                 registration_event_datetime="2023-03-16T18:17:00", # ToDo: set to datetime within 24 hours
-                event_type="EHR_RESPONSE"                
+                event_type=EventType.EHR_RESPONSE.value
             )),
         sourcetype="myevent")
 
