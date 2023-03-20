@@ -8,6 +8,7 @@ import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload
+from datetime import datetime, timedelta
 
 class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
@@ -601,11 +602,14 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
             )),
         sourcetype="myevent")
 
+    # test requires a datetime within 24 hours
+    d = datetime.today() - timedelta(hours=23, minutes=0)   
+
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-16T18:17:00", # ToDo: set to datetime within 24 hours
+                registration_event_datetime = d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_RESPONSE.value
             )),
         sourcetype="myevent")
