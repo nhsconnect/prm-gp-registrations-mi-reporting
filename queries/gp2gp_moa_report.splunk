@@ -15,12 +15,14 @@ index="$index$"
 | eval ehrResponse = if(eventType="EHR_RESPONSE", 1, 0)
 | eval twentyFourHoursAgo = relative_time(now(),"-24h")
 | eval ehrResponseWithin24Hours = if(ehrResponse ==1 AND twentyFourHoursAgo < ehrResponseDateTime , 1, 0)
-| eval lessThanTwentyMinsAgo = relative_time(now(),"-20m")
+| eval twentyMinsAgo = relative_time(now(),"-20m")
+| eval ehrRequestWithin20Mins = if(ehrRequest ==1 AND twentyMinsAgo < ehrRequestDateTime , 1, 0)
 | eval registrationStatus = case(    
     isIntegrated == 1, "INTEGRATED",
     readyToIntegrate == 1 AND ehrRequest ==0 AND ehrResponse == 0, "READY_TO_INTEGRATE",
     readyToIntegrate == 1 AND ehrRequest ==1  AND ehrResponse == 1, "EHR_SENT",
-    readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest ==1, "EHR_REQUESTED",
+    readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
+    readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
     1=1, "NOT_INTEGRATED")
 | eval outcome = case(    
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrRequest ==0 AND ehrResponse == 0, "AWAITING_INTEGRATION",
@@ -29,7 +31,8 @@ index="$index$"
     integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 1 AND ehrResponseWithin24Hours == 1, "IN_PROGRESS",
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 1 AND ehrResponseWithin24Hours == 0, "TECHNICAL_FAILURE",    
-    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest == 1,"IN_PROGRESS",
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest == 1 AND ehrRequestWithin20Mins == 1,"IN_PROGRESS",
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponse == 0 AND ehrRequest == 1 AND ehrRequestWithin20Mins == 0,"TECHNICAL_FAILURE",
     1=1, "SUCCESS")
 | eval outcomeAndStatus = mvzip(outcome, registrationStatus)
 | stats dc(conversationId) by outcomeAndStatus
