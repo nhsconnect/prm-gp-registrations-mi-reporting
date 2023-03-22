@@ -46,6 +46,16 @@ def create_integration_payload(outcome=None):
     }
 
 
+def create_transfer_compatibility_payload(internalTransfer: bool, transferCompatible: bool, reason: str = None):
+    return {
+        "transferCompatibilityStatus": {
+            "internalTransfer": internalTransfer,
+            "transferCompatible": transferCompatible,
+            "reason": reason
+        }
+    }
+
+
 def create_error_payload(errorCode: str, errorDescription: str, failurePoint: str):
     return {
         "error": {

@@ -7,8 +7,9 @@ from splunklib import client
 import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
-    create_integration_payload,  create_error_payload
+    create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
+
 
 class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
@@ -17,6 +18,8 @@ class EventType(Enum):
     ERROR = 'ERROR'
     EHR_RESPONSE = 'EHR_RESPONSE'
     EHR_REQUEST = 'EHR_REQUEST'
+    TRANSFER_COMPATIBILITY_STATUSES = 'TRANSFER_COMPATIBILITY_STATUSES'
+
 
 splunk_token = os.environ['SPLUNK_TOKEN']
 splunk_host = os.environ.get('SPLUNK_HOST')
@@ -462,7 +465,8 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                payload=create_integration_payload(
+                    outcome="FAILED_TO_INTEGRATE")
             )),
         sourcetype="myevent")
 
@@ -556,25 +560,24 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
                 event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = "2023-03-10T08:50:00",
+                registration_event_datetime="2023-03-10T08:50:00",
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
 
-
     # test requires a response within 24 hours
-    d = datetime.today() - timedelta(hours=23, minutes=0)   
+    d = datetime.today() - timedelta(hours=23, minutes=0)
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_RESPONSE.value
             )),
         sourcetype="myevent")
@@ -596,6 +599,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "EHR_SENT" ) | .count', telemetry) == '1'
+
 
 def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
 
@@ -622,25 +626,25 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
                 event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = "2023-03-10T08:50:00",
+                registration_event_datetime="2023-03-10T08:50:00",
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
 
     # test requires a datetime 24 hours+
-    d = datetime.today() - timedelta(hours=24, minutes=0)   
+    d = datetime.today() - timedelta(hours=24, minutes=0)
     print(f"D: {d}")
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_RESPONSE.value
             )),
         sourcetype="myevent")
@@ -662,6 +666,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "EHR_SENT" ) | .count', telemetry) == '1'
+
 
 def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
 
@@ -690,14 +695,14 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
         sourcetype="myevent")
 
     # test requires a datetime less than 20mins
-    d = datetime.today() - timedelta(hours=0, minutes=19)   
+    d = datetime.today() - timedelta(hours=0, minutes=19)
     print(f"D: {d}")
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
@@ -719,6 +724,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "EHR_REQUESTED" ) | .count', telemetry) == '1'
+
 
 def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
 
@@ -747,14 +753,14 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
         sourcetype="myevent")
 
     # test requires a datetime equal to or greater than 20mins
-    d = datetime.today() - timedelta(hours=0, minutes=25)   
+    d = datetime.today() - timedelta(hours=0, minutes=25)
     print(f"D: {d}")
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime = d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
@@ -776,3 +782,55 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "SLOW_EHR_REQUESTED" ) | .count', telemetry) == '1'
+
+
+def test_moa_outcome_IN_PROGRESS_status_TRANSFER_NOT_STARTED():
+
+    # Arrange
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_IN_PROGRESS_REG_STATUS_TRANSFER_NOT_STARTED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    # test requires a datetime less than 20mins
+    d = datetime.today() - timedelta(hours=0, minutes=19)
+    print(f"D: {d}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "TRANSFER_NOT_STARTED" ) | .count', telemetry) == '1'
