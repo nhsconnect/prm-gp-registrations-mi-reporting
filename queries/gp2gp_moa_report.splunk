@@ -32,6 +32,7 @@ index="$index$"
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
     transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1 , "TRANSFER_NOT_STARTED",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0 , "SLOW_TRANSFER_NOT_STARTED",   
     1=1, "NOT_INTEGRATED")
 | eval outcome = case(    
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrRequestEvent ==0 AND ehrResponseEvent == 0, "AWAITING_INTEGRATION",
@@ -43,6 +44,7 @@ index="$index$"
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1,"IN_PROGRESS",
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0,"TECHNICAL_FAILURE",
     transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1, "IN_PROGRESS",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0, "TECHNICAL_FAILURE",  
     1=1, "SUCCESS")
 | eval outcomeAndStatus = mvzip(outcome, registrationStatus)
 | stats dc(conversationId) by outcomeAndStatus
