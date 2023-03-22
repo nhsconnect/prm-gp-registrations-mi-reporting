@@ -885,3 +885,52 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_TRANSFER_NOT_STARTED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "SLOW_TRANSFER_NOT_STARTED" ) | .count', telemetry) == '1'
+    
+def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
+
+    # Arrange
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTERNAL_TRANSFER'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+   
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T09:00:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=True,
+                    transferCompatible=False
+                )
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "INTERNAL_TRANSFER" ) | .count', telemetry) == '1'
