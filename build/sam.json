@@ -1,0 +1,64 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Outputs": {},
+  "Resources": {
+    "DefaultRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:*:logs:*:*:*"
+                }
+              ]
+            },
+            "PolicyName": "DefaultRolePolicy"
+          }
+        ]
+      }
+    },
+    "Main": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Runtime": "python3.9",
+        "Handler": "app.main",
+        "CodeUri": "./deployment.zip",
+        "Tags": {
+          "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
+        },
+        "Tracing": "PassThrough",
+        "Timeout": 60,
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "DefaultRole",
+            "Arn"
+          ]
+        }
+      }
+    }
+  }
+}

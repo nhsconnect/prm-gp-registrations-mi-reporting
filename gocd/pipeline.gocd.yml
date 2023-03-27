@@ -1,0 +1,26 @@
+format_version: 10
+pipelines:
+  "prm-gp-registration-mi-reporting":
+    group: gp-registrations-mi
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+    stages:
+      - deploy:
+          clean_workspace: true          
+          jobs:
+            upload_dashboards_and_queries_datasets:             
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/upload_dashboards_and_queries_datasets.sh
+
+            deploy_lambda:
+              
+            deploy_to_splunk:
+         
+
+            

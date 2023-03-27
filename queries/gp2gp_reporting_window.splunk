@@ -1,7 +1,0 @@
-index=$index$
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
-| sort 0 _time
-| streamstats earliest(_time) as conversationStart by conversationId
-| where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
-| eval cutoffDate = conversationStart + tonumber("$cutoff$")*86400
-| where _time <= cutoffDate
