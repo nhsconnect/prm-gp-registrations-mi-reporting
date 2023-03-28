@@ -14,7 +14,7 @@ pipelines:
               tasks:
               # build and run docker container
                 - exec:
-                  command: /bin/bash
+                    command: /bin/bash
                     arguments:
                       - -c
                       - ./scripts/deploy.sh
@@ -30,7 +30,7 @@ pipelines:
               tasks:
               # deploy the deploy_dashboards and deploy_reports lambdas
                 - exec:
-                  command: /bin/bash
+                    command: /bin/bash
                     arguments:
                       - -c
                       - ./scripts/build-and-publish.sh
