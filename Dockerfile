@@ -24,4 +24,18 @@ FROM alpine:${ALPINE_VERSION}
 COPY --from=builder /usr/local/lib/aws-cli/ /usr/local/lib/aws-cli/
 RUN ln -s /usr/local/lib/aws-cli/aws /usr/local/bin/aws
 
+
+# required to fix pycryto error
+RUN apk add gcc g++ make libffi-dev openssl-dev
+
 RUN apk add python3
+
+# required to fix pycryto error
+RUN apk add python3-dev build-base --update-cache
+
+RUN python3 -m ensurepip --upgrade
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
