@@ -24,7 +24,10 @@ pipelines:
                 - exec:
                     command: docker
                     arguments:
-                      - exec -it prm-gp-registrations-mi-reporting /bin/sh
+                      - exec 
+                      - -it 
+                      - prm-gp-registrations-mi-reporting 
+                      - /bin/sh
                       - ./scripts/upload-dashboards-and-reports-datasets.sh
             deploy_lambda:
               tasks:
