@@ -75,7 +75,7 @@ build_docker_image)
 upload_data)
   assume_ci_role
   docker run --name prm-gp-registrations-mi-reporting --rm \
-        -v $(pwd):/usr/src/app -it \
+        -v $(pwd):/usr/src/app -i \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
         prm-gp-registrations-mi-reporting \
         ./tasks.sh _upload_data
@@ -84,7 +84,7 @@ build_and_publish)
   assume_ci_role
   docker run --name prm-gp-registrations-mi-reporting --rm \
         -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
-        -v $(pwd):/usr/src/app \
+        -v $(pwd):/usr/src/app -i \
         prm-gp-registrations-mi-reporting \
         ./tasks.sh _build_and_publish
   ;;
