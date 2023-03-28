@@ -88,11 +88,26 @@ build_and_publish)
         prm-gp-registrations-mi-reporting \
         ./tasks.sh _build_and_publish
   ;;
-_build_and_publish)
+build_and_deploy_splunk_uploader_lambda)
+  #TODO
+  ;;
+run_splunk_uploader_lambda)
+  #TODO
+  ;;
+_build_and_publish) #private method
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
-_upload_data)
+_upload_data) #private method
   /bin/bash -c ./scripts/upload-dashboards-and-reports-datasets.sh
+  ;;
+_build_and_deploy_splunk_uploader_lambda) #private method
+  #TODO
+  # - Set lambda ENV variable with the Splunk API key ( pulled from parameter store )
+  # - Run build_and_deploy.sh
+  ;;
+_run_splunk_uploader_lambda) #private method
+  #TODO
+  # - Create an lambda invoke cli command
   ;;
 *)
   echo "make $@"
