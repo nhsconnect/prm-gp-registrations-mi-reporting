@@ -12,18 +12,13 @@ pipelines:
           jobs:
             deploy:
               tasks:
-              # build and run docker container
+                # build and run docker container
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
                       - ./scripts/deploy.sh
-      - upload_dashboards_and_reports_datasets:
-          clean_workspace: true          
-          jobs:
-            upload_dashboards_and_reports_datasets:             
-              tasks:
-              # upload reports and dashboards to s3 bucket
+                # upload-dashboards-and-reports-datasets
                 - exec:
                     command: docker
                     arguments:
@@ -32,16 +27,8 @@ pipelines:
                       - prm-gp-registrations-mi-reporting 
                       - /bin/sh
                       - ./scripts/upload-dashboards-and-reports-datasets.sh
-      - deploy_lambda:
-          clean_workspace: true          
-          jobs:
-            deploy_lambda:
-              tasks:
-              # deploy the deploy_dashboards and deploy_reports lambdas
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./scripts/build-and-publish.sh
-            # deploy_to_splunk:
-            #   tasks:
+                # - exec:
+                #     command: /bin/bash
+                #     arguments:
+                #       - -c
+                #       - ./scripts/build-and-publish.sh
