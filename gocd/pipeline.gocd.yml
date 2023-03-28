@@ -10,17 +10,30 @@ pipelines:
       - deploy:
           clean_workspace: true          
           jobs:
+            deploy:
+              tasks:
+                - exec:
+                  command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./scripts/deploy.sh
             upload_dashboards_and_queries_datasets:             
               tasks:
                 - exec:
-                    command: /bin/bash
+                    command: docker
+                    arguments:
+                      - exec -it prm-gp-registrations-mi-reporting /bin/sh
+                      - ./scripts/upload_dashboards_and_queries_datasets.sh
+            deploy_lambda:
+              tasks:
+                - exec:
+                  command: /bin/bash
                     arguments:
                       - -c
-                      - ./scripts/upload_dashboards_and_queries_datasets.sh
+                      - ./scripts/build-and-publish.sh
+            # deploy_to_splunk:
+            #   tasks:
 
-            deploy_lambda:
-              
-            deploy_to_splunk:
          
 
             
