@@ -12,20 +12,23 @@ pipelines:
           jobs:
             deploy:
               tasks:
+              # build and run docker container
                 - exec:
                   command: /bin/bash
                     arguments:
                       - -c
                       - ./scripts/deploy.sh
-            upload_dashboards_and_queries_datasets:             
+            upload_dashboards_and_reports_datasets:             
               tasks:
+              # upload reports and dashboards to s3 bucket
                 - exec:
                     command: docker
                     arguments:
                       - exec -it prm-gp-registrations-mi-reporting /bin/sh
-                      - ./scripts/upload_dashboards_and_queries_datasets.sh
+                      - ./scripts/upload-dashboards-and-reports-datasets.sh
             deploy_lambda:
               tasks:
+              # deploy the deploy_dashboards and deploy_reports lambdas
                 - exec:
                   command: /bin/bash
                     arguments:
