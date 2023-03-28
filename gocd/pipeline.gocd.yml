@@ -17,16 +17,13 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./scripts/deploy.sh
+                      - ./tasks.sh build_docker_image
                 # upload-dashboards-and-reports-datasets
                 - exec:
-                    command: docker
+                    command: /bin/bash
                     arguments:
-                      - exec 
-                      - -it 
-                      - prm-gp-registrations-mi-reporting 
-                      - /bin/sh
-                      - ./scripts/upload-dashboards-and-reports-datasets.sh
+                      - -c
+                      - ./tasks.sh upload_data
                 # - exec:
                 #     command: /bin/bash
                 #     arguments:

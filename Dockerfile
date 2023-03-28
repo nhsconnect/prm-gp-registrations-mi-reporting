@@ -35,7 +35,13 @@ RUN apk add python3-dev build-base --update-cache
 
 RUN python3 -m ensurepip --upgrade
 
+RUN apk add --no-cache bash
+RUN apk add --no-cache jq
+
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
+
+# CMD ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
