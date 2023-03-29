@@ -7,7 +7,7 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - deploy:
+      - upload:      
           clean_workspace: true          
           jobs:
             deploy:
@@ -17,16 +17,21 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks.sh upload_data
-                # build lambda and deploy
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks.sh build_and_deploy_splunk_uploader_lambda
+                      - ./tasks.sh upload_data                
                 # Invoke lambda to dashboards and reports to Splunk
                 # - exec:
                 #     command: /bin/bash
                 #     arguments:
                 #       - -c
                 #       - ./tasks.sh run_splunk_uploader_lambda
+      - lambda_deploy:      
+          clean_workspace: true          
+          jobs:
+            deploy:
+              tasks:
+                # build lambda and deploy
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks.sh build_and_deploy_splunk_uploader_lambda
