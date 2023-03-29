@@ -11,13 +11,7 @@ pipelines:
           clean_workspace: true          
           jobs:
             deploy:
-              tasks:
-                # build and run docker container
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks.sh build_docker_image
+              tasks:               
                 # upload-dashboards-and-reports-datasets
                 - exec:
                     command: /bin/bash

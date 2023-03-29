@@ -2,7 +2,13 @@
 
 set -e
 
+# if [ ! -f .env ]
+# then 
+export $(cat .env | xargs) 
+# fi
+
 readonly aws_region=eu-west-2
+readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
 
 export AWS_CLI_AUTO_PROMPT=off
 
@@ -70,29 +76,40 @@ install-ui-dependencies)
   cd ..
   ;;
 build_docker_image)
-  docker build -t prm-gp-registrations-mi-reporting .
+  
+  
   ;;
 upload_data)
   assume_ci_role
-  docker run --name prm-gp-registrations-mi-reporting --rm \
-        -v $(pwd):/usr/src/app -i \
-        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
-        prm-gp-registrations-mi-reporting \
-        ./tasks.sh _upload_data
+  echo $DOCKER_IMAGE
+  docker run --name upload_container --rm \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    $DOCKER_IMAGE \
+    ./tasks.sh _upload_data
   ;;
 build_and_publish)
   assume_ci_role
-  docker run --name prm-gp-registrations-mi-reporting --rm \
-        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
-        -v $(pwd):/usr/src/app -i \
-        prm-gp-registrations-mi-reporting \
-        ./tasks.sh _build_and_publish
+  docker run --name build_publish_container --rm \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    -v $(pwd):/usr/src/app -i \
+    $DOCKER_IMAGE \
+    ./tasks.sh _build_and_publish
   ;;
 build_and_deploy_splunk_uploader_lambda)
   #TODO
   ;;
 run_splunk_uploader_lambda)
   #TODO
+  ;;
+publish_docker)
+  IMAGE_TAG=$(date +%s%3N | shasum -a 256 | head -c 40)
+  docker build -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
+  docker_username=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-username")
+  docker_password=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-password")
+  echo $docker_password | docker login --username $docker_username --password-stdin 
+  echo "Logged in"
+  docker push ${IMAGE_NAME}:${IMAGE_TAG}
   ;;
 _build_and_publish) #private method
   /bin/bash -c ./scripts/build-and-publish.sh
