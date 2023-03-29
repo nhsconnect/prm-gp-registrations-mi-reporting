@@ -19,11 +19,11 @@ pipelines:
                       - -c
                       - ./tasks.sh upload_data
                 # build lambda and deploy
-                # - exec:
-                #     command: /bin/bash
-                #     arguments:
-                #       - -c
-                #       - ./tasks.sh build_and_deploy_splunk_uploader_lambda
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks.sh build_and_deploy_splunk_uploader_lambda
                 # Invoke lambda to dashboards and reports to Splunk
                 # - exec:
                 #     command: /bin/bash

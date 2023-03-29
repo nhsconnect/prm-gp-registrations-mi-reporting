@@ -75,10 +75,6 @@ install-ui-dependencies)
   npm ci
   cd ..
   ;;
-build_docker_image)
-  
-  
-  ;;
 upload_data)
   assume_ci_role
   echo $DOCKER_IMAGE
@@ -91,13 +87,18 @@ upload_data)
 build_and_publish)
   assume_ci_role
   docker run --name build_publish_container --rm \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
     -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \    
     $DOCKER_IMAGE \
     ./tasks.sh _build_and_publish
   ;;
 build_and_deploy_splunk_uploader_lambda)
-  #TODO
+  assume_ci_role
+  docker run --name publish_lambdas_container --rm \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    $DOCKER_IMAGE \
+    ./tasks.sh _build_and_deploy_splunk_uploader_lambda
   ;;
 run_splunk_uploader_lambda)
   #TODO
@@ -120,7 +121,9 @@ _upload_data) #private method
 _build_and_deploy_splunk_uploader_lambda) #private method
   #TODO
   # - Set lambda ENV variable with the Splunk API key ( pulled from parameter store )
+  SPLUNK_TOKEN=$(get_encrypted_ssm_parameter "/registrations/prod/user-input/splunk-api-token") 
   # - Run build_and_deploy.sh
+  /bin/bash -c ./scripts/scripts/build-and-publish.sh
   ;;
 _run_splunk_uploader_lambda) #private method
   #TODO
