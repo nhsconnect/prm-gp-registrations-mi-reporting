@@ -78,7 +78,7 @@ install-ui-dependencies)
   cd ..
   ;;
 upload_data)
-  check_env
+  # check_env
   assume_ci_role
   echo $DOCKER_IMAGE
   docker run --name upload_container --rm \
@@ -88,7 +88,7 @@ upload_data)
     ./tasks.sh _upload_data
   ;;
 build_and_publish)
-  check_env
+  # check_env
   assume_ci_role
   docker run --name build_publish_container --rm \
     -v $(pwd):/usr/src/app -i \
