@@ -4,7 +4,7 @@ set -o pipefail
 
 BUCKET_ROOT_NAME=prm-gp-registrations-mi-reporting
 ENV=dev
-BUCKET_NAME="${BUCKET_ROOT_NAME}-${ENV}"
+export BUCKET_NAME="${BUCKET_ROOT_NAME}-${ENV}"
 
 aws s3api head-bucket --bucket "${BUCKET_NAME}" 2>&1 | grep -q 'Not Found'
 BUCKET_EXISTS=$?

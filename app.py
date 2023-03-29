@@ -2,7 +2,7 @@ import logging
 from chalice import Chalice
 
 from chalicelib.deploy_dashboards import deploy_dashboards
-from chalicelib.deploy_saved_searches import deploy_saved_searches
+from chalicelib.deploy_reports import deploy_saved_searches
 
 app = Chalice(app_name='mi-dashboard-deployer')
 logger = logging.getLogger("Dashboard-logging")

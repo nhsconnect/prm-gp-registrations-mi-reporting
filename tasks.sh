@@ -12,10 +12,12 @@ readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
 
 export AWS_CLI_AUTO_PROMPT=off
 
+
 function assume_ci_role() {
   role_arn_param="/registrations/dev/user-input/cross-account-admin-role"
   if [ "$role_arn_param" != "null" ]; then
     role_arn=$(aws ssm get-parameters --region ${aws_region} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
+    echo "got cross account role"
     session_name="registrations-dashboard-${env_name}-session"
 
     sts=$(
@@ -23,7 +25,7 @@ function assume_ci_role() {
         --role-arn $role_arn \
         --role-session-name $session_name \
         --output json
-    )
+    )    
 
     export AWS_ACCESS_KEY_ID=$(echo $sts | jq -r .Credentials.AccessKeyId)
     export AWS_SECRET_ACCESS_KEY=$(echo $sts | jq -r .Credentials.SecretAccessKey)
@@ -76,6 +78,7 @@ install-ui-dependencies)
   cd ..
   ;;
 upload_data)
+  check_env
   assume_ci_role
   echo $DOCKER_IMAGE
   docker run --name upload_container --rm \
@@ -85,6 +88,7 @@ upload_data)
     ./tasks.sh _upload_data
   ;;
 build_and_publish)
+  check_env
   assume_ci_role
   docker run --name build_publish_container --rm \
     -v $(pwd):/usr/src/app -i \
@@ -112,16 +116,16 @@ publish_docker)
   echo "Logged in"
   docker push ${IMAGE_NAME}:${IMAGE_TAG}
   ;;
-_build_and_publish) #private method
-  /bin/bash -c ./scripts/build-and-publish.sh
-  ;;
 _upload_data) #private method
   /bin/bash -c ./scripts/upload-dashboards-and-reports-datasets.sh
   ;;
 _build_and_deploy_splunk_uploader_lambda) #private method
   #TODO
   # - Set lambda ENV variable with the Splunk API key ( pulled from parameter store )
-  SPLUNK_TOKEN=$(get_encrypted_ssm_parameter "/registrations/prod/user-input/splunk-api-token") 
+  export SPLUNK_TOKEN=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-api-token)
+  export SPLUNK_HOST=$(get_ssm_parameter /registrations/prod/user-input/splunk-base-url)
+  export SPLUNK_ADMIN_USERNAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-admin-username)
+  
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
