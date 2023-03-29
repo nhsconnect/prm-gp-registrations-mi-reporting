@@ -3,15 +3,14 @@
 set -e
 
 # if [ ! -f .env ]
-# then 
-export $(cat .env | xargs) 
+# then
+export $(cat .env | xargs)
 # fi
 
 readonly aws_region=eu-west-2
 readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
 
 export AWS_CLI_AUTO_PROMPT=off
-
 
 function assume_ci_role() {
   role_arn_param="/registrations/dev/user-input/cross-account-admin-role"
@@ -25,7 +24,7 @@ function assume_ci_role() {
         --role-arn $role_arn \
         --role-session-name $session_name \
         --output json
-    )    
+    )
 
     export AWS_ACCESS_KEY_ID=$(echo $sts | jq -r .Credentials.AccessKeyId)
     export AWS_SECRET_ACCESS_KEY=$(echo $sts | jq -r .Credentials.SecretAccessKey)
@@ -92,8 +91,8 @@ build_and_publish)
   assume_ci_role
   docker run --name build_publish_container --rm \
     -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \    
-    $DOCKER_IMAGE \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \ 
+  $DOCKER_IMAGE \
     ./tasks.sh _build_and_publish
   ;;
 build_and_deploy_splunk_uploader_lambda)
@@ -112,7 +111,7 @@ publish_docker)
   docker build --platform linux/amd64 --platform linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
   docker_username=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-username")
   docker_password=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-password")
-  echo $docker_password | docker login --username $docker_username --password-stdin 
+  echo $docker_password | docker login --username $docker_username --password-stdin
   echo "Logged in"
   docker push ${IMAGE_NAME}:${IMAGE_TAG}
   ;;
@@ -125,7 +124,7 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   export SPLUNK_TOKEN=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-api-token)
   export SPLUNK_HOST=$(get_ssm_parameter /registrations/prod/user-input/splunk-base-url)
   export SPLUNK_ADMIN_USERNAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-admin-username)
-  
+
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
