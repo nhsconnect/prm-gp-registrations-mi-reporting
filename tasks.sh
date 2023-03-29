@@ -104,7 +104,7 @@ run_splunk_uploader_lambda)
   ;;
 publish_docker)
   IMAGE_TAG=$(date +%s%3N | shasum -a 256 | head -c 40)
-  docker build -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
+  docker build --platform linux/amd64 --platform linux/arm64  -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
   docker_username=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-username")
   docker_password=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-password")
   echo $docker_password | docker login --username $docker_username --password-stdin 
