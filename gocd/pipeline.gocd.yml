@@ -7,25 +7,25 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - upload:      
-          clean_workspace: true          
+      - upload:
+          clean_workspace: true
           jobs:
             deploy:
-              tasks:               
+              tasks:
                 # upload-dashboards-and-reports-datasets
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks.sh upload_data                
+                      - ./tasks.sh upload_data
                 # Invoke lambda to dashboards and reports to Splunk
                 # - exec:
                 #     command: /bin/bash
                 #     arguments:
                 #       - -c
                 #       - ./tasks.sh run_splunk_uploader_lambda
-      - lambda_deploy:      
-          clean_workspace: true          
+      - lambda_deploy:
+          clean_workspace: true
           jobs:
             deploy:
               tasks:
