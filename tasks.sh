@@ -123,7 +123,7 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   # - Set lambda ENV variable with the Splunk API key ( pulled from parameter store )
   SPLUNK_TOKEN=$(get_encrypted_ssm_parameter "/registrations/prod/user-input/splunk-api-token") 
   # - Run build_and_deploy.sh
-  /bin/bash -c ./scripts/scripts/build-and-publish.sh
+  /bin/bash -c ./scripts/build-and-publish.sh
   ;;
 _run_splunk_uploader_lambda) #private method
   #TODO
