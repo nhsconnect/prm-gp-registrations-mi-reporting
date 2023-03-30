@@ -13,7 +13,7 @@ readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
 export AWS_CLI_AUTO_PROMPT=off
 
 function assume_ci_role() {
-  role_arn_param="/registrations/dev/user-input/cross-account-admin-role"
+  role_arn_param="/registrations/prod/user-input/cross-account-admin-role"
   if [ "$role_arn_param" != "null" ]; then
     role_arn=$(aws ssm get-parameters --region ${aws_region} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
     echo "got cross account role"
