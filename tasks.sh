@@ -104,7 +104,12 @@ build_and_deploy_splunk_uploader_lambda)
     ./tasks.sh _build_and_deploy_splunk_uploader_lambda
   ;;
 run_splunk_uploader_lambda)
-  #TODO
+  assume_ci_role
+  docker run --name run_splunk_container --rm \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    $DOCKER_IMAGE \
+    ./tasks.sh _run_splunk_uploader_lambda
   ;;
 publish_docker)
   IMAGE_TAG=$(date +%s%3N | shasum -a 256 | head -c 40)
@@ -128,9 +133,12 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
-_run_splunk_uploader_lambda) #private method
-  #TODO
-  # - Create an lambda invoke cli command
+_run_splunk_uploader_lambda)
+  # - Invoke CLI command to trigger lambdas
+
+  export SPLUNK_TOKEN=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-api-token)
+  
+  /bin/bash -c ./scripts/splunk-push.sh
   ;;
 *)
   echo "make $@"
