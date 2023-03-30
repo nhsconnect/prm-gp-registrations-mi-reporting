@@ -29,3 +29,14 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks.sh build_and_deploy_splunk_uploader_lambda
+      - splunk_push:
+          clean_workspace: true
+          jobs:
+            deploy:
+              tasks:
+                # Invoke lambda to dashboards and reports to Splunk
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks.sh run_splunk_uploader_lambda

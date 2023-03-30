@@ -1,0 +1,23 @@
+<dashboard version="1.1">
+  <label>GP2GP moa report</label>
+  <fieldset submitButton="false">
+    <input type="time" token="report_start">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <event>
+        <title>gp2gp_moa_report.splunk</title>
+        <query>
+            | savedsearch index="%index%" "gp2gp_moa_report.splunk" report_start=strftime("$reportTimeframe.earliest$", "%Y-%m-%d") report_end=strftime("$reportTimeframe.latest$", "%Y-%m-%d")
+        </query>
+        <option name="list.drilldown">none</option>
+      </event>
+    </panel>
+  </row>
+</dashboard>
