@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
     stages:
       - clean:
+          trigger: manual
           jobs:
             clean:
               tasks:  
