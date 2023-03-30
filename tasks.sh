@@ -68,6 +68,16 @@ function confirm_current_role {
   fi
 }
 
+function docker_base_cmd {
+  echo "$(docker run --name ${1#_} --rm \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+    --user "$(id -u):$(id -g)" \
+    $DOCKER_IMAGE \
+    ./tasks.sh $1)"
+}
+
+
 readonly command="$1"
 case "${command}" in
 install-ui-dependencies)
@@ -78,37 +88,20 @@ install-ui-dependencies)
 upload_data)
   # check_env
   assume_ci_role
-  echo $DOCKER_IMAGE
-  docker run --name upload_container --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-    $DOCKER_IMAGE \
-    ./tasks.sh _upload_data
+  docker_base_cmd _upload_data
   ;;
 build_and_publish)
   # check_env
   assume_ci_role
-  docker run --name build_publish_container --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \ 
-    $DOCKER_IMAGE \
-    ./tasks.sh _build_and_publish
+  docker_base_cmd _build_and_publish
   ;;
 build_and_deploy_splunk_uploader_lambda)
   assume_ci_role
-  docker run --name publish_lambdas_container --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-    $DOCKER_IMAGE \
-    ./tasks.sh _build_and_deploy_splunk_uploader_lambda
+  docker_base_cmd _build_and_deploy_splunk_uploader_lambda
   ;;
 run_splunk_uploader_lambda)
   assume_ci_role
-  docker run --name run_splunk_container --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-    $DOCKER_IMAGE \
-    ./tasks.sh _run_splunk_uploader_lambda
+  docker_base_cmd _run_splunk_uploader_lambda
   ;;
 publish_docker)
   IMAGE_TAG=$(date +%s%3N | shasum -a 256 | head -c 40)
