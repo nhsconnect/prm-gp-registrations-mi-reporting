@@ -14,9 +14,8 @@ pipelines:
             clean:
               tasks:  
                 - exec:
-                    command: sudo
+                    command: rm
                     arguments:
-                      - rm
                       - -rf
                       - /go/pipelines/prm-gp-registration-mi-reporting/*
       - upload:
