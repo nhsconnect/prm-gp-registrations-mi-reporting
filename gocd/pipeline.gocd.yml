@@ -12,11 +12,11 @@ pipelines:
             clean:
               tasks:  
                 - exec:
-                  command: sudo
-                  arguments:
-                    - rm
-                    - -rf
-                    - /go/pipelines/prm-gp-registration-mi-reporting/*
+                    command: sudo
+                    arguments:
+                      - rm
+                      - -rf
+                      - /go/pipelines/prm-gp-registration-mi-reporting/*
       - upload:
           clean_workspace: true
           jobs:
