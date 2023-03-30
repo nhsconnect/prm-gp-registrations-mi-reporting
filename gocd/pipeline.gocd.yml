@@ -3,9 +3,9 @@ pipelines:
   "prm-gp-registration-mi-reporting":
     group: gp-registrations-mi
     label_template: "${git[:8]}"
-    # materials:
-    #   git:
-    #     type: configrepo
+    materials:
+      git:
+        type: configrepo
     stages:
       - clean:
           jobs:
@@ -15,8 +15,8 @@ pipelines:
                   command: sudo
                   arguments:
                     - rm
-                    - -R
-                    - /go/pipelines/prm-gp-registration-mi-reporting
+                    - -rf
+                    - /go/pipelines/prm-gp-registration-mi-reporting/*
       - upload:
           clean_workspace: true
           jobs:
