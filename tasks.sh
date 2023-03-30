@@ -7,7 +7,6 @@ set -e
 export $(cat .env | xargs)
 # fi
 
-readonly aws_region=eu-west-2
 readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
 
 export AWS_CLI_AUTO_PROMPT=off
@@ -15,7 +14,7 @@ export AWS_CLI_AUTO_PROMPT=off
 function assume_ci_role() {
   role_arn_param="/registrations/prod/user-input/cross-account-admin-role"
   if [ "$role_arn_param" != "null" ]; then
-    role_arn=$(aws ssm get-parameters --region ${aws_region} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
+    role_arn=$(aws ssm get-parameters --region ${AWS_DEFAULT_REGION} --names ${role_arn_param} --query 'Parameters[0].Value' --output text)
     echo "got cross account role"
     session_name="registrations-dashboard-${env_name}-session"
 
@@ -40,11 +39,11 @@ function clear_assumed_iam_role() {
 }
 
 function get_ssm_parameter() {
-  echo "$(aws ssm get-parameter --region ${aws_region} --name $1 --query Parameter.Value --output text)"
+  echo "$(aws ssm get-parameter --region ${AWS_DEFAULT_REGION} --name $1 --query Parameter.Value --output text)"
 }
 
 function get_encrypted_ssm_parameter() {
-  echo "$(aws ssm get-parameter --region ${aws_region} --name $1 --with-decryption --query Parameter.Value --output text)"
+  echo "$(aws ssm get-parameter --region ${AWS_DEFAULT_REGION} --name $1 --with-decryption --query Parameter.Value --output text)"
 }
 
 function check_env {
@@ -82,7 +81,7 @@ upload_data)
   echo $DOCKER_IMAGE
   docker run --name upload_container --rm \
     -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
     $DOCKER_IMAGE \
     ./tasks.sh _upload_data
   ;;
@@ -91,7 +90,7 @@ build_and_publish)
   assume_ci_role
   docker run --name build_publish_container --rm \
     -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \ 
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \ 
     $DOCKER_IMAGE \
     ./tasks.sh _build_and_publish
   ;;
@@ -99,7 +98,7 @@ build_and_deploy_splunk_uploader_lambda)
   assume_ci_role
   docker run --name publish_lambdas_container --rm \
     -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
     $DOCKER_IMAGE \
     ./tasks.sh _build_and_deploy_splunk_uploader_lambda
   ;;
@@ -107,7 +106,7 @@ run_splunk_uploader_lambda)
   assume_ci_role
   docker run --name run_splunk_container --rm \
     -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
     $DOCKER_IMAGE \
     ./tasks.sh _run_splunk_uploader_lambda
   ;;
