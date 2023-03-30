@@ -19,6 +19,8 @@ pytest
 
 ## Deploying the reports and dashboards (manually)
 
+![deployment](docs/registrations_mi_reports_and_dashboards.png)
+
 > **_NOTE:_** A GOCD pipeline will automatically run and publish to Splunk whenever changes are pushed to the main branch.
 
 This will deploy the "Splunk Uploader" which is a AWS Lambda function designed to push the GP Registrations MI reports and dashboards to NHS Splunk Cloud. The "Splunk Uploader" relies on having the reports and dashboards in an S3 bucket.
