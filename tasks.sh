@@ -126,9 +126,9 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   export SPLUNK_HOST=$(get_ssm_parameter /registrations/prod/user-input/splunk-base-url)
   export SPLUNK_ADMIN_USERNAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-admin-username)
   #TODO add to paramter store
-  export SPLUNK_APP_ID=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-app-id)
+  export SPLUNK_APP_ID=$(get_ssm_parameter /registrations/prod/user-input/splunk-app-id)
   #TODO add to paramter store
-  export BUCKET_NAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-report-data-bucket-name)
+  export BUCKET_NAME=$(get_ssm_parameter /registrations/prod/user-input/splunk-report-data-bucket-name)
 
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
