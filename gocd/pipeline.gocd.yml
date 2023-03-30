@@ -7,19 +7,8 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - clean:
-          trigger: manual
-          fetch_materials: false
-          jobs:
-            clean:
-              tasks:  
-                - exec:
-                    command: rm
-                    arguments:
-                      - -rf
-                      - /go/pipelines/prm-gp-registration-mi-reporting
       - upload:
-          clean_workspace: true
+          #clean_workspace: true
           jobs:
             deploy:
               tasks:
@@ -30,7 +19,7 @@ pipelines:
                       - -c
                       - ./tasks.sh upload_data
       - lambda_deploy:
-          clean_workspace: true
+          #clean_workspace: true
           jobs:
             deploy:
               tasks:
