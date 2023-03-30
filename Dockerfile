@@ -43,5 +43,9 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# CMD ["/bin/bash"]
-# ENTRYPOINT ["/bin/bash"]
+# Create a new user without specifying the UID and GID
+RUN addgroup -S mygroup
+RUN adduser -S -G mygroup -h /home/myuser -s /bin/sh myuser
+
+# Switch to the new user
+USER myuser
