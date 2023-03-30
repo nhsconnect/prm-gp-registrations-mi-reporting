@@ -68,22 +68,10 @@ client = boto3.client("s3")
 s3 = boto3.resource('s3')
 
 
-def get_or_create_bucket(name:str):
-
-    try:       
-        client.head_bucket(Bucket=name)
-    except ClientError:
-        # The bucket does not exist or you have no access.
-        client.create_bucket(Bucket=name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
-
-    return s3.Bucket(name)
-
-
-
 def deploy_dashboards():
 
     # loop through dashboard files  
-    bucket = get_or_create_bucket(bucket_name)  #s3.Bucket("[Bucket Name]")   
+    bucket = s3.Bucket(bucket_name)
     
     for obj in bucket.objects.filter(Prefix='dashboards/'):        
 
