@@ -9,7 +9,7 @@ pipelines:
     stages:
       - clean:
           trigger: manual
-          fetchMaterials: false
+          fetch_materials: false
           jobs:
             clean:
               tasks:  
