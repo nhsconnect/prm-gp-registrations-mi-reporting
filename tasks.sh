@@ -117,17 +117,18 @@ publish_docker)
   echo $docker_password | docker login --username $docker_username --password-stdin
   echo "Logged in"
   docker buildx build --platform=linux/amd64,linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest --push .
-  #docker buildx push ${IMAGE_NAME}:${IMAGE_TAG}
   ;;
 _upload_data) #private method
   /bin/bash -c ./scripts/upload-dashboards-and-reports-datasets.sh
   ;;
 _build_and_deploy_splunk_uploader_lambda) #private method
-  #TODO
-  # - Set lambda ENV variable with the Splunk API key ( pulled from parameter store )
   export SPLUNK_TOKEN=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-api-token)
   export SPLUNK_HOST=$(get_ssm_parameter /registrations/prod/user-input/splunk-base-url)
   export SPLUNK_ADMIN_USERNAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-admin-username)
+  #TODO add to paramter store
+  export SPLUNK_APP_ID=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-app-id)
+  #TODO add to paramter store
+  export BUCKET_NAME=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-report-data-bucket-name)
 
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh

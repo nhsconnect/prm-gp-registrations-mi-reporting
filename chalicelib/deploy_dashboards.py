@@ -25,6 +25,14 @@ def check_env_variable(env_var: str) -> None:
         print(f'Please set the environment variable: {env_var}')
 
 
+# check essential env variables
+check_env_variable("SPLUNK_HOST") # e.g. https://localhost:8089
+check_env_variable("SPLUNK_ADMIN_USERNAME") # user with admin role
+check_env_variable("SPLUNK_TOKEN") # token created with splunk
+check_env_variable("SPLUNK_APP_ID") 
+check_env_variable("BUCKET_NAME")
+
+
 class SplunkQueryError(RuntimeError):
     pass
 
@@ -55,11 +63,6 @@ def make_splunk_request(name, code):
             f"Splunk request returned status code: {response.status_code} \
                 with reason: {response.reason}")
 
-
-# check essential env variables
-check_env_variable("SPLUNK_HOST") # e.g. https://localhost:8089
-check_env_variable("SPLUNK_ADMIN_USERNAME") # user with admin role
-check_env_variable("SPLUNK_TOKEN") # token created with splunk
 
 client = boto3.client("s3")
 s3 = boto3.resource('s3')
