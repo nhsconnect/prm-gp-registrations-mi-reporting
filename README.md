@@ -6,11 +6,9 @@
 
 ## Running the tests
 
-`SPLUNK_TOKEN='YOUR_API_TOKEN' SPLUNK_HOST='SPLUNK_HOST' pytest`
-
+`SPLUNK_TOKEN='YOUR_LOCAL_API_TOKEN' SPLUNK_HOST='SPLUNK_HOST' pytest`
 Or
-
-`export SPLUNK_TOKEN='YOUR_API_TOKEN'`
+`export SPLUNK_TOKEN='YOUR_LOCAL_API_TOKEN'`
 
 `pytest`
 
@@ -23,11 +21,27 @@ environment vars:
 - `SPLUNK_TOKEN` the API access token
 - `SPLUNK_INDEX` the index to use for all reports and dashboards, default: 'test_index'
 
-### Deploying the reports
-`python3 ./scripts/deploy_saved_searched.py`
+### Deploying the reports and dashboards (manually)
 
-### Deploying the dashboards
-`python3 ./scripts/deploy_dashboards.py`
+There is a GOCD pipeline which will run and publish to Splunk whenever changes are pushed to the main branch. However this can also be done in the local dev environment using the following commands:
+
+- Upload the reports (.splunk) and dashboads (.xml) files to S3
+`./tasks upload_data`
+
+- Build and deploy the Splunk Uploader lambda
+`./tasks build_and_deploy_splunk_uploader_lambda`
+
+- Run the Splunk Uploader lambda
+`./tasks run_splunk_uploader_lambda`
+
+### Managing the Docker image for the CI pipeline
+
+#### Prerequisites
+- docker buildx
+
+#### Updating the Docker image
+Only after making changes to the Dockerfile
+`./tasks publish_docker`
 
 ## MI Api Events
 - REGISTRATIONS

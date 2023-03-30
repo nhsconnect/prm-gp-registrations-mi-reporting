@@ -92,7 +92,7 @@ build_and_publish)
   docker run --name build_publish_container --rm \
     -v $(pwd):/usr/src/app -i \
     -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_REGION=$AWS_REGION \ 
-  $DOCKER_IMAGE \
+    $DOCKER_IMAGE \
     ./tasks.sh _build_and_publish
   ;;
 build_and_deploy_splunk_uploader_lambda)
@@ -113,12 +113,12 @@ run_splunk_uploader_lambda)
   ;;
 publish_docker)
   IMAGE_TAG=$(date +%s%3N | shasum -a 256 | head -c 40)
-  docker build --platform linux/amd64 --platform linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
   docker_username=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-username")
   docker_password=$(get_encrypted_ssm_parameter "/repo/prod/user-input/prm-team-dockerhub-password")
   echo $docker_password | docker login --username $docker_username --password-stdin
   echo "Logged in"
-  docker push ${IMAGE_NAME}:${IMAGE_TAG}
+  docker buildx build --platform=linux/amd64,linux/arm64 -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest --push .
+  #docker buildx push ${IMAGE_NAME}:${IMAGE_TAG}
   ;;
 _upload_data) #private method
   /bin/bash -c ./scripts/upload-dashboards-and-reports-datasets.sh
