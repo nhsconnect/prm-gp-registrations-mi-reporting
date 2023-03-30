@@ -20,6 +20,7 @@ environment vars:
 - `SPLUNK_APP_ID` the Splunk app to deploy the reports and dashboards to, default: search
 - `SPLUNK_TOKEN` the API access token
 - `SPLUNK_INDEX` the index to use for all reports and dashboards, default: 'test_index'
+- `BUCKET_NAME` the name of the bucket which stores the reports and dashboard data 
 
 ### Deploying the reports and dashboards (manually)
 
@@ -33,6 +34,10 @@ There is a GOCD pipeline which will run and publish to Splunk whenever changes a
 
 - Run the Splunk Uploader lambda
 `./tasks run_splunk_uploader_lambda`
+
+#### Running the lambda locally
+`chalice local` 
+Note: due to IP restriction Splunk uploading cannot be done from outside of the AWS account.
 
 ### Managing the Docker image for the CI pipeline
 

@@ -9,12 +9,10 @@ logger = logging.getLogger("Dashboard-logging")
 logger.setLevel(logging.DEBUG)
 
 
-@app.lambda_function()
+@app.lambda_function(name='splunk-uploader')
 def main(event, context):
-
     logger.info("deploying saved searches...")
     deploy_saved_searches()
-    
     logger.info("deploying dashboards...")
     deploy_dashboards()
 

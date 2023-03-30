@@ -133,10 +133,6 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
 _run_splunk_uploader_lambda)
-  # - Invoke CLI command to trigger lambdas
-
-  export SPLUNK_TOKEN=$(get_encrypted_ssm_parameter /registrations/prod/user-input/splunk-api-token)
-  
   /bin/bash -c ./scripts/splunk-push.sh
   ;;
 *)
