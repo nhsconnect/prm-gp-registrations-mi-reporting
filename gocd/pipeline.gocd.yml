@@ -21,7 +21,7 @@ pipelines:
                       - clean
                       - --rm
                       - -v 
-                      - $(pwd):/usr/src/app 
+                      - .:/usr/src/app 
                       - -i
                       - -e 
                       - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID 
