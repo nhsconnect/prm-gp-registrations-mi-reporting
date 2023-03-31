@@ -7,6 +7,17 @@ pipelines:
       git:
         type: configrepo
     stages:
+      - clean:
+          #clean_workspace: true
+          fetch_materials: false
+          jobs:
+            deploy:
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks.sh clean_ci_as_docker
       - upload:
           #clean_workspace: true
           jobs:
