@@ -7,50 +7,26 @@ import requests
 from requests.compat import urljoin
 import boto3
 from botocore.exceptions import ClientError
-
-# set by pipeline
-splunk_host = os.environ.get('SPLUNK_HOST') or 'https://localhost:8089'
-splunk_admin_username = os.environ.get('SPLUNK_ADMIN_USERNAME')
-splunk_app_id = os.environ.get('SPLUNK_APP_ID') or 'search'
-splunk_token = os.environ['SPLUNK_TOKEN']
-
-# s3 bucket
-bucket_name = os.environ['BUCKET_NAME']
-
-
-def check_env_variable(env_var: str) -> None:
-    try:
-        os.environ[env_var]
-    except KeyError:
-        print(f'Please set the environment variable: {env_var}')
-
-
-# check essential env variables
-check_env_variable("SPLUNK_HOST") # e.g. https://localhost:8089
-check_env_variable("SPLUNK_ADMIN_USERNAME") # user with admin role
-check_env_variable("SPLUNK_TOKEN") # token created with splunk
-check_env_variable("SPLUNK_APP_ID") 
-check_env_variable("BUCKET_NAME")
-
+from splunk_config import SplunkConfig
 
 class SplunkQueryError(RuntimeError):
     pass
 
 
-def make_splunk_request(name, code):
+def make_splunk_request(splunkConfig:SplunkConfig, dashboard_name:str, dashboard_data:str):
 
-    print(f'splunk_host: {splunk_host}')
+    print(f'splunk_host: {splunkConfig._splunk_host}')
 
     # API reference - https://docs.splunk.com/Documentation/Splunk/9.0.4/RESTREF
-    create_dashboard_url = f'/servicesNS/{splunk_admin_username}/{splunk_app_id}/data/ui/views'
+    create_dashboard_url = f'/servicesNS/{splunkConfig._splunk_admin_username}/{splunkConfig._splunk_app_id}/data/ui/views'
 
-    url = urljoin(splunk_host, create_dashboard_url)
+    url = urljoin(splunkConfig._splunk_host, create_dashboard_url)
 
-    headers = {"Authorization": f"Bearer {splunk_token}"}
+    headers = {"Authorization": f"Bearer {splunkConfig._splunk_token}"}
 
     new_dashboard_data = urllib.parse.urlencode({
-        "name": name,
-        "eai:data": code
+        "name": dashboard_name,
+        "eai:data": dashboard_data
     })
 
     response = requests.post(url, headers=headers,
@@ -68,10 +44,10 @@ client = boto3.client("s3")
 s3 = boto3.resource('s3')
 
 
-def deploy_dashboards():
+def deploy_dashboards(splunkConfig:SplunkConfig):
 
     # loop through dashboard files  
-    bucket = s3.Bucket(bucket_name)
+    bucket = s3.Bucket(splunkConfig._s3_bucket_name)
     
     for obj in bucket.objects.filter(Prefix='dashboards/'):        
 

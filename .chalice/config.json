@@ -1,6 +1,8 @@
 {
   "version": "2.0",
   "app_name": "prm-gp-registrations-mi-reporting",
+  "environment_variables": {    
+  },
   "stages": {
     "dev": {
       "api_gateway_stage": "api"
