@@ -131,9 +131,6 @@ _build_and_deploy_splunk_uploader_lambda) #private method
 _run_splunk_uploader_lambda)
   /bin/bash -c ./scripts/splunk-push.sh
   ;;
-_clean_ci_as_docker
-  rm -rf /usr/src/app/*
-  ;;
 *)
   echo "make $@"
   make "$@"
