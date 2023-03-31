@@ -14,10 +14,16 @@ pipelines:
             deploy:
               tasks:
                 - exec:
-                    command: /bin/bash
+                    command: docker
                     arguments:
-                      - -c
-                      - ./tasks.sh clean_ci_as_docker
+                      - run
+                      - --name clean
+                      - --rm
+                      - -v $(pwd):/usr/src/app 
+                      - -i
+                      - -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+                      - nhsdev/prm-gp-registrations-mi-reporting:latest
+                      - rm -rf /usr/src/app/*
       - upload:
           #clean_workspace: true
           jobs:
