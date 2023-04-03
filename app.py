@@ -1,7 +1,7 @@
 import os
 import boto3
 import logging
-from splunk_config import SplunkConfig
+from chalicelib.splunk_config import SplunkConfig
 from chalice import Chalice
 
 from chalicelib.deploy_dashboards import deploy_dashboards
@@ -23,7 +23,7 @@ def main(event, context):
 
     ssm = session.client('ssm')
 
-    logger.info("requesting ssm parameters...")
+    print("requesting ssm parameters...")
     SPLUNK_HOST = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-base-url")
     SPLUNK_ADMIN_USERNAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-admin-username", WithDecryption=True)
     SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)
@@ -38,7 +38,7 @@ def main(event, context):
         S3_BUCKET_NAME
     )
 
-    logger.info("deploying saved searches...")
+    print("deploying reports...")
     deploy_reports(splunkConfig)
-    logger.info("deploying dashboards...")
+    print("deploying dashboards...")
     deploy_dashboards(splunkConfig)

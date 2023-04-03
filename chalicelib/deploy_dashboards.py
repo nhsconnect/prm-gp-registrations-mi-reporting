@@ -7,7 +7,7 @@ import requests
 from requests.compat import urljoin
 import boto3
 from botocore.exceptions import ClientError
-from splunk_config import SplunkConfig
+from chalicelib.splunk_config import SplunkConfig
 
 class SplunkQueryError(RuntimeError):
     pass

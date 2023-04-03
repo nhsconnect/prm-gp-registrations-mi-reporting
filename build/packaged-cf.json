@@ -3,7 +3,7 @@
     "Transform": "AWS::Serverless-2016-10-31",
     "Outputs": {},
     "Resources": {
-        "DefaultRole": {
+        "SplunkUploaderRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -25,27 +25,31 @@
                             "Version": "2012-10-17",
                             "Statement": [
                                 {
+                                    "Sid": "VisualEditor0",
                                     "Effect": "Allow",
                                     "Action": [
-                                        "logs:CreateLogGroup",
+                                        "s3:GetObject",
+                                        "s3:ListBucket",
+                                        "ssm:GetParameters",
+                                        "ssm:GetParameter",
                                         "logs:CreateLogStream",
                                         "logs:PutLogEvents"
                                     ],
-                                    "Resource": "arn:*:logs:*:*:*"
+                                    "Resource": "*"
                                 }
                             ]
                         },
-                        "PolicyName": "DefaultRolePolicy"
+                        "PolicyName": "SplunkUploaderRolePolicy"
                     }
                 ]
             }
         },
-        "Main": {
+        "SplunkUploader": {
             "Type": "AWS::Serverless::Function",
             "Properties": {
                 "Runtime": "python3.9",
                 "Handler": "app.main",
-                "CodeUri": "s3://prm-gp-registrations-mi-reporting-dev/cdb017953dacb99de2059bc769124d2a",
+                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/f7815a5192e49a6ff054c73b73d19b21",
                 "Tags": {
                     "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
                 },
@@ -54,7 +58,7 @@
                 "MemorySize": 128,
                 "Role": {
                     "Fn::GetAtt": [
-                        "DefaultRole",
+                        "SplunkUploaderRole",
                         "Arn"
                     ]
                 }

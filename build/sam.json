@@ -3,7 +3,7 @@
   "Transform": "AWS::Serverless-2016-10-31",
   "Outputs": {},
   "Resources": {
-    "DefaultRole": {
+    "SplunkUploaderRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -25,22 +25,26 @@
               "Version": "2012-10-17",
               "Statement": [
                 {
+                  "Sid": "VisualEditor0",
                   "Effect": "Allow",
                   "Action": [
-                    "logs:CreateLogGroup",
+                    "s3:GetObject",
+                    "s3:ListBucket",
+                    "ssm:GetParameters",
+                    "ssm:GetParameter",
                     "logs:CreateLogStream",
                     "logs:PutLogEvents"
                   ],
-                  "Resource": "arn:*:logs:*:*:*"
+                  "Resource": "*"
                 }
               ]
             },
-            "PolicyName": "DefaultRolePolicy"
+            "PolicyName": "SplunkUploaderRolePolicy"
           }
         ]
       }
     },
-    "Main": {
+    "SplunkUploader": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Runtime": "python3.9",
@@ -54,7 +58,7 @@
         "MemorySize": 128,
         "Role": {
           "Fn::GetAtt": [
-            "DefaultRole",
+            "SplunkUploaderRole",
             "Arn"
           ]
         }
