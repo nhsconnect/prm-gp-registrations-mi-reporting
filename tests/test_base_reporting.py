@@ -22,6 +22,8 @@ class EventType(Enum):
 
 
 splunk_token = os.environ['SPLUNK_TOKEN']
+
+# defaults to localhost - see README
 splunk_host = os.environ.get('SPLUNK_HOST')
 
 service = client.connect(token=splunk_token)
@@ -29,7 +31,7 @@ service = client.connect(token=splunk_token)
 
 def get_search(search_name):
     path = os.path.join(os.path.dirname(__file__),
-                        '../queries', f'{search_name}.splunk')
+                        '../reports', f'{search_name}.splunk')
     return open(path, encoding="utf-8").read()
 
 
