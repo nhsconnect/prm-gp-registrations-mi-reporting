@@ -1034,3 +1034,126 @@ def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "NOT_COMPATIBLE" ) | select( .registration_status == "ELECTRONIC_TRANSFER" ) | .count', telemetry) == '1'
+    
+def test_moa_percentage_of_all_transfers():
+    '''Tests that the result contains the % of all transers'''
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)    
+
+    # Create three registrations with different event types.
+   
+    # Event 1 - outcome_SUCCESS_status_INTEGRATED
+
+    conversation_id = 'OUTCOME_SUCCESS_REG_STATUS_INTEGRATION'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value
+            )),
+        sourcetype="myevent")
+    
+    # Event 2 - outcome_REJECTED_status_INTEGRATED
+
+    conversation_id = 'OUTCOME_REJECTED_REG_STATUS_INTEGRATED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                payload=create_integration_payload(outcome="REJECTED")
+            )),
+        sourcetype="myevent")
+    
+    # Event 3 - outcome: Tehnical Failure, reg Status: Integrated
+    
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                payload=create_integration_payload(
+                    outcome="FAILED_TO_INTEGRATE")
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_moa_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    print(f'telemetry: {telemetry}')
+
+    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+    assert jq.all(
+        '.[] | select( .totalCount == "3" ) | select( .count =="1") | select( .percentage | startswith("33.3")) ',telemetry)
