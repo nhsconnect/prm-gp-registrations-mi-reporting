@@ -1156,4 +1156,5 @@ def test_moa_percentage_of_all_transfers():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.all(
-        '.[] | select( .totalCount == "3" ) | select( .count =="1") | select( .percentage | startswith("33.3")) ',telemetry)
+        '.[] | select( .total_events == "3" ) | select( .count =="1") | select( .percentage_of_all_transfers | startswith("33.3")) ',telemetry)    
+  

@@ -54,6 +54,6 @@ index="$index$"
 | stats dc(conversationId) by outcomeAndStatus
 | rex field=outcomeAndStatus "(?<outcome>.*),(?<registration_status>.*)"
 | rename dc(conversationId) as count
-| eventstats sum(count) as totalCount
-| eval percentage=(count/totalCount) * 100
-| table outcome, registration_status, count, totalCount, percentage
+| eventstats sum(count) as total_events
+| eval percentage_of_all_transfers=(count/total_events) * 100
+| table outcome, registration_status, count, total_events, percentage_of_all_transfers
