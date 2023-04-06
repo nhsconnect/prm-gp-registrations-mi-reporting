@@ -1,3 +1,4 @@
+import logging
 import os
 from enum import Enum
 import pytest
@@ -10,6 +11,7 @@ from helpers.splunk \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
 
+LOG = logging.getLogger(__name__)
 
 class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
@@ -118,7 +120,7 @@ def test_reporting_window_as_savedsearch():
 
     telemetry = get_telemetry_from_splunk(test_query, service)
     service.saved_searches.delete('gp2gp_reporting_window')
-    print(jq.all('.[]._raw | fromjson.registrationEventDateTime', telemetry))
+    LOG.debug(jq.all('.[]._raw | fromjson.registrationEventDateTime', telemetry))
 
     assert len(telemetry) == 1
     assert jq.first('.[]._raw | fromjson.conversationId',
@@ -370,7 +372,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
 
@@ -428,7 +430,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -485,7 +487,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -530,7 +532,7 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -596,7 +598,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -640,7 +642,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
 
     # test requires a datetime 24 hours+
     d = datetime.today() - timedelta(hours=24, minutes=0)
-    print(f"D: {d}")
+    LOG.debug(f"D: {d}")
 
     index.submit(
         json.dumps(
@@ -663,7 +665,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -698,7 +700,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
 
     # test requires a datetime less than 20mins
     d = datetime.today() - timedelta(hours=0, minutes=19)
-    print(f"D: {d}")
+    LOG.debug(f"D: {d}")
 
     index.submit(
         json.dumps(
@@ -721,7 +723,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -756,7 +758,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
 
     # test requires a datetime equal to or greater than 20mins
     d = datetime.today() - timedelta(hours=0, minutes=25)
-    print(f"D: {d}")
+    LOG.debug(f"D: {d}")
 
     index.submit(
         json.dumps(
@@ -779,7 +781,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -804,7 +806,7 @@ def test_moa_outcome_IN_PROGRESS_status_TRANSFER_NOT_STARTED():
 
     # test requires a datetime less than 20mins
     d = datetime.today() - timedelta(hours=0, minutes=19)
-    print(f"D: {d}")
+    LOG.debug(f"D: {d}")
 
     index.submit(
         json.dumps(
@@ -831,7 +833,7 @@ def test_moa_outcome_IN_PROGRESS_status_TRANSFER_NOT_STARTED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -855,7 +857,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_TRANSFER_NOT_STARTED():
 
     # test requires a datetime greater than or equal to 20mins
     d = datetime.today() - timedelta(hours=0, minutes=20)
-    print(f"D: {d}")
+    LOG.debug(f"D: {d}")
 
     index.submit(
         json.dumps(
@@ -882,7 +884,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_TRANSFER_NOT_STARTED():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -931,7 +933,7 @@ def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -980,7 +982,7 @@ def test_moa_outcome_NOT_COMPATIBLE_status_INTERNAL_TRANSFER():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -1029,7 +1031,7 @@ def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
@@ -1152,7 +1154,7 @@ def test_moa_percentage_of_all_transfers():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    print(f'telemetry: {telemetry}')
+    LOG.debug(f'telemetry: {telemetry}')
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.all(
