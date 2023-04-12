@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 
 LOG = logging.getLogger(__name__)
 
+
 class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
     REGISTRATIONS = 'REGISTRATIONS'
@@ -839,6 +840,7 @@ def test_moa_outcome_IN_PROGRESS_status_TRANSFER_NOT_STARTED():
     assert jq.first(
         '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "TRANSFER_NOT_STARTED" ) | .count', telemetry) == '1'
 
+
 def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_TRANSFER_NOT_STARTED():
 
     # Arrange
@@ -889,7 +891,8 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_TRANSFER_NOT_STARTED():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "SLOW_TRANSFER_NOT_STARTED" ) | .count', telemetry) == '1'
-    
+
+
 def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
 
     # Arrange
@@ -905,8 +908,6 @@ def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
                 event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
-
-   
 
     index.submit(
         json.dumps(
@@ -938,7 +939,8 @@ def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "IN_PROGRESS" ) | select( .registration_status == "INTERNAL_TRANSFER" ) | .count', telemetry) == '1'
-    
+
+
 def test_moa_outcome_NOT_COMPATIBLE_status_INTERNAL_TRANSFER():
 
     # Arrange
@@ -954,8 +956,6 @@ def test_moa_outcome_NOT_COMPATIBLE_status_INTERNAL_TRANSFER():
                 event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
-
-   
 
     index.submit(
         json.dumps(
@@ -987,7 +987,8 @@ def test_moa_outcome_NOT_COMPATIBLE_status_INTERNAL_TRANSFER():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "NOT_COMPATIBLE" ) | select( .registration_status == "INTERNAL_TRANSFER" ) | .count', telemetry) == '1'
-    
+
+
 def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
 
     # Arrange
@@ -1003,8 +1004,6 @@ def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
                 event_type=EventType.REGISTRATIONS.value
             )),
         sourcetype="myevent")
-
-   
 
     index.submit(
         json.dumps(
@@ -1036,16 +1035,17 @@ def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
     # Assert
     assert jq.first(
         '.[] | select( .outcome == "NOT_COMPATIBLE" ) | select( .registration_status == "ELECTRONIC_TRANSFER" ) | .count', telemetry) == '1'
-    
+
+
 def test_moa_percentage_of_all_transfers():
     '''Tests that the result contains the % of all transers'''
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index = get_or_create_index("test_index", service)
 
     # Create three registrations with different event types.
-   
+
     # Event 1 - outcome_SUCCESS_status_INTEGRATED
 
     conversation_id = 'OUTCOME_SUCCESS_REG_STATUS_INTEGRATION'
@@ -1076,7 +1076,7 @@ def test_moa_percentage_of_all_transfers():
                 event_type=EventType.EHR_INTEGRATIONS.value
             )),
         sourcetype="myevent")
-    
+
     # Event 2 - outcome_REJECTED_status_INTEGRATED
 
     conversation_id = 'OUTCOME_REJECTED_REG_STATUS_INTEGRATED'
@@ -1108,9 +1108,9 @@ def test_moa_percentage_of_all_transfers():
                 payload=create_integration_payload(outcome="REJECTED")
             )),
         sourcetype="myevent")
-    
+
     # Event 3 - outcome: Tehnical Failure, reg Status: Integrated
-    
+
     conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED'
 
     index.submit(
@@ -1158,7 +1158,7 @@ def test_moa_percentage_of_all_transfers():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.all(
-        '.[] | select( .total_events == "3" ) | select( .count =="1") | select( .percentage_of_all_transfers | startswith("33.3")) ',telemetry)    
+        '.[] | select( .total_events == "3" ) | select( .count =="1") | select( .percentage_of_all_transfers | startswith("33.3")) ', telemetry)
 
 
 def test_moa_percentage_of_technical_failures():
@@ -1166,10 +1166,10 @@ def test_moa_percentage_of_technical_failures():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index = get_or_create_index("test_index", service)
 
     # Create three registrations with two being technical failure. Should give a result of 66.6%.
-   
+
     # Event 1 - outcome_SUCCESS_status_INTEGRATED
 
     conversation_id = 'OUTCOME_SUCCESS_REG_STATUS_INTEGRATION'
@@ -1200,7 +1200,7 @@ def test_moa_percentage_of_technical_failures():
                 event_type=EventType.EHR_INTEGRATIONS.value
             )),
         sourcetype="myevent")
-    
+
     # Event 2 - outcome_REJECTED_status_INTEGRATED
 
     conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED_1'
@@ -1233,9 +1233,9 @@ def test_moa_percentage_of_technical_failures():
                     outcome="FAILED_TO_INTEGRATE")
             )),
         sourcetype="myevent")
-    
+
     # Event 3 - outcome: Tehnical Failure, reg Status: Integrated
-    
+
     conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED_2'
 
     index.submit(
@@ -1283,4 +1283,197 @@ def test_moa_percentage_of_technical_failures():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.all(
-        '.[] | select( .total_events == "3" ) | select( .count =="2") | select( .percentage_of_all_transfers | startswith("66.6")) | select( .percentage_of_technical_failures | startswith("66.6")) ',telemetry)   
+        '.[] | select( .total_events == "3" ) | select( .count =="2") | select( .percentage_of_all_transfers | startswith("66.6")) | select( .percentage_of_technical_failures | startswith("66.6")) ', telemetry)
+
+
+def test_technical_failure_scenario_table():
+    '''Tests the output for the technical failure scenario table'''
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    # Create an event for every technical failure scenario
+
+    # Event 1 - TECHNICAL_FAULURE_INTEGRATED - error with EHR response
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.ERROR.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_error_payload(
+                    errorCode="90",
+                    errorDescription="Error with EHR Response",
+                    failurePoint=EventType.EHR_RESPONSE.value
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_integration_payload(
+                    outcome="FAILED_TO_INTEGRATE")
+            )),
+        sourcetype="myevent")
+
+    # Event 2 - outcome_REJECTED_status_INTEGRATED
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED_1'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.ERROR.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS",
+                payload=create_error_payload(
+                    errorCode="99",
+                    errorDescription="Error with EHR Response",
+                    failurePoint=EventType.EHR_RESPONSE.value
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS",
+                payload=create_integration_payload(
+                    outcome="FAILED_TO_INTEGRATE")
+            )),
+        sourcetype="myevent")
+
+    # # Event 3 - outcome: Tehnical Failure, reg Status: Integrated
+
+    # conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED_2'
+
+    # index.submit(
+    #     json.dumps(
+    #         create_sample_event(
+    #             conversation_id,
+    #             registration_event_datetime="2023-03-10T08:00:00",
+    #             event_type=EventType.REGISTRATIONS.value
+    #         )),
+    #     sourcetype="myevent")
+
+    # index.submit(
+    #     json.dumps(
+    #         create_sample_event(
+    #             conversation_id,
+    #             registration_event_datetime="2023-03-10T08:19:00",
+    #             event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+    #         )),
+    #     sourcetype="myevent")
+
+    # index.submit(
+    #     json.dumps(
+    #         create_sample_event(
+    #             conversation_id,
+    #             registration_event_datetime="2023-03-10T08:19:00",
+    #             event_type=EventType.EHR_INTEGRATIONS.value,
+    #             payload=create_integration_payload(
+    #                 outcome="FAILED_TO_INTEGRATE")
+    #         )),
+    #     sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-01",
+        "$report_end$": "2023-03-31"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+    assert jq.first(
+        '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .registration_status == "INTEGRATED" ) | select( .sending_supplier == "EMIS" ) | select( .receiving_supplier == "TPP" ) | select( .error_code_history == "90" ) | select( .count =="1")', telemetry)
