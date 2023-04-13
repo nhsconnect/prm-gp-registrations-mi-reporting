@@ -53,14 +53,15 @@ index="$index$"
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
-| stats   
+| streamstats latest(transferCompatible) as lastTransferCompatible by conversationId
+| eventstats count(eval(lastTransferCompatible == "true")) as totalTransfers
+| stats    
+    first(totalTransfers) as totalTransfers,
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
-    first(registrationStatus) as registrationStatus, 
-    first(requestingPracticeSupplierName) as requestingPracticeSupplierName,
-    first(outcome) as outcome,
-    values(errorHistory) as errorHistory,
-    count(isTransferCompatible) as totalTransfers,    
+    first(registrationStatus) as registrationStatus,
+    first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
+    values(errorHistory) as errorHistory,    
     dc(conversationId) by scenario
 | rename dc(conversationId) as count
 | eval percentageOfAllTransfers=(count/totalTransfers) * 100
-| table sendingPracticeSupplierName, requestingPracticeSupplierName, outcome, registrationStatus, errorHistory, count, percentageOfAllTransfers
+| table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers

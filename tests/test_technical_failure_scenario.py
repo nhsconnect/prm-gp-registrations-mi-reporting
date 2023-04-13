@@ -46,6 +46,7 @@ def teardown_function():
     """Function delete test_index."""
     service.indexes.delete("test_index")
 
+
 def test_metrics_by_reg_status():
 
     # Arrange
@@ -86,7 +87,6 @@ def test_metrics_by_reg_status():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -95,7 +95,7 @@ def test_metrics_by_reg_status():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -118,7 +118,7 @@ def test_metrics_by_reg_status():
 
 
 def test_metrics_by_sending_supplier():
-    
+
     # Arrange
 
     index = get_or_create_index("test_index", service)
@@ -157,7 +157,6 @@ def test_metrics_by_sending_supplier():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -166,7 +165,7 @@ def test_metrics_by_sending_supplier():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -187,8 +186,9 @@ def test_metrics_by_sending_supplier():
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .sendingPracticeSupplierName == "EMIS" ) | select( .count == "1" )', telemetry)
 
+
 def test_metrics_by_receiving_supplier():
-    
+
     # Arrange
 
     index = get_or_create_index("test_index", service)
@@ -227,7 +227,6 @@ def test_metrics_by_receiving_supplier():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -236,7 +235,7 @@ def test_metrics_by_receiving_supplier():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -257,8 +256,9 @@ def test_metrics_by_receiving_supplier():
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .count == "1" )', telemetry)
 
+
 def test_metrics_by_single_error_code():
-    
+
     # Arrange
 
     index = get_or_create_index("test_index", service)
@@ -297,7 +297,7 @@ def test_metrics_by_single_error_code():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -313,7 +313,6 @@ def test_metrics_by_single_error_code():
                 )
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -322,7 +321,7 @@ def test_metrics_by_single_error_code():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -343,8 +342,9 @@ def test_metrics_by_single_error_code():
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory == "EHR_RESPONSE_99" ) | select( .count == "1" )', telemetry)
 
+
 def test_metrics_by_multiple_error_codes():
-    
+
     # Arrange
 
     index = get_or_create_index("test_index", service)
@@ -383,7 +383,7 @@ def test_metrics_by_multiple_error_codes():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -399,7 +399,7 @@ def test_metrics_by_multiple_error_codes():
                 )
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -415,7 +415,6 @@ def test_metrics_by_multiple_error_codes():
                 )
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -424,7 +423,7 @@ def test_metrics_by_multiple_error_codes():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -445,9 +444,10 @@ def test_metrics_by_multiple_error_codes():
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "1" )', telemetry)
 
+
 def test_metrics_by_unordered_error_codes():
 
-     # Arrange
+    # Arrange
 
     index = get_or_create_index("test_index", service)
 
@@ -486,7 +486,7 @@ def test_metrics_by_unordered_error_codes():
                 requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -502,7 +502,7 @@ def test_metrics_by_unordered_error_codes():
                 )
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -518,7 +518,6 @@ def test_metrics_by_unordered_error_codes():
                 )
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -527,10 +526,10 @@ def test_metrics_by_unordered_error_codes():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
-    
+
     # Conversation 2
 
     conversation_id = 'METRICS_BY_UNORDERED_ERROR_2'
@@ -566,9 +565,8 @@ def test_metrics_by_unordered_error_codes():
                 sendingPracticeSupplierName="EMIS",
                 requestingPracticeSupplierName="TPP"
             )),
-        sourcetype="myevent")   
-    
-    
+        sourcetype="myevent")
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -584,7 +582,7 @@ def test_metrics_by_unordered_error_codes():
                 )
             )),
         sourcetype="myevent")
-    
+
     index.submit(
         json.dumps(
             create_sample_event(
@@ -600,7 +598,6 @@ def test_metrics_by_unordered_error_codes():
                 )
             )),
         sourcetype="myevent")
-   
 
     index.submit(
         json.dumps(
@@ -609,7 +606,7 @@ def test_metrics_by_unordered_error_codes():
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
                 sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"               
+                requestingPracticeSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -630,5 +627,352 @@ def test_metrics_by_unordered_error_codes():
     # Assert
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "2" )', telemetry)
-   
- 
+
+
+def test_percentage_of_all_transfers():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'TRANSFER_1'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    conversation_id = 'TRANSFER_2'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    conversation_id = 'NOT_A_TRANSFER'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=False,
+                    reason="New born"
+                )
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-01",
+        "$report_end$": "2023-03-31"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+    assert jq.first(
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "50" ) | select( .count == "1" )', telemetry)
+    
+def test_more_than_one_transfer_compatibility_event():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'TRANSFER_1'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    conversation_id = 'TRANSFER_2'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:10:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=False,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:20:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_REQUEST.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_RESPONSE.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="TPP",
+                requestingPracticeSupplierName="EMIS"
+            )),
+        sourcetype="myevent")
+
+    conversation_id = 'NOT_A_TRANSFER'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=False,
+                    reason="New born"
+                )
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-01",
+        "$report_end$": "2023-03-31"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+    assert jq.first(
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "50" ) | select( .count == "1" )', telemetry)
