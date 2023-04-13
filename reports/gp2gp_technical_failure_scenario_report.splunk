@@ -7,10 +7,12 @@ index="$index$"
 | eval ehrRequestEventDateTime = if(eventType="EHR_REQUEST",_time, null())
 | eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSE",_time, null())
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
-| spath output=errors path=payload.error{}.errorCode
+| spath output=errorCode path=payload.error{}.errorCode
+| spath output=errorFailurePoint path=payload.error{}.failurePoint
 | spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | eval hasErrors = if (errors == "{}",0,1)
+| eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
 | transaction conversationId keeporphans=t
 ```| eval sendingPracticeSupplierName = sendingPracticeSupplierName```
 ```| table sendingPracticeSupplierName,*```
@@ -53,11 +55,13 @@ index="$index$"
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
 ```| eval foo = sendingPracticeSupplierName ```
+
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
 | stats first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
     first(registrationStatus) as registrationStatus, 
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,
     first(outcome) as outcome,
+    values(errorHistory) as errorHistory,
     dc(conversationId) by scenario
 | rename dc(conversationId) as count
-| table sendingPracticeSupplierName, requestingPracticeSupplierName, outcome, registrationStatus, count
+| table sendingPracticeSupplierName, requestingPracticeSupplierName, outcome, registrationStatus, errorHistory, count
