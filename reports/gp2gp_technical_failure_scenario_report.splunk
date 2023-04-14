@@ -11,6 +11,8 @@ index="$index$"
 | spath output=errorFailurePoint path=payload.error{}.failurePoint
 | spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| eval transferCompatibilityWithTime = mvzip(transCompatStatEventDateTime, transferCompatible)
+| streamstats latest(transferCompatible) as lastTransferCompatible by conversationId, _time
 | eval hasErrors = if (errors == "{}",0,1)
 | eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
 | transaction conversationId keeporphans=t
@@ -53,7 +55,6 @@ index="$index$"
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
-| streamstats latest(transferCompatible) as lastTransferCompatible by conversationId
 | eventstats count(eval(lastTransferCompatible == "true")) as totalTransfers
 | stats    
     first(totalTransfers) as totalTransfers,
@@ -61,7 +62,8 @@ index="$index$"
     first(registrationStatus) as registrationStatus,
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
     values(errorHistory) as errorHistory,    
+    values(transferCompatible) as transferCompatible
     dc(conversationId) by scenario
 | rename dc(conversationId) as count
 | eval percentageOfAllTransfers=(count/totalTransfers) * 100
-| table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers
+| table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers, transferCompatible
