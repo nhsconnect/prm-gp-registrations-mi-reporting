@@ -794,34 +794,33 @@ def test_percentage_of_all_transfers():
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "50" ) | select( .count == "1" )', telemetry)
-    
+
+
 def test_more_than_one_transfer_compatibility_event():
 
     # Arrange
 
     index = get_or_create_index("test_index", service)
 
-    conversation_id = 'TRANSFER_1'
-
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingPracticeSupplierName="EMIS_One",
+                requestingPracticeSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingPracticeSupplierName="EMIS_One",
+                requestingPracticeSupplierName="TPP_One",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=True,
@@ -833,124 +832,125 @@ def test_more_than_one_transfer_compatibility_event():
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:20:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingPracticeSupplierName="EMIS_One",
+                requestingPracticeSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:25:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingPracticeSupplierName="EMIS_One",
+                requestingPracticeSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:30:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
-            )),
-        sourcetype="myevent")
-
-    conversation_id = 'TRANSFER_2'
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:35:00",
-                event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
-            )),
-        sourcetype="myevent")
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:40:00",
-                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
-                payload=create_transfer_compatibility_payload(
-                    internalTransfer=False,
-                    transferCompatible=True,
-                    reason="test"
-                )
+                sendingPracticeSupplierName="EMIS_One",
+                requestingPracticeSupplierName="TPP_One"
             )),
         sourcetype="myevent")
     
+    # Conversation two
+
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_2',
+                registration_event_datetime="2023-03-10T08:35:00",
+                event_type=EventType.REGISTRATIONS.value,
+                sendingPracticeSupplierName="EMIS_two",
+                requestingPracticeSupplierName="TPP_two"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id='TRANSFER_2',
+                registration_event_datetime="2023-03-10T08:40:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                sendingPracticeSupplierName="EMIS_two",
+                requestingPracticeSupplierName="TPP_two",
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True,
+                    reason="test"
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:45:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingPracticeSupplierName="EMI_two",
+                requestingPracticeSupplierName="TPP_two",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=False,
                     reason="test"
                 )
             )),
-        sourcetype="myevent")
+        sourcetype="myevent")   
+    
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:50:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingPracticeSupplierName="TPP_two",
+                requestingPracticeSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingPracticeSupplierName="TPP_two",
+                requestingPracticeSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
     index.submit(
         json.dumps(
             create_sample_event(
-                conversation_id,
+                conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingPracticeSupplierName="TPP_two",
+                requestingPracticeSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
-    # conversation_id = 'NOT_A_TRANSFER'
+    conversation_id = 'NOT_A_TRANSFER'
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-10T09:30:00",
+                registration_event_datetime="2023-03-10T08:30:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingPracticeSupplierName="EMIS_three",
+                requestingPracticeSupplierName="TPP_three",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=False,
@@ -971,7 +971,7 @@ def test_more_than_one_transfer_compatibility_event():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-  
+
     LOG.info(f'telemetry: {telemetry}')
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
