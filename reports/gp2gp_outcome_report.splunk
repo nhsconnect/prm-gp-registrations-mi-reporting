@@ -1,0 +1,15 @@
+{% from 'functions.splunk' import 
+set_time_to_registration_datetime,
+filter_reporting_window,
+calculate_outcome %}
+
+index="$index$"
+{{ set_time_to_registration_datetime() }}
+| streamstats earliest(_time) as conversationStart by conversationId
+{{ filter_reporting_window() }}
+| transaction conversationId keeporphans=t
+{{ calculate_outcome() }}
+| stats 
+    first(outcome) as outcome, 
+    count(outcome) as count
+| table outcome, count

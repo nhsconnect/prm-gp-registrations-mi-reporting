@@ -13,3 +13,20 @@
 {% macro filter_reporting_window() %}
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
 {% endmacro %}
+
+{% macro calculate_outcome() %}
+| eval outcome = case(    
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrRequestEvent ==0 AND ehrResponseEvent == 0, "AWAITING_INTEGRATION",
+    integration_outcome = "REJECTED", "REJECTED",
+    integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
+    integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 1 AND ehrResponseWithin24Hours == 1, "IN_PROGRESS",
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 1 AND ehrResponseWithin24Hours == 0, "TECHNICAL_FAILURE",    
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1,"IN_PROGRESS",
+    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0,"TECHNICAL_FAILURE",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1, "IN_PROGRESS",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0, "TECHNICAL_FAILURE",
+    transCompatStatEvent == 1 AND isInteralTransfer == 1 AND isTransferCompatible == 1, "IN_PROGRESS",
+    transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
+    1=1, "SUCCESS")
+{% endmacro %}
