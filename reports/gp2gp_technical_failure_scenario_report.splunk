@@ -11,8 +11,7 @@
     readyToIntegrate == 1 AND ehrRequestEvent == 1  AND ehrResponseEvent == 1, "EHR_SENT",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
-    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1 , "TRANSFER_NOT_STARTED",
-    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0 , "SLOW_TRANSFER_NOT_STARTED",   
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1, "TRANSFER_NOT_STARTED",     
     transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
     transCompatStatEvent == 1 AND isInteralTransfer == 0, "ELECTRONIC_TRANSFER",   
     1=1, "NOT_INTEGRATED")
@@ -41,9 +40,9 @@ index="$index$"
 | eval ehrRequestEvent = if (eventType=="EHR_REQUEST", 1, 0)
 | eval ehrResponseEvent = if(eventType=="EHR_RESPONSE", 1, 0)
 | eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
-| eval twentyFourHoursAgo = relative_time(conversationStart, "-24h")
+| eval twentyFourHoursAgo = relative_time(now(), "-24h")
 | eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime, 1, 0)
-| eval twentyMinsAgo = relative_time(conversationStart, "-20m")
+| eval twentyMinsAgo = relative_time(now(), "-20m")
 | eval ehrRequestWithin20Mins = if(ehrRequestEvent ==1 AND twentyMinsAgo < ehrRequestEventDateTime , 1, 0)
 | eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)
 | eval isInteralTransfer = if(transCompatStatEvent == 1 AND internalTransfer == "true",1 ,0)

@@ -864,7 +864,7 @@ def test_more_than_one_transfer_compatibility_event():
                 requestingPracticeSupplierName="TPP_One"
             )),
         sourcetype="myevent")
-    
+
     # Conversation two
 
     index.submit(
@@ -908,8 +908,7 @@ def test_more_than_one_transfer_compatibility_event():
                     reason="test"
                 )
             )),
-        sourcetype="myevent")   
-    
+        sourcetype="myevent")
 
     index.submit(
         json.dumps(
@@ -980,3 +979,227 @@ def test_more_than_one_transfer_compatibility_event():
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.first(
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "100" ) | select( .count == "1" )', telemetry)
+
+
+def test_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_INTEGRATED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                payload=create_integration_payload(
+                    outcome="FAILED_TO_INTEGRATE")
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(10)
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | .count', telemetry) == '1'
+
+
+def test_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_EHR_SENT'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:19:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:50:00",
+                event_type=EventType.EHR_REQUEST.value
+            )),
+        sourcetype="myevent")
+
+    # test requires a datetime 24 hours+
+    d = datetime.today() - timedelta(hours=24, minutes=0)
+    LOG.debug(f"D: {d}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_RESPONSE.value
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.debug(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .registrationStatus == "EHR_SENT" ) | .count', telemetry) == '1'
+
+
+def test_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_SLOW_EHR_REQUESTED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")    
+
+    # test requires a datetime equal to or greater than 20mins    
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:25:00",
+                event_type=EventType.EHR_REQUEST.value
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .registrationStatus == "SLOW_EHR_REQUESTED" ) | .count', telemetry) == '1'
+
+
+def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED_and_IS_SLOW():
+
+    # Arrange
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'OUTCOME_IN_PROGRESS_REG_STATUS_TRANSFER_NOT_STARTED'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.REGISTRATIONS.value
+            )),
+        sourcetype="myevent")
+
+    # test requires a datetime less than 20mins
+    d = datetime.today() - timedelta(hours=0, minutes=19)
+    LOG.debug(f"D: {d}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] | select( .registrationStatus == "TRANSFER_NOT_STARTED" )  | select( .is_slow == "TRUE" )  | .count', telemetry) == '1'
+
