@@ -1,0 +1,5 @@
+{% macro filter_non_transfers() %}
+| eventstats latest(transCompatStatEventDateTime) as latestTransferCompatibilityEventDateTime by conversationId
+| eval transCompatStatEventDateTimeFormatted = strftime(latestTransferCompatibilityEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted)
+{% endmacro %}

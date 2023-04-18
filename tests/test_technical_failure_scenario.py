@@ -10,6 +10,9 @@ from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
+from jinja2 import Environment, FileSystemLoader
+
+env = Environment(loader=FileSystemLoader('.'))
 
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +38,9 @@ service = client.connect(token=splunk_token)
 def get_search(search_name):
     path = os.path.join(os.path.dirname(__file__),
                         '../reports', f'{search_name}.splunk')
-    return open(path, encoding="utf-8").read()
+    # template = open(path, encoding="utf-8").read()
+    template = env.get_template(path)
+    return template.render() #open(path, encoding="utf-8").read()
 
 
 def savedsearch(test_query):
