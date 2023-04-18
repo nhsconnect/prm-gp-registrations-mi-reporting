@@ -14,7 +14,7 @@
       <event>
         <title>gp2gp_moa_report.splunk</title>
         <query>
-            | savedsearch index="%index%" "gp2gp_moa_report.splunk" report_start=strftime("$reportTimeframe.earliest$", "%Y-%m-%d") report_end=strftime("$reportTimeframe.latest$", "%Y-%m-%d")
+            | savedsearch index="{{ index }}" "gp2gp_moa_report.splunk" report_start=strftime("$reportTimeframe.earliest$", "%Y-%m-%d") report_end=strftime("$reportTimeframe.latest$", "%Y-%m-%d")
         </query>
         <option name="list.drilldown">none</option>
       </event>

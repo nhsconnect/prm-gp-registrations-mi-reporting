@@ -12,8 +12,6 @@ from helpers.splunk \
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 
-env = Environment(loader=FileSystemLoader('.'))
-
 LOG = logging.getLogger(__name__)
 
 
@@ -37,10 +35,10 @@ service = client.connect(token=splunk_token)
 
 def get_search(search_name):
     path = os.path.join(os.path.dirname(__file__),
-                        '../reports', f'{search_name}.splunk')
-    # template = open(path, encoding="utf-8").read()
-    template = env.get_template(path)
-    return template.render() #open(path, encoding="utf-8").read()
+                        '../reports')
+    env = Environment(loader=FileSystemLoader(path))
+    template = env.get_template(f'{search_name}.splunk')
+    return template.render()
 
 
 def savedsearch(test_query):
@@ -49,7 +47,7 @@ def savedsearch(test_query):
 
 def teardown_function():
     """Function delete test_index."""
-    service.indexes.delete("test_index_2")
+    service.indexes.delete("test_index")
 
 
 def test_metrics_by_reg_status():
@@ -805,7 +803,7 @@ def test_more_than_one_transfer_compatibility_event():
 
     # Arrange
 
-    index = get_or_create_index("test_index_2", service)
+    index = get_or_create_index("test_index", service)
 
     index.submit(
         json.dumps(
@@ -968,7 +966,7 @@ def test_more_than_one_transfer_compatibility_event():
 
     test_query = get_search('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index_2",
+        "$index$": "test_index",
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })

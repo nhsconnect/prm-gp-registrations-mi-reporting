@@ -8,6 +8,7 @@ from requests.compat import urljoin
 import boto3
 from botocore.exceptions import ClientError
 from chalicelib.splunk_config import SplunkConfig
+from jinja2 import Environment, BaseLoader
 
 class SplunkQueryError(RuntimeError):
     pass
@@ -52,7 +53,12 @@ def deploy_dashboards(splunkConfig:SplunkConfig):
     for obj in bucket.objects.filter(Prefix='dashboards/'):        
 
         # get the dashboard xml as a string
-        dashboard_string = obj.get()['Body'].read().decode('utf-8')  
+        dashboard_string = obj.get()['Body'].read().decode('utf-8')
+        env = Environment(loader=BaseLoader)
+        template = env.from_string(dashboard_string)
+        rendered_dashboard = template.render({
+            "index": "TODO replace with a param store value of the index on the Splunk environment"
+        })
 
         # create dashboard
-        make_splunk_request(obj.key, dashboard_string)
+        make_splunk_request(obj.key, rendered_dashboard)

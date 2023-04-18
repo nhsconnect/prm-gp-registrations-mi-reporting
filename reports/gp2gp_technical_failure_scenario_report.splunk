@@ -1,47 +1,9 @@
-{% from 'functions' import filter_non_transfers %}
+{% from 'functions.splunk' import 
+    filter_non_transfers, 
+    set_time_to_registration_datetime,
+    filter_reporting_window %}
 
-index="$index$"
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
-| sort 0 _time
-| streamstats earliest(_time) as conversationStart by conversationId
-| where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
-| spath output=integration_outcome path=payload{}.integration.outcome
-| eval ehrRequestEventDateTime = if(eventType="EHR_REQUEST",_time, null())
-| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSE",_time, null())
-| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
-| spath output=errorCode path=payload.error{}.errorCode
-| spath output=errorFailurePoint path=payload.error{}.failurePoint
-| spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
-| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
-| eval hasErrors = if (errors == "{}",0,1)
-| eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
-{{ filter_non_transfers() }}
-| transaction conversationId keeporphans=t
-| eval ehrResponseEvent = if(eventType=="REGISTRATIONS", 1, 0)
-| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
-| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
-| eval ehrRequestEvent = if (eventType=="EHR_REQUEST", 1 ,0)
-| eval ehrResponseEvent = if(eventType=="EHR_RESPONSE", 1, 0)
-| eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES",1 ,0)
-| eval twentyFourHoursAgo = relative_time(now(),"-24h")
-| eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime , 1, 0)
-| eval twentyMinsAgo = relative_time(now(),"-20m")
-| eval ehrRequestWithin20Mins = if(ehrRequestEvent ==1 AND twentyMinsAgo < ehrRequestEventDateTime , 1, 0)
-| eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)
-| eval isInteralTransfer = if(transCompatStatEvent == 1 AND internalTransfer == "true",1 ,0)
-| eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
-| where isTransferCompatible==1
-| eval registrationStatus = case(    
-    isIntegrated == 1, "INTEGRATED",
-    readyToIntegrate == 1 AND ehrRequestEvent == 0 AND ehrResponseEvent == 0, "READY_TO_INTEGRATE",
-    readyToIntegrate == 1 AND ehrRequestEvent == 1  AND ehrResponseEvent == 1, "EHR_SENT",
-    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
-    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
-    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1 , "TRANSFER_NOT_STARTED",
-    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0 , "SLOW_TRANSFER_NOT_STARTED",   
-    transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
-    transCompatStatEvent == 1 AND isInteralTransfer == 0, "ELECTRONIC_TRANSFER",   
-    1=1, "NOT_INTEGRATED")
+{% macro calculate_outcome() %}
 | eval outcome = case(    
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrRequestEvent ==0 AND ehrResponseEvent == 0, "AWAITING_INTEGRATION",
     integration_outcome = "REJECTED", "REJECTED",
@@ -56,9 +18,56 @@ index="$index$"
     transCompatStatEvent == 1 AND isInteralTransfer == 1 AND isTransferCompatible == 1, "IN_PROGRESS",
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
+{% endmacro %}
+
+{% macro calculate_registration_status() %}
+| eval registrationStatus = case(    
+    isIntegrated == 1, "INTEGRATED",
+    readyToIntegrate == 1 AND ehrRequestEvent == 0 AND ehrResponseEvent == 0, "READY_TO_INTEGRATE",
+    readyToIntegrate == 1 AND ehrRequestEvent == 1  AND ehrResponseEvent == 1, "EHR_SENT",
+    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
+    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 1 , "TRANSFER_NOT_STARTED",
+    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1 AND transCompatStatWithin20Mins == 0 , "SLOW_TRANSFER_NOT_STARTED",   
+    transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
+    transCompatStatEvent == 1 AND isInteralTransfer == 0, "ELECTRONIC_TRANSFER",   
+    1=1, "NOT_INTEGRATED")
+{% endmacro %}
+
+index="$index$"
+{{ set_time_to_registration_datetime() }}
+| streamstats earliest(_time) as conversationStart by conversationId
+{{ filter_reporting_window() }}
+| eval ehrRequestEventDateTime = if(eventType="EHR_REQUEST",_time, null())
+| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSE",_time, null())
+| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
+| spath output=integration_outcome path=payload{}.integration.outcome
+| spath output=errorCode path=payload.error{}.errorCode
+| spath output=errorFailurePoint path=payload.error{}.failurePoint
+| spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| eval hasErrors = if (errors == "{}",0,1)
+| eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
+{{ filter_non_transfers() }}
+| transaction conversationId keeporphans=t
+| eval ehrResponseEvent = if(eventType=="REGISTRATIONS", 1, 0)
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+| eval ehrRequestEvent = if (eventType=="EHR_REQUEST", 1, 0)
+| eval ehrResponseEvent = if(eventType=="EHR_RESPONSE", 1, 0)
+| eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
+| eval twentyFourHoursAgo = relative_time(conversationStart, "-24h")
+| eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime, 1, 0)
+| eval twentyMinsAgo = relative_time(conversationStart, "-20m")
+| eval ehrRequestWithin20Mins = if(ehrRequestEvent ==1 AND twentyMinsAgo < ehrRequestEventDateTime , 1, 0)
+| eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)
+| eval isInteralTransfer = if(transCompatStatEvent == 1 AND internalTransfer == "true",1 ,0)
+{{ calculate_registration_status() }}
+{{ calculate_outcome() }}
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
-| eventstats count(eval(isTransferCompatible==1)) as totalTransfers
+| eventstats count(eval(transCompatStatEvent==1)) as totalTransfers
 | stats
+    first(ehrResponseWithin24Hours) as isSlowTransfer,
     first(totalTransfers) as totalTransfers,
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
     first(registrationStatus) as registrationStatus,
@@ -67,4 +76,4 @@ index="$index$"
     dc(conversationId) by scenario
 | rename dc(conversationId) as count
 | eval percentageOfAllTransfers=(count/totalTransfers) * 100
-| table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers
+| table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers, isSlowTransfer
