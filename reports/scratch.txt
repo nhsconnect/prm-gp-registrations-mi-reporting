@@ -1,22 +1,6 @@
-index="$index$"
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
-| sort 0 _time
-| streamstats earliest(_time) as conversationStart by conversationId
-| where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
-| spath output=integration_outcome path=payload{}.integration.outcome
-| eval ehrRequestEventDateTime = if(eventType="EHR_REQUEST",_time, null())
-| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSE",_time, null())
-| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
-| spath output=errorCode path=payload.error{}.errorCode
-| spath output=errorFailurePoint path=payload.error{}.failurePoint
-| spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
-| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
-| eval hasErrors = if (errors == "{}",0,1)
-| eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
-| eventstats latest(transCompatStatEventDateTime) as latestTransferCompatibilityEventDateTime by conversationId
-| eval transCompatStatEventDateTimeFormatted = strftime(latestTransferCompatibilityEventDateTime,"%Y-%m-%dT%H:%M:%S")
-| where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted)
+
 | transaction conversationId keeporphans=t
+```| table conversationId, transferCompatibilityWithTime, transCompatStatEventDateTime, latestTransferCompatibilityEventDateTime```
 | eval ehrResponseEvent = if(eventType=="REGISTRATIONS", 1, 0)
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
@@ -30,7 +14,6 @@ index="$index$"
 | eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)
 | eval isInteralTransfer = if(transCompatStatEvent == 1 AND internalTransfer == "true",1 ,0)
 | eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
-| where isTransferCompatible==1
 | eval registrationStatus = case(    
     isIntegrated == 1, "INTEGRATED",
     readyToIntegrate == 1 AND ehrRequestEvent == 0 AND ehrResponseEvent == 0, "READY_TO_INTEGRATE",
@@ -57,8 +40,24 @@ index="$index$"
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
-| eventstats count(eval(isTransferCompatible==1)) as totalTransfers
-| stats
+| eval key = mvindex(split(transferCompatibilityWithTime,","),0), val= mvindex(split(transferCompatibilityWithTime,","),1) 
+```| eval test = if(mvzip(latestTransferCompatibilityEventDateTime, transferCompatible) in transferCompatibilityWithTime, 1, 0 )```
+| table conversationId, transferCompatibilityWithTime, latestTransferCompatibilityEventDateTime, transferCompatibilityWithTime
+
+```| eventstats count(eval(isTransferCompatible == "true")) as totalTransfers```
+```| eventstats count(eval(like(latestTransferCompatibilityEventDateTime,test%)) as totalTransfers```
+
+```
+| eval roundedLatestTransferCompatibilityEventDateTime = round(latestTransferCompatibilityEventDateTime)
+| eval roundedTime = round(_time) 
+| where (eventType == "TRANSFER_COMPATIBILITY_STATUSES" AND roundedTime == roundedLatestTransferCompatibilityEventDateTime)
+| eval test = if(eventType="TRANSFER_COMPATIBILITY_STATUSES" AND roundedTime == roundedLatestTransferCompatibilityEventDateTime AND isTransferCompatible == 1 ,1,0)
+| eventstats count(test)  as totalTransfers
+| table conversationId, totalTransfers, isTransferCompatible, roundedLatestTransferCompatibilityEventDateTime, roundedTime, test
+```
+
+```
+| stats    
     first(totalTransfers) as totalTransfers,
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
     first(registrationStatus) as registrationStatus,
@@ -68,3 +67,14 @@ index="$index$"
 | rename dc(conversationId) as count
 | eval percentageOfAllTransfers=(count/totalTransfers) * 100
 | table sendingPracticeSupplierName, requestingPracticeSupplierName, registrationStatus, errorHistory, count, percentageOfAllTransfers, totalTransfers
+```
+
+
+```
+[09:38] Caius  Eugene
+| eventstats latest(_time) as latestOfThisEvent by eventType, conversationId
+[09:39] Caius  Eugene
+| eval _time_unix=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+[09:39] Caius  Eugene
+| where (eventType == "TRANSFER_COMPATIBILITY_STATUSES" AND _time_unix == latestOfThisEvent)
+```
