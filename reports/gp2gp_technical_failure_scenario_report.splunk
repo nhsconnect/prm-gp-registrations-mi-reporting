@@ -60,17 +60,21 @@ index="$index$"
     transCompatStatEvent == 1 AND isTransferCompatible == 0, "NOT_COMPATIBLE",   
     1=1, "SUCCESS")
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
-```| convert timeformat="%Y-%m-%d %H:%M:%S" mktime(_time) as unix_time```
+| eval key = mvindex(split(transferCompatibilityWithTime,","),0), val= mvindex(split(transferCompatibilityWithTime,","),1) 
+```| eval test = if(mvzip(latestTransferCompatibilityEventDateTime, transferCompatible) in transferCompatibilityWithTime, 1, 0 )```
+| table conversationId, transferCompatibilityWithTime, latestTransferCompatibilityEventDateTime, transferCompatibilityWithTime
 
 ```| eventstats count(eval(isTransferCompatible == "true")) as totalTransfers```
 ```| eventstats count(eval(like(latestTransferCompatibilityEventDateTime,test%)) as totalTransfers```
 
+```
 | eval roundedLatestTransferCompatibilityEventDateTime = round(latestTransferCompatibilityEventDateTime)
-| eval roundedTime = round(_time)
+| eval roundedTime = round(_time) 
+| where (eventType == "TRANSFER_COMPATIBILITY_STATUSES" AND roundedTime == roundedLatestTransferCompatibilityEventDateTime)
 | eval test = if(eventType="TRANSFER_COMPATIBILITY_STATUSES" AND roundedTime == roundedLatestTransferCompatibilityEventDateTime AND isTransferCompatible == 1 ,1,0)
 | eventstats count(test)  as totalTransfers
 | table conversationId, totalTransfers, isTransferCompatible, roundedLatestTransferCompatibilityEventDateTime, roundedTime, test
-
+```
 
 ```
 | stats    
