@@ -1132,31 +1132,26 @@ def test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA():
         '.[] | select( .registrationStatus == "EHR_REQUESTED" ) | select( .slaStatus == "NO_EHR_RESPONSE_OUTSIDE_SLA" )  | .count', telemetry) == '1'
 
 
-def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED():
+def test_status_ELIGIBLE_FOR_TRANSFER_sla_NOT_EHR_REQUESTED_OUTSIDE_SLA():
 
     # Arrange
     index = get_or_create_index("test_index", service)
 
-    conversation_id = 'OUTCOME_IN_PROGRESS_REG_STATUS_TRANSFER_NOT_STARTED'
+    conversation_id = 'test_status_ELIGIBLE_FOR_TRANSFER_sla_NOT_EHR_REQUESTED_OUTSIDE_SLA'    
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:00:00",
-                event_type=EventType.REGISTRATIONS.value
-            )),
-        sourcetype="myevent")
+    # reporting window
+    yesterday = datetime.today() - timedelta(hours=24)
+    tomorrow = datetime.today() + timedelta(hours=24)
 
     # test requires a datetime less than 20mins
-    d = datetime.today() - timedelta(hours=0, minutes=19)
-    LOG.info(f"Datetime: {d}")
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=21)
+    LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=now_minus_20_mins.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
@@ -1170,8 +1165,8 @@ def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED():
     test_query = get_search('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
-        "$report_start$": "2023-03-09",
-        "$report_end$": "2023-03-29"
+        "$report_start$": yesterday.strftime("%Y-%m-%dT%H:%M:%S"),
+        "$report_end$": tomorrow.strftime("%Y-%m-%dT%H:%M:%S")
     })
 
     sleep(2)
@@ -1181,5 +1176,5 @@ def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED():
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "TRANSFER_NOT_STARTED" )  | select( .slaStatus == "BREAKS_SLA_TRANSFER_NOT_STARTED" )  | .count', telemetry) == '1'
+        '.[] | select( .registrationStatus == "ELIGIBLE_FOR_TRANSFER" )  | select( .slaStatus == "NOT_EHR_REQUESTED_OUTSIDE_SLA" )  | .count', telemetry) == '1'
 

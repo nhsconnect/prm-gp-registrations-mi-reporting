@@ -1,4 +1,5 @@
-{% from 'functions.splunk' import 
+{% from 'functions.splunk' import
+    calculate_transfer_compatibility,
     filter_non_transfers, 
     set_time_to_registration_datetime,
     filter_reporting_window,
@@ -13,6 +14,7 @@
 | eval slaStatus = case(    
     registrationStatus == "EHR_SENT" AND  twentyMinsAgo > ehrResponseEventDateTime, "NOT_READY_TO_INTEGRATE_OUTSIDE_SLA",
     registrationStatus == "EHR_REQUESTED" AND twentyFourHoursAgo > ehrRequestEventDateTime, "NO_EHR_RESPONSE_OUTSIDE_SLA",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime, "NOT_EHR_REQUESTED_OUTSIDE_SLA",
     1 == 1, "WITHIN_ALL_SLA"
 )
 
@@ -26,7 +28,7 @@
     ehrResponseEvent == 1, "EHR_SENT",
     ehrRequestEvent == 1, "EHR_REQUESTED",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
-    transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1, "TRANSFER_NOT_STARTED",     
+    isTransferCompatible == 1, "ELIGIBLE_FOR_TRANSFER",     
     transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
     transCompatStatEvent == 1 AND isInteralTransfer == 0, "ELECTRONIC_TRANSFER",   
     1=1, "NOT_INTEGRATED")
@@ -47,6 +49,7 @@ index="$index$"
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | eval hasErrors = if (errors == "{}",0,1)
 | eval errorHistory = mvzip(errorFailurePoint, errorCode, "_")
+{{ calculate_transfer_compatibility() }}
 {{ filter_non_transfers() }}
 | transaction conversationId keeporphans=t
 | eval ehrResponseEvent = if(eventType=="REGISTRATIONS", 1, 0)
@@ -68,7 +71,7 @@ index="$index$"
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
     first(slaStatus) as slaStatus,
     first(twentyFourHoursAgo) as twentyFourHoursAgo, 
-    first(ehrResponseEventDateTime) as ehrResponseEventDateTime,
+    first(transCompatStatEventDateTime) as transCompatStatEventDateTime,
     values(errorHistory) as errorHistory,       
     dc(conversationId) by scenario
 | rename dc(conversationId) as count
@@ -82,5 +85,6 @@ index="$index$"
     percentageOfAllTransfers, 
     totalTransfers, 
     slaStatus,
-    twentyFourHoursAgo
+    twentyFourHoursAgo,
+    transCompatStatEventDateTime
     
