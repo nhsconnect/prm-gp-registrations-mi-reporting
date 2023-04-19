@@ -6,12 +6,13 @@
 
 {% macro calculate_sla_status() %}
 | eval twentyMinsAgo = relative_time(now(), "-20m")
-```| eval twentyFourHoursAgo = relative_time(now(), "-24h")
-| eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime, 1, 0)
+| eval twentyFourHoursAgo = relative_time(now(), "-24h")
+```| eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime, 1, 0)
 | eval ehrRequestWithin20Mins = if(ehrRequestEvent ==1 AND twentyMinsAgo < ehrRequestEventDateTime , 1, 0)
 | eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)```
 | eval slaStatus = case(    
     registrationStatus == "EHR_SENT" AND  twentyMinsAgo > ehrResponseEventDateTime, "NOT_READY_TO_INTEGRATE_OUTSIDE_SLA",
+    registrationStatus == "EHR_REQUESTED" AND twentyFourHoursAgo > ehrRequestEventDateTime, "NO_EHR_RESPONSE_OUTSIDE_SLA",
     1 == 1, "WITHIN_ALL_SLA"
 )
 
@@ -23,7 +24,7 @@
     isIntegrated == 1, "INTEGRATION",
     readyToIntegrate == 1, "READY_TO_INTEGRATE",
     ehrResponseEvent == 1, "EHR_SENT",
-    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",
+    ehrRequestEvent == 1, "EHR_REQUESTED",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
     transCompatStatEvent == 1 AND isInteralTransfer == 0 AND isTransferCompatible == 1, "TRANSFER_NOT_STARTED",     
     transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
@@ -66,7 +67,7 @@ index="$index$"
     first(registrationStatus) as registrationStatus,
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
     first(slaStatus) as slaStatus,
-    first(twentyMinsAgo) as twentyMinsAgo, 
+    first(twentyFourHoursAgo) as twentyFourHoursAgo, 
     first(ehrResponseEventDateTime) as ehrResponseEventDateTime,
     values(errorHistory) as errorHistory,       
     dc(conversationId) by scenario
@@ -81,5 +82,5 @@ index="$index$"
     percentageOfAllTransfers, 
     totalTransfers, 
     slaStatus,
-    twentyMinsAgo,
-    ehrResponseEventDateTime
+    twentyFourHoursAgo
+    

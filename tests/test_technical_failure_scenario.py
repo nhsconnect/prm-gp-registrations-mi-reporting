@@ -1049,7 +1049,7 @@ def test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA():
 
     conversation_id = 'test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA'
 
-     # test requires a response within 24 hours
+     # test requires a time greater than 20mins
     d = datetime.today() - timedelta(hours=0, minutes=21)
 
     LOG.info(f"Our datetime: {d}")
@@ -1097,47 +1097,28 @@ def test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA():
 
     index = get_or_create_index("test_index", service)
 
-    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_SLOW_EHR_REQUESTED'
+    conversation_id = 'test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA'
+
+     # test requires a response within 24 hours
+    todayMinus24Hours = datetime.today() - timedelta(hours=24, minutes=0)
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-10T08:00:00",
-                event_type=EventType.REGISTRATIONS.value
-            )),
-        sourcetype="myevent")   
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:20:00",
-                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-            )),
-        sourcetype="myevent")
-
-    
-    # test requires a datetime equal to or greater than 20mins
-    d = datetime.today() - timedelta(hours=0, minutes=25)
-    LOG.info(f"Datetime: {d}")
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
+                registration_event_datetime=todayMinus24Hours.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
+
 
     # Act
 
     test_query = get_search('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
-        "$report_start$": "2023-03-09",
-        "$report_end$": "2023-03-29"
+        "$report_start$": todayMinus24Hours.strftime("%Y-%m-%dT%H:%M:%S"),
+        "$report_end$": datetime.today().strftime("%Y-%m-%dT%H:%M:%S")
     })
 
     sleep(2)
@@ -1145,9 +1126,10 @@ def test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA():
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
     LOG.info(f'telemetry: {telemetry}')
 
+
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "SLOW_EHR_REQUESTED" ) | .count', telemetry) == '1'
+        '.[] | select( .registrationStatus == "EHR_REQUESTED" ) | select( .slaStatus == "NO_EHR_RESPONSE_OUTSIDE_SLA" )  | .count', telemetry) == '1'
 
 
 def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED():
