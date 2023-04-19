@@ -1120,15 +1120,27 @@ def test_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value
             )),
-        sourcetype="myevent")    
-
-    # test requires a datetime equal to or greater than 20mins    
+        sourcetype="myevent")   
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-10T08:25:00",
+                registration_event_datetime="2023-03-10T08:20:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+            )),
+        sourcetype="myevent")
+
+    
+    # test requires a datetime equal to or greater than 20mins
+    d = datetime.today() - timedelta(hours=0, minutes=25)
+    LOG.info(f"Datetime: {d}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")
