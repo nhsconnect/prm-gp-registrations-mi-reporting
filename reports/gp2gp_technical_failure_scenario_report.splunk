@@ -26,8 +26,7 @@
     isIntegrated == 1, "INTEGRATION",
     readyToIntegrate == 1, "READY_TO_INTEGRATE",
     ehrResponseEvent == 1, "EHR_SENT",
-    ehrRequestEvent == 1, "EHR_REQUESTED",
-    readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 0, "SLOW_EHR_REQUESTED",
+    ehrRequestEvent == 1, "EHR_REQUESTED",    
     isTransferCompatible == 1, "ELIGIBLE_FOR_TRANSFER",     
     transCompatStatEvent == 1 AND isInteralTransfer == 1, "INTERNAL_TRANSFER",   
     transCompatStatEvent == 1 AND isInteralTransfer == 0, "ELECTRONIC_TRANSFER",   
@@ -62,6 +61,7 @@ index="$index$"
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
+| where outcome == "TECHNICAL_FAILURE"
 | eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
 | eventstats count(eval(transCompatStatEvent==1)) as totalTransfers
 | stats

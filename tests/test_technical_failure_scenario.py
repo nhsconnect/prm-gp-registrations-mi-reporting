@@ -1183,3 +1183,41 @@ def test_status_ELIGIBLE_FOR_TRANSFER_sla_NOT_EHR_REQUESTED_OUTSIDE_SLA():
     assert jq.first(
         '.[] | select( .registrationStatus == "ELIGIBLE_FOR_TRANSFER" )  | select( .slaStatus == "NOT_EHR_REQUESTED_OUTSIDE_SLA" )  | .count', telemetry) == '1'
 
+def test_status_INTEGRATION_outcome_SUCCESS_should_not_be_in_report():    
+
+      # Arrange
+
+    index = get_or_create_index("test_index", service)
+
+    conversation_id = 'test_status_INTEGRATION_outcome_SUCCESS_should_not_be_in_report'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:00:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                payload = create_integration_payload(outcome="INTEGRATED")                
+            )),
+        sourcetype="myevent")    
+
+    # Act
+
+    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-09",
+        "$report_end$": "2023-03-29"
+    })
+    
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert
+    assert len(telemetry) == 0
+    #jq.first(
+        #'.[] | select( .registrationStatus == "INTEGRATION" ) | select( == "INTEGRATION" ) | .count', telemetry) == '1'
+
+
