@@ -981,7 +981,7 @@ def test_multiple_transfer_compatibility_event():
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "100" ) | select( .count == "1" )', telemetry)
 
 
-def test_outcome_TECHNICAL_FAILURE_status_INTEGRATION():
+def test_status_INTEGRATION():
 
     # Arrange
 
@@ -1038,44 +1038,21 @@ def test_outcome_TECHNICAL_FAILURE_status_INTEGRATION():
         '.[] | select( .registrationStatus == "INTEGRATION" ) | .count', telemetry) == '1'
 
 
-def test_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
+def test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA():
+    '''
+    Test scenario - EHR_RESPONSE received, no READY_TO_INTEGRATE event within 20mins.
+    '''
 
     # Arrange
 
     index = get_or_create_index("test_index", service)
 
-    conversation_id = 'OUTCOME_TECHNICAL_FAILURE_REG_STATUS_EHR_SENT'
+    conversation_id = 'test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA'
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:00:00",
-                event_type=EventType.REGISTRATIONS.value
-            )),
-        sourcetype="myevent")
+     # test requires a response within 24 hours
+    d = datetime.today() - timedelta(hours=0, minutes=21)
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:19:00",
-                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-            )),
-        sourcetype="myevent")
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:50:00",
-                event_type=EventType.EHR_REQUEST.value
-            )),
-        sourcetype="myevent")
-
-    # test requires a datetime 24 hours+
-    d = datetime.today() - timedelta(hours=24, minutes=0)
-    LOG.debug(f"D: {d}")
+    LOG.info(f"Our datetime: {d}")
 
     index.submit(
         json.dumps(
@@ -1084,7 +1061,16 @@ def test_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
                 registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_RESPONSE.value
             )),
-        sourcetype="myevent")
+        sourcetype="myevent")    
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime="2023-03-10T08:50:00",
+                event_type=EventType.EHR_REQUEST.value
+            )),
+        sourcetype="myevent")   
 
     # Act
 
@@ -1098,14 +1084,14 @@ def test_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
     sleep(2)
 
     telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    LOG.debug(f'telemetry: {telemetry}')
+    LOG.info(f'telemetry: {telemetry}')
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "EHR_SENT" ) | .count', telemetry) == '1'
+        '.[] | select( .registrationStatus == "EHR_SENT" ) | select( .slaStatus == "NOT_READY_TO_INTEGRATE_OUTSIDE_SLA" ) | .count', telemetry) == '1'
 
 
-def test_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
+def test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA():
 
     # Arrange
 
