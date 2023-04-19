@@ -1049,36 +1049,41 @@ def test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA():
 
     conversation_id = 'test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA'
 
+    # reporting window
+    yesterday = datetime.today() - timedelta(hours=24)
+    tomorrow = datetime.today() + timedelta(hours=24)
+     
+    now_minus_1_hr = datetime.today() - timedelta(hours=1)
+
      # test requires a time greater than 20mins
-    d = datetime.today() - timedelta(hours=0, minutes=21)
-
-    LOG.info(f"Our datetime: {d}")
-
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime=d.strftime("%Y-%m-%dT%H:%M:%S"),
-                event_type=EventType.EHR_RESPONSE.value
-            )),
-        sourcetype="myevent")    
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=21)  
+  
 
     index.submit(
         json.dumps(
             create_sample_event(
                 conversation_id,
-                registration_event_datetime="2023-03-10T08:50:00",
+                registration_event_datetime=now_minus_1_hr.strftime("%Y-%m-%dT%H:%M:%S"),
                 event_type=EventType.EHR_REQUEST.value
             )),
         sourcetype="myevent")   
+    
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id,
+                registration_event_datetime=now_minus_20_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_RESPONSE.value
+            )),
+        sourcetype="myevent")    
 
     # Act
 
     test_query = get_search('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
-        "$report_start$": "2023-03-09",
-        "$report_end$": "2023-03-29"
+        "$report_start$": yesterday.strftime("%Y-%m-%dT%H:%M:%S"),
+        "$report_end$": tomorrow.strftime("%Y-%m-%dT%H:%M:%S")
     })
 
     sleep(2)
