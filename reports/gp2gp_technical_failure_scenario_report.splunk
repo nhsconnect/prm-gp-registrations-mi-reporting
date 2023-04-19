@@ -6,7 +6,7 @@
 
 {% macro calculate_registration_status() %}
 | eval registrationStatus = case(    
-    isIntegrated == 1, "INTEGRATED",
+    isIntegrated == 1, "INTEGRATION",
     readyToIntegrate == 1 AND ehrRequestEvent == 0 AND ehrResponseEvent == 0, "READY_TO_INTEGRATE",
     readyToIntegrate == 1 AND ehrRequestEvent == 1  AND ehrResponseEvent == 1, "EHR_SENT",
     readyToIntegrate == 1 AND ehrResponseEvent == 0 AND ehrRequestEvent == 1 AND ehrRequestWithin20Mins == 1, "EHR_REQUESTED",

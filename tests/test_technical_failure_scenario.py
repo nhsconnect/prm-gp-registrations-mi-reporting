@@ -799,7 +799,7 @@ def test_percentage_of_all_transfers():
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "50" ) | select( .count == "1" )', telemetry)
 
 
-def test_more_than_one_transfer_compatibility_event():
+def test_multiple_transfer_compatibility_event():
 
     # Arrange
 
@@ -981,7 +981,7 @@ def test_more_than_one_transfer_compatibility_event():
         '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .percentageOfAllTransfers == "100" ) | select( .count == "1" )', telemetry)
 
 
-def test_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
+def test_outcome_TECHNICAL_FAILURE_status_INTEGRATION():
 
     # Arrange
 
@@ -1035,7 +1035,7 @@ def test_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | .count', telemetry) == '1'
+        '.[] | select( .registrationStatus == "INTEGRATION" ) | .count', telemetry) == '1'
 
 
 def test_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
@@ -1164,7 +1164,7 @@ def test_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
         '.[] | select( .registrationStatus == "SLOW_EHR_REQUESTED" ) | .count', telemetry) == '1'
 
 
-def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED_and_IS_SLOW():
+def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED():
 
     # Arrange
     index = get_or_create_index("test_index", service)
@@ -1182,7 +1182,7 @@ def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED_and_IS_SLOW():
 
     # test requires a datetime less than 20mins
     d = datetime.today() - timedelta(hours=0, minutes=19)
-    LOG.debug(f"D: {d}")
+    LOG.info(f"Datetime: {d}")
 
     index.submit(
         json.dumps(
@@ -1213,5 +1213,5 @@ def test_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED_and_IS_SLOW():
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "TRANSFER_NOT_STARTED" )  | select( .is_slow == "TRUE" )  | .count', telemetry) == '1'
+        '.[] | select( .registrationStatus == "TRANSFER_NOT_STARTED" )  | select( .slaStatus == "BREAKS_SLA_TRANSFER_NOT_STARTED" )  | .count', telemetry) == '1'
 
