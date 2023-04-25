@@ -1217,7 +1217,4 @@ def test_status_INTEGRATION_outcome_SUCCESS_should_not_be_in_report():
 
     # Assert
     assert len(telemetry) == 0
-    #jq.first(
-        #'.[] | select( .registrationStatus == "INTEGRATION" ) | select( == "INTEGRATION" ) | .count', telemetry) == '1'
-
-
+   
