@@ -19,7 +19,7 @@ def deploy_reports(splunkConfig: SplunkConfig):
     bucket = s3.Bucket(splunkConfig._s3_bucket_name)
 
     try:
-        service = client.connect(token=splunkConfig._splunk_token)
+        service = client.connect(host=splunkConfig._splunk_host, token=splunkConfig._splunk_token)
         print("Connected to splunk ok.")
         
     except AuthenticationError as ae:
