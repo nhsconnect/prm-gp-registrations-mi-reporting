@@ -30,15 +30,15 @@ def main(event, context):
     SPLUNK_APP_ID = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-app-id")['Value']
     S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")['Value']
 
+    print(f"SPLUNK_ADMIN_USERNAME: {SPLUNK_ADMIN_USERNAME}")
+
     splunkConfig = SplunkConfig(
         SPLUNK_HOST,
         SPLUNK_ADMIN_USERNAME,
         SPLUNK_TOKEN,
         SPLUNK_APP_ID,
         S3_BUCKET_NAME
-    )
-
-    print(f"")
+    )   
 
     print("deploying reports...")
     deploy_reports(splunkConfig)
