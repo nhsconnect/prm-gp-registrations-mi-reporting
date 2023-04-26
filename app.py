@@ -24,11 +24,11 @@ def main(event, context):
     ssm = session.client('ssm')
 
     print("requesting ssm parameters...")
-    SPLUNK_HOST = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-base-url")
-    SPLUNK_ADMIN_USERNAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-admin-username", WithDecryption=True)
-    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)
-    SPLUNK_APP_ID = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-app-id")
-    S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")
+    SPLUNK_HOST = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-base-url")['Value']
+    SPLUNK_ADMIN_USERNAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-admin-username", WithDecryption=True)['Value']
+    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)['Value']
+    SPLUNK_APP_ID = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-app-id")['Value']
+    S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")['Value']
 
     splunkConfig = SplunkConfig(
         SPLUNK_HOST,
@@ -37,6 +37,8 @@ def main(event, context):
         SPLUNK_APP_ID,
         S3_BUCKET_NAME
     )
+
+    print(f"")
 
     print("deploying reports...")
     deploy_reports(splunkConfig)
