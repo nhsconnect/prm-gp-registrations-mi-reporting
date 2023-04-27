@@ -24,16 +24,19 @@ def main(event, context):
     ssm = session.client('ssm')
 
     print("requesting ssm parameters...")
-    SPLUNK_HOST = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-base-url")['Value']
-    SPLUNK_ADMIN_USERNAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-admin-username", WithDecryption=True)['Value']
-    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)['Value']
-    SPLUNK_APP_ID = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-app-id")['Value']
-    S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")['Value']
 
-    print(f"SPLUNK_ADMIN_USERNAME: {SPLUNK_ADMIN_USERNAME}")
+    SPLUNK_URL = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-base-url")['Parameter']['Value'].replace("https://","")
+    SPLUNK_HOST, SPLUNK_PORT = SPLUNK_URL.split(':')
+    SPLUNK_PORT = int(SPLUNK_PORT)
+    
+    SPLUNK_ADMIN_USERNAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-admin-username", WithDecryption=True)['Parameter']['Value']
+    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)['Parameter']['Value']
+    SPLUNK_APP_ID = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-app-id")['Parameter']['Value']
+    S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")['Parameter']['Value']
 
     splunkConfig = SplunkConfig(
         SPLUNK_HOST,
+        SPLUNK_PORT,
         SPLUNK_ADMIN_USERNAME,
         SPLUNK_TOKEN,
         SPLUNK_APP_ID,

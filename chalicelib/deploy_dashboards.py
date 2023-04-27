@@ -10,13 +10,17 @@ from botocore.exceptions import ClientError
 from chalicelib.splunk_config import SplunkConfig
 from jinja2 import Environment, BaseLoader
 
+
 class SplunkQueryError(RuntimeError):
     pass
 
 
-def make_splunk_request(splunkConfig:SplunkConfig, dashboard_name:str, dashboard_data:str):
+s3 = boto3.resource('s3')
 
-    print(f'splunk_host: {splunkConfig._splunk_host}')
+
+def make_splunk_request(splunkConfig: SplunkConfig, dashboard_name: str, dashboard_data: str):
+
+    print(f'making splunk request for dashboard: {dashboard_name}')
 
     # API reference - https://docs.splunk.com/Documentation/Splunk/9.0.4/RESTREF
     create_dashboard_url = f'/servicesNS/{splunkConfig._splunk_admin_username}/{splunkConfig._splunk_app_id}/data/ui/views'
@@ -41,16 +45,12 @@ def make_splunk_request(splunkConfig:SplunkConfig, dashboard_name:str, dashboard
                 with reason: {response.reason}")
 
 
-client = boto3.client("s3")
-s3 = boto3.resource('s3')
+def deploy_dashboards(splunkConfig: SplunkConfig):
 
-
-def deploy_dashboards(splunkConfig:SplunkConfig):
-
-    # loop through dashboard files  
+    # loop through dashboard files
     bucket = s3.Bucket(splunkConfig._s3_bucket_name)
-    
-    for obj in bucket.objects.filter(Prefix='dashboards/'):        
+
+    for obj in bucket.objects.filter(Prefix='dashboards/'):
 
         # get the dashboard xml as a string
         dashboard_string = obj.get()['Body'].read().decode('utf-8')
@@ -61,4 +61,6 @@ def deploy_dashboards(splunkConfig:SplunkConfig):
         })
 
         # create dashboard
-        make_splunk_request(obj.key, rendered_dashboard)
+        make_splunk_request(splunkConfig=splunkConfig,
+                            dashboard_name=obj.key,
+                            dashboard_data=rendered_dashboard)

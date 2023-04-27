@@ -54,7 +54,7 @@
           "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
         },
         "Tracing": "PassThrough",
-        "Timeout": 60,
+        "Timeout": 300,
         "MemorySize": 128,
         "Role": {
           "Fn::GetAtt": [
