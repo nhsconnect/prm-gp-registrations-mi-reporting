@@ -45,5 +45,5 @@ def main(event, context):
 
     print("deploying reports...")
     deploy_reports(splunkConfig)
-    print("deploying dashboards...")
-    deploy_dashboards(splunkConfig)
+    # print("deploying dashboards...")
+    # deploy_dashboards(splunkConfig)

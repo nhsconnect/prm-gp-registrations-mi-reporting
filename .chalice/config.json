@@ -1,7 +1,7 @@
 {
   "version": "2.0",
   "app_name": "prm-gp-registrations-mi-reporting",
-  "lambda_timeout":300,
+  "lambda_timeout":600,
   "environment_variables": {    
   },
   "stages": {

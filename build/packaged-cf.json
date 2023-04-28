@@ -49,12 +49,12 @@
             "Properties": {
                 "Runtime": "python3.9",
                 "Handler": "app.main",
-                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/a06a5d865e8c30139ca3584e904c5705",
+                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/d9ac31e26621a6e34ce4682244e84272",
                 "Tags": {
                     "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
                 },
                 "Tracing": "PassThrough",
-                "Timeout": 300,
+                "Timeout": 600,
                 "MemorySize": 128,
                 "Role": {
                     "Fn::GetAtt": [
