@@ -18,10 +18,13 @@ def deploy_reports(splunkConfig: SplunkConfig):
     bucket = s3.Bucket(splunkConfig._s3_bucket_name)
 
     try:
-        connectionHanlder = binding.handler(timeout = 600)
+        connectionHanlder = binding.handler(timeout=600)
+
         service = client.connect(host=splunkConfig._splunk_host,
                                  port=splunkConfig._splunk_port,
                                  token=splunkConfig._splunk_token,
+                                 username=splunkConfig._splunk_admin_username,
+                                 app=splunkConfig._splunk_app_id,
                                  connectionHanlder=connectionHanlder)
 
         print("Connected to splunk ok. Looping through reports...")
@@ -47,7 +50,6 @@ def deploy_reports(splunkConfig: SplunkConfig):
             #     if saved_search.name == report_name:
             #         service.saved_searches.delete(report_name)
 
-            
             # service.saved_searches.create(
             #     name=report_name, search=report_content)
             print("getting saved searches...")
@@ -55,18 +57,18 @@ def deploy_reports(splunkConfig: SplunkConfig):
 
             print("creating saved search...")
             saved_searches.create('my_saved_search',
-                      'search * | head 1')
+                                  'search * | head 1')
             print("saved search created ok.")
-            
+
             assert 'my_saved_search' in saved_searches
-            
+
             saved_searches.delete('my_saved_search')
-            
+
             assert 'my_saved_search' not in saved_searches
-           
 
     except AuthenticationError as ae:
-        print(f"Authentication error occurred while connecting to Splunk search head. Reason being, {ae}")
+        print(
+            f"Authentication error occurred while connecting to Splunk search head. Reason being, {ae}")
     except HttpError as he:
         print(f"Http Error:{str(he)}")
     except Exception as ex:
