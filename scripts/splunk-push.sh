@@ -7,7 +7,7 @@ aws lambda invoke \
   --cli-binary-format raw-in-base64-out \
   --function-name "prm-gp-registrations-mi-reporting-SplunkUploader-AMaxIEhXb4SB" \
   --log-type Tail \
-  --cli-read-timeout 600 \
+  --cli-read-timeout 30 \
   splunk_uploader.txt
 
 

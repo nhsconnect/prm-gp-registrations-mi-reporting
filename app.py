@@ -17,8 +17,7 @@ logger.setLevel(logging.DEBUG)
 def main(event, context):
 
     # might already be set from aws ???
-    AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION')
-   
+    AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION')   
 
     session = boto3.Session(region_name=AWS_DEFAULT_REGION)
 
@@ -26,16 +25,15 @@ def main(event, context):
 
     print("requesting ssm parameters...")
 
-    SPLUNK_URL = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-url")['Parameter']['Value']     
-    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)['Parameter']['Value']   
+    SPLUNK_URL = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-url")['Parameter']['Value'] 
+    SPLUNK_TOKEN = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-api-token", WithDecryption=True)['Parameter']['Value']    
     S3_BUCKET_NAME = ssm.get_parameter(Name="/registrations/prod/user-input/splunk-report-data-bucket-name")['Parameter']['Value']
 
     splunkConfig = SplunkConfig(
         SPLUNK_URL,
         SPLUNK_TOKEN,
         S3_BUCKET_NAME
-    )            
-    
+    )  
 
     print("deploying reports...")
     deploy_reports(splunkConfig)
