@@ -49,7 +49,7 @@
             "Properties": {
                 "Runtime": "python3.9",
                 "Handler": "app.main",
-                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/d9ac31e26621a6e34ce4682244e84272",
+                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/900e31fe5cfee5d9fa516a7ecf25fdad",
                 "Tags": {
                     "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
                 },
