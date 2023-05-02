@@ -2,7 +2,6 @@
 .pytest_cache
 __pycache__
 aws/
-.chalice
 .DS_Store
 splunk_uploader.txt
 .idea/*
