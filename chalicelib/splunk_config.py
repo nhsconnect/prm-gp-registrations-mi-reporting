@@ -1,5 +1,5 @@
 from urllib.parse import urljoin
-
+from typing import Optional
 
 class SplunkConfig:
 
@@ -37,7 +37,7 @@ class SplunkConfig:
     
     
 
-    def __init__(self, splunk_host: str, splunk_port: int, splunk_admin_username: str, splunk_token: str, splunk_app_id: str, s3_bucket_name: str, splunk_scheme = 'https'):
+    def __init__(self, splunk_host: str, splunk_port: int, splunk_admin_username: str, splunk_token: str, s3_bucket_name: str, splunk_scheme = 'https', splunk_app_id: Optional[str]=None):
         self._splunk_scheme = splunk_scheme
         self._splunk_host = splunk_host
         self._splunk_port = splunk_port
