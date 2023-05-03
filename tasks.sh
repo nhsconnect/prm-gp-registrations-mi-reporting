@@ -69,12 +69,12 @@ function confirm_current_role {
 }
 
 function docker_base_cmd {
-  echo "$(docker run --name ${1#_} --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+  docker run --name "${1#_}" --rm \
+    -v "$(pwd)":/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" -e AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
     --user "$(id -u):$(id -g)" \
-    $DOCKER_IMAGE \
-    ./tasks.sh $1)"
+    "$DOCKER_IMAGE" \
+    ./tasks.sh "$1"
 }
 
 
@@ -82,9 +82,9 @@ readonly command="$1"
 case "${command}" in
 clean_ci_as_docker)
   docker run --name clean --rm \
-    -v $(pwd):/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-    $DOCKER_IMAGE \
+    -v "$(pwd)":/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" -e AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
+    "$DOCKER_IMAGE" \
     rm -rf /usr/src/app/*
   ;;
 upload_data)
