@@ -7,3 +7,4 @@ splunk_uploader.txt
 .idea/*
 .idea
 build/deployment.zip
+.chalice
