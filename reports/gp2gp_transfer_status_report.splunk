@@ -12,19 +12,25 @@ calculate_outcome %}
 {{ exclude_internal_transfers() }}
 
 | transaction conversationId keeporphans=t
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
 {{ calculate_outcome() }}
 | eventstats count as total_eligible_for_electronic_transfer
 | eventstats count(eval(outcome=="SUCCESS")) as count_successfully_integrated
 | eventstats count(eval(outcome=="REJECTED")) as count_rejected
+| eventstats count(eval(outcome=="AWAITING_INTEGRATION")) as count_awaiting_integration
 
-| eval percentage_successfully_integrated=(count_successfully_integrated/total_eligible_for_electronic_transfer) * 100
-| eval percentage_rejected=(count_rejected/total_eligible_for_electronic_transfer) * 100
+| eval percentage_successfully_integrated=round((count_successfully_integrated/total_eligible_for_electronic_transfer) * 100,2)
+| eval percentage_rejected=round((count_rejected/total_eligible_for_electronic_transfer) * 100,2)
+| eval percentage_awaiting_integration=round((count_awaiting_integration/total_eligible_for_electronic_transfer) * 100,2)
 | stats 
     first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
     first(count_successfully_integrated) as count_successfully_integrated,
     first(percentage_successfully_integrated) as percentage_successfully_integrated,
     first(count_rejected) as count_rejected,
-    first(percentage_rejected) as percentage_rejected
+    first(percentage_rejected) as percentage_rejected,
+    first(count_awaiting_integration) as count_awaiting_integration,
+    first(percentage_awaiting_integration) as percentage_awaiting_integration
 
 
     ```first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
