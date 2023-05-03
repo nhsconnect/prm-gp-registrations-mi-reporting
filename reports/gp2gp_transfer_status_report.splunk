@@ -6,6 +6,32 @@ exclude_internal_transfers,
 set_time_to_registration_datetime,
 filter_reporting_window,
 calculate_outcome %}
+
+| spath output=integration_outcome path=payload{}.integration.outcome
 {{ calculate_transfer_compatibility() }}
 {{ exclude_internal_transfers() }}
-| stats count as total_eligible_for_electronic_transfer
+
+| transaction conversationId keeporphans=t
+{{ calculate_outcome() }}
+| eventstats count as total_eligible_for_electronic_transfer
+| eventstats count(eval(outcome=="SUCCESS")) as count_successfully_integrated
+| eventstats count(eval(outcome=="REJECTED")) as count_rejected
+
+| eval percentage_successfully_integrated=(count_successfully_integrated/total_eligible_for_electronic_transfer) * 100
+| eval percentage_rejected=(count_rejected/total_eligible_for_electronic_transfer) * 100
+| stats 
+    first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
+    first(count_successfully_integrated) as count_successfully_integrated,
+    first(percentage_successfully_integrated) as percentage_successfully_integrated,
+    first(count_rejected) as count_rejected,
+    first(percentage_rejected) as percentage_rejected
+
+
+    ```first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
+    first(registrationStatus) as registrationStatus,
+    first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
+    first(slaStatus) as slaStatus,
+    first(twentyFourHoursAgo) as twentyFourHoursAgo, 
+    first(transCompatStatEventDateTime) as transCompatStatEventDateTime,
+    values(errorHistory) as errorHistory,       
+    dc(conversationId) by scenario```
