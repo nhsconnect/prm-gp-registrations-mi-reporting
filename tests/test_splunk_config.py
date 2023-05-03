@@ -12,13 +12,18 @@ def test_create_splunk_config():
     Create splunk config class from an existing parameter store value.
     '''
 
+    # Arrange
+
     # format of existing parameter store value - /registrations/prod/user-input/splunk-api-url
     test_url = "https://my_splunk_host:8089/servicesNS/splunk_admin_user/my_app_name/search/jobs/export"
     test_token = "my_token"
     test_bucket_name = "my_bucket"    
 
 
+    # Act
     splunk_config = SplunkConfig(test_url, test_token, test_bucket_name)
+
+    # Assert
 
     assert splunk_config.splunk_scheme == "https"
     assert splunk_config.splunk_host == "my_splunk_host"
