@@ -25,7 +25,7 @@
 
 {% macro calculate_outcome() %}
 | eval outcome = case(    
-    isIntegrated == 0 AND readyToIntegrate == 1 AND ehrRequestEvent ==0 AND ehrResponseEvent == 0, "AWAITING_INTEGRATION",
+    isIntegrated == 0 AND readyToIntegrate == 1, "AWAITING_INTEGRATION",
     integration_outcome = "REJECTED", "REJECTED",
     integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
     integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
