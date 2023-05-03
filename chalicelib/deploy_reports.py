@@ -25,9 +25,11 @@ def deploy_reports(splunkConfig: SplunkConfig):
             host=splunkConfig.splunk_host,
             port=splunkConfig.splunk_port,
             token=splunkConfig.splunk_token,
-            # username=splunkConfig.splunk_admin_username,
-            # app=splunkConfig.splunk_app_id,
+            username=splunkConfig.splunk_admin_username,
+            app=splunkConfig.splunk_app_id,
             connectionHanlder=connectionHanlder)
+        
+        print(f"splunk admin username: {splunkConfig.splunk_admin_username}")
 
         print("Connected to splunk ok. Looping through reports...")
 
@@ -35,7 +37,7 @@ def deploy_reports(splunkConfig: SplunkConfig):
         saved_searches = service.saved_searches            
 
         print("creating saved search...")
-        saved_searches.create('my_saved_search',
+        saved_searches.create('my_saved_search_2',
                                   'search * | head 1')
         print("saved search created ok.")
 
