@@ -33,7 +33,10 @@
                                         "ssm:GetParameters",
                                         "ssm:GetParameter",
                                         "logs:CreateLogStream",
-                                        "logs:PutLogEvents"
+                                        "logs:PutLogEvents",
+                                        "ec2:CreateNetworkInterface",
+                                        "ec2:DeleteNetworkInterface",
+                                        "ec2:DescribeNetworkInterfaces"
                                     ],
                                     "Resource": "*"
                                 }
@@ -49,13 +52,21 @@
             "Properties": {
                 "Runtime": "python3.9",
                 "Handler": "app.main",
-                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/d41cb2feacb9a54752d1d18c8a77a0a0",
+                "CodeUri": "s3://prm-gp-registrations-mi-reporting-prod/1a156571ac268a5896759354eafa8c7b",
                 "Tags": {
                     "aws-chalice": "version=1.28.0:stage=dev:app=prm-gp-registrations-mi-reporting"
                 },
                 "Tracing": "PassThrough",
                 "Timeout": 30,
                 "MemorySize": 128,
+                "VpcConfig": {
+                    "SecurityGroupIds": [
+                        "sg-069c36890b96d14da"
+                    ],
+                    "SubnetIds": [
+                        "subnet-0962facbe13854281"
+                    ]
+                },
                 "Role": {
                     "Fn::GetAtt": [
                         "SplunkUploaderRole",

@@ -8,7 +8,9 @@
     "dev": {
       "api_gateway_stage": "api",
       "autogen_policy": false,
-      "iam_policy_file": "lambda-policy.json"
+      "iam_policy_file": "lambda-policy.json",
+      "subnet_ids": ["subnet-0962facbe13854281"],
+      "security_group_ids": ["sg-069c36890b96d14da"]
     }    
   }
 }

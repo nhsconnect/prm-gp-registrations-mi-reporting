@@ -10,7 +10,10 @@
                 "ssm:GetParameters",
                 "ssm:GetParameter",
                 "logs:CreateLogStream",
-                "logs:PutLogEvents"
+                "logs:PutLogEvents",
+                "ec2:CreateNetworkInterface",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DescribeNetworkInterfaces"
             ],
             "Resource": "*"
         }
