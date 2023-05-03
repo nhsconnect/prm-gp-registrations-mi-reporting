@@ -33,7 +33,10 @@
                     "ssm:GetParameters",
                     "ssm:GetParameter",
                     "logs:CreateLogStream",
-                    "logs:PutLogEvents"
+                    "logs:PutLogEvents",
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DeleteNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces"
                   ],
                   "Resource": "*"
                 }
@@ -56,6 +59,14 @@
         "Tracing": "PassThrough",
         "Timeout": 30,
         "MemorySize": 128,
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            "sg-069c36890b96d14da"
+          ],
+          "SubnetIds": [
+            "subnet-0962facbe13854281"
+          ]
+        },
         "Role": {
           "Fn::GetAtt": [
             "SplunkUploaderRole",
