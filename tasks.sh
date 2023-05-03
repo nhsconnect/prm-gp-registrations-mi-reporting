@@ -125,7 +125,7 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   #TODO add to paramter store
   export BUCKET_NAME=$(get_ssm_parameter /registrations/prod/user-input/splunk-report-data-bucket-name)
 
-  pip3 install --no-cache-dir -r requirements.txt
+  pip3 install --user --no-cache-dir -r requirements.txt
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
