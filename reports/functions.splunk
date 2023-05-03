@@ -2,6 +2,12 @@
 | where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted AND isTransferCompatible==1)
 {% endmacro %}
 
+{% macro exclude_internal_transfers() %}
+| spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
+| eval isInteralTransfer = if(internalTransfer == "true",1 ,0)
+| where isInteralTransfer==0
+{% endmacro %}
+
 {% macro calculate_transfer_compatibility() %}
 | eventstats latest(transCompatStatEventDateTime) as latestTransferCompatibilityEventDateTime by conversationId
 | eval transCompatStatEventDateTimeFormatted = strftime(latestTransferCompatibilityEventDateTime,"%Y-%m-%dT%H:%M:%S")

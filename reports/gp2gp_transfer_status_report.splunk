@@ -1,0 +1,11 @@
+index="$index$"
+{% from 'functions.splunk' import
+calculate_transfer_compatibility,
+filter_non_transfers,
+exclude_internal_transfers,
+set_time_to_registration_datetime,
+filter_reporting_window,
+calculate_outcome %}
+{{ calculate_transfer_compatibility() }}
+{{ exclude_internal_transfers() }}
+| stats count as total_eligible_for_electronic_transfer
