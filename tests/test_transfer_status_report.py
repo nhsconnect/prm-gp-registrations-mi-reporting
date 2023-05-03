@@ -593,4 +593,37 @@ def test_awaiting_integration():
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
+    
+def test_in_progress():
+
+    # Arrange
+
+    index = get_or_create_index("test_index", service)    
+
+    # 
+
+   
+   
+    # Act
+
+    test_query = get_search('gp2gp_transfer_status_report')
+    test_query = set_variables_on_query(test_query, {
+        "$index$": "test_index",
+        "$report_start$": "2023-03-01",
+        "$report_end$": "2023-03-31"
+    })
+
+    sleep(2)
+
+    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+    LOG.info(f'telemetry: {telemetry}')
+
+    # Assert
+    assert jq.first(
+        '.[] '+
+        '| select( .total_eligible_for_electronic_transfer=="3" )' +
+        '| select( .count_awaiting_integration == "2")' +
+        '| select( .percentage_awaiting_integration == "66.67")' +
+        '| select( .percentage_rejected == "33.33")'        
+        , telemetry)   
   
