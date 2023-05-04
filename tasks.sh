@@ -4,7 +4,8 @@ set -e
 
 # if [ ! -f .env ]
 # then
-export $(cat .env | xargs)
+export DOCKER_IMAGE=nhsdev/prm-gp-registrations-mi-reporting:latest
+export AWS_DEFAULT_REGION=eu-west-2
 # fi
 
 readonly IMAGE_NAME="nhsdev/prm-gp-registrations-mi-reporting"
@@ -69,12 +70,12 @@ function confirm_current_role {
 }
 
 function docker_base_cmd {
-  docker run --name "${1#_}" --rm \
-    -v "$(pwd)":/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" -e AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
+  echo "$(docker run --name ${1#_} --rm \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
     --user "$(id -u):$(id -g)" \
-    "$DOCKER_IMAGE" \
-    ./tasks.sh "$1"
+    $DOCKER_IMAGE \
+    ./tasks.sh $1)"
 }
 
 
@@ -82,9 +83,9 @@ readonly command="$1"
 case "${command}" in
 clean_ci_as_docker)
   docker run --name clean --rm \
-    -v "$(pwd)":/usr/src/app -i \
-    -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" -e AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
-    "$DOCKER_IMAGE" \
+    -v $(pwd):/usr/src/app -i \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
+    $DOCKER_IMAGE \
     rm -rf /usr/src/app/*
   ;;
 upload_data)
@@ -125,7 +126,7 @@ _build_and_deploy_splunk_uploader_lambda) #private method
   #TODO add to paramter store
   export BUCKET_NAME=$(get_ssm_parameter /registrations/prod/user-input/splunk-report-data-bucket-name)
 
-  pip3 install --user --no-cache-dir -r requirements.txt
+  pip3 install --no-cache-dir -r requirements.txt
   # - Run build_and_deploy.sh
   /bin/bash -c ./scripts/build-and-publish.sh
   ;;
