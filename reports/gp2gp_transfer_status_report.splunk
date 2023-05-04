@@ -7,6 +7,20 @@ set_time_to_registration_datetime,
 filter_reporting_window,
 calculate_outcome %}
 
+{% macro calculate_sla_status() %}
+| eval twentyMinsAgo = relative_time(now(), "-20m")
+| eval twentyFourHoursAgo = relative_time(now(), "-24h")
+```| eval ehrResponseWithin24Hours = if(ehrResponseEvent ==1 AND twentyFourHoursAgo < ehrResponseEventDateTime, 1, 0)
+| eval ehrRequestWithin20Mins = if(ehrRequestEvent ==1 AND twentyMinsAgo < ehrRequestEventDateTime , 1, 0)
+| eval transCompatStatWithin20Mins =  if(transCompatStatEvent == 1 AND twentyMinsAgo < transCompatStatEventDateTime , 1, 0)```
+| eval slaStatus = case(    
+    registrationStatus == "EHR_SENT" AND  twentyMinsAgo > ehrResponseEventDateTime, "NOT_READY_TO_INTEGRATE_OUTSIDE_SLA",
+    registrationStatus == "EHR_REQUESTED" AND twentyFourHoursAgo > ehrRequestEventDateTime, "NO_EHR_RESPONSE_OUTSIDE_SLA",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime, "NOT_EHR_REQUESTED_OUTSIDE_SLA",
+    1 == 1, "WITHIN_ALL_SLA"
+)
+{% endmacro %}
+
 | spath output=integration_outcome path=payload{}.integration.outcome
 {{ calculate_transfer_compatibility() }}
 {{ exclude_internal_transfers() }}
@@ -14,6 +28,7 @@ calculate_outcome %}
 | transaction conversationId keeporphans=t
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+{{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 | eventstats count as total_eligible_for_electronic_transfer
 | eventstats count(eval(outcome=="SUCCESS")) as count_successfully_integrated
