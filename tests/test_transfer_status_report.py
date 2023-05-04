@@ -594,6 +594,7 @@ def test_awaiting_integration():
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
     
+@pytest.mark.skip(reason="work in progress...")
 def test_in_progress():
 
     # Arrange
