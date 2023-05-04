@@ -8,3 +8,4 @@ splunk_uploader.txt
 .idea
 build/deployment.zip
 .chalice/deployments
+.venv/
