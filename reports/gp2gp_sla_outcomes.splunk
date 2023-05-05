@@ -28,7 +28,13 @@ calculate_sla_status %}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
+```|table registrationStatus```
 
-| stats count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours
+| stats 
+    count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours, 
+    count(eval(totalEhrSendingOutsideSla==1)) as total_ehr_sending_outside_sla,
+    count(eval(totalEhrRequestingOutsideSla==1)) as total_ehr_requesting_outside_sla
+
+
 ```|table registrationStatus, outcome, totalTransferTimeOutsideAla24Hours, twentyFourHoursAgo, ehrResponseEventDateTime```
 
