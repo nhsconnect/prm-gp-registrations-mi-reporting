@@ -47,7 +47,12 @@
 | eval twentyFourHoursAgo = relative_time(now(), "-24h")
 | eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime)
     OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h"))
-    OR (registrationStatus=="INTEGRATION" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h")),1,0)      
+    OR (registrationStatus=="INTEGRATION" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h")),1,0)    
+| eval totalEhrSendingOutsideSla = if((registrationStatus=="EHR_REQUESTED" AND twentyMinsAgo > ehrRequestEventDateTime)
+    OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
+    OR (registrationStatus=="INTEGRATION" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
+    OR (registrationStatus=="EHR_SENT" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins")),1,0)
+| eval totalEhrRequestingOutsideSla = if(registrationStatus=="ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime,1,0)
 
 {% endmacro %}
 
