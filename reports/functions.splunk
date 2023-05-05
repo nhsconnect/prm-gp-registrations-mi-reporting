@@ -23,6 +23,23 @@
 | where conversationStart >= strptime("$report_start$", "%Y-%m-%d") AND conversationStart <= strptime("$report_end$", "%Y-%m-%d")
 {% endmacro %}
 
+{% macro calculate_registration_status() %}
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+| eval ehrResponseEvent = if(eventType=="EHR_RESPONSE", 1, 0)
+| eval ehrRequestEvent = if (eventType=="EHR_REQUEST", 1, 0)
+| eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
+| eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
+| eval registrationStatus = case(    
+    isIntegrated == 1, "INTEGRATION",
+    readyToIntegrate == 1, "READY_TO_INTEGRATE", 
+    ehrResponseEvent == 1, "EHR_SENT",   
+    ehrRequestEvent == 1, "EHR_REQUESTED",       
+    isTransferCompatible == 1, "ELIGIBLE_FOR_TRANSFER",        
+    transCompatStatEvent == 0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",   
+    1=1, "NOT_INTEGRATED")
+{% endmacro %}
+
 {% macro calculate_outcome() %}
 | eval outcome = case(    
     isIntegrated == 0 AND readyToIntegrate == 1, "AWAITING_INTEGRATION",
