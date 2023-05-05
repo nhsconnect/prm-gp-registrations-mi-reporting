@@ -19,9 +19,9 @@ class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
     REGISTRATIONS = 'REGISTRATIONS'
     EHR_INTEGRATIONS = 'EHR_INTEGRATIONS'
-    ERROR = 'ERROR'
-    EHR_RESPONSE = 'EHR_RESPONSE'
-    EHR_REQUEST = 'EHR_REQUEST'
+    ERRORS = 'ERRORS'
+    EHR_RESPONSES = 'EHR_RESPONSES'
+    EHR_REQUESTS = 'EHR_REQUESTS'
     TRANSFER_COMPATIBILITY_STATUSES = 'TRANSFER_COMPATIBILITY_STATUSES'
 
 
@@ -222,7 +222,7 @@ def test_successfully_integrated():
 
     
     
-    # rejected
+    #rejected
 
     index.submit(
         json.dumps(
@@ -627,4 +627,4 @@ def test_in_progress():
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
-  
+    

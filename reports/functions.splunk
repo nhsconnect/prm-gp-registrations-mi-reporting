@@ -26,24 +26,43 @@
 {% macro calculate_registration_status() %}
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
-| eval ehrResponseEvent = if(eventType=="EHR_RESPONSE", 1, 0)
-| eval ehrRequestEvent = if (eventType=="EHR_REQUEST", 1, 0)
+| eval ehrResponseEvent = if(eventType=="EHR_RESPONSES", 1, 0)
+| eval ehrRequestEvent = if (eventType=="EHR_REQUESTS", 1, 0)
 | eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
 | eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
+| eval isRegistration = if(eventType="REGISTRATIONS", 1, 0)
 | eval registrationStatus = case(    
     isIntegrated == 1, "INTEGRATION",
     readyToIntegrate == 1, "READY_TO_INTEGRATE", 
     ehrResponseEvent == 1, "EHR_SENT",   
     ehrRequestEvent == 1, "EHR_REQUESTED",       
     isTransferCompatible == 1, "ELIGIBLE_FOR_TRANSFER",        
-    transCompatStatEvent == 0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",   
-    1=1, "NOT_INTEGRATED")
+    isTransferCompatible == 0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
+    isRegistration ==1,"REGISTRATION",
+    1=1, "UNKNOWN")
+{% endmacro %}
+
+{% macro calculate_sla_status() %}
+| eval twentyMinsAgo = relative_time(now(), "-20m")
+| eval twentyFourHoursAgo = relative_time(now(), "-24h")
+| eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime)
+    OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h"))
+    OR (registrationStatus=="INTEGRATION" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h")),1,0)      
+
 {% endmacro %}
 
 {% macro calculate_outcome() %}
+
 | eval outcome = case(    
+    registrationStatus == "INTEGRATION" AND ((integration_outcome =="INTEGRATED") OR (integration_outcome=="INTEGRATED_AND_SUPPRESSED") OR (integration_outcome=="SUPPRESSED_AND_REACTIVATED") OR (integration_outcome=="FILED_AS_ATTACHMENT") OR (integration_outcome=="INTERNAL_TRANSFER")),"SUCCESSFUL_INTEGRATION",
+    registrationStatus == "INTEGRATION" AND integration_outcome =="REJECTED", "REJECTED",
+    registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
+    registrationStatus == "READY_TO_INTEGRATE","AWAITING_INTEGRATION",
+    
+   
+    
     isIntegrated == 0 AND readyToIntegrate == 1, "AWAITING_INTEGRATION",
-    integration_outcome = "REJECTED", "REJECTED",
+  
     integration_outcome = "INTERNAL_TRANSFER", "INTERNAL",
     integration_outcome = "FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
     isIntegrated == 0 AND readyToIntegrate == 1 AND ehrResponseEvent == 1 AND ehrResponseWithin24Hours == 1, "IN_PROGRESS",
