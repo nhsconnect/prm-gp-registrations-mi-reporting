@@ -1,0 +1,34 @@
+index="$index$"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+{% from 'functions.splunk' import
+calculate_transfer_compatibility,
+filter_non_transfers,
+exclude_internal_transfers,
+set_time_to_registration_datetime,
+filter_reporting_window,
+calculate_outcome,
+calculate_registration_status,
+calculate_sla_status %}
+
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| spath output=integration_outcome path=payload{}.integration.outcome
+| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
+| eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
+| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
+| eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
+
+{{ calculate_transfer_compatibility() }}
+{{ exclude_internal_transfers() }}
+
+| transaction conversationId keeporphans=t
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+
+{{ calculate_registration_status() }}
+{{ calculate_sla_status() }}
+{{ calculate_outcome() }}
+
+
+| stats count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours
+```|table registrationStatus, outcome, totalTransferTimeOutsideAla24Hours, twentyFourHoursAgo, ehrResponseEventDateTime```
+
