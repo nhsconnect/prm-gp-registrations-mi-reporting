@@ -1,5 +1,7 @@
 import logging
 import os
+import random
+import string
 from enum import Enum
 import pytest
 import json
@@ -45,16 +47,34 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-def teardown_function():
-    """Function delete test_index."""
-    service.indexes.delete("test_index")
+# def teardown_function():
+#     """Function delete test_index."""
+#     service.indexes.delete("test_index")
+
+
+def delete_index(index_name: str):
+    """Delete splunk index"""
+    service.indexes.delete(index_name)
+
+
+def create_index_name() -> str:
+    """Create unique index name"""
+    random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    return "test_index_" + random_string
+
+
+def create_index(service):
+    """Create splunk index"""
+    index_name = create_index_name()
+    return index_name, service.indexes.create(index_name)
+
 
 
 def test_total_eligible_for_electronic_transfer():
     
     # Arrange
 
-    index = get_or_create_index("test_index", service)
+    index_name, index = create_index(service)
     
 
     index.submit(
@@ -113,7 +133,7 @@ def test_total_eligible_for_electronic_transfer():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -126,12 +146,14 @@ def test_total_eligible_for_electronic_transfer():
     # Assert
     assert jq.first(
         '.[] | select( .total_eligible_for_electronic_transfer == "2" ) ', telemetry)
+
+    delete_index(index_name)
     
 def test_successfully_integrated():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = create_index(service)    
 
     # successfully integrated - #1
 
@@ -314,7 +336,7 @@ def test_successfully_integrated():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -331,13 +353,15 @@ def test_successfully_integrated():
         '| select( .count_successfully_integrated == "3")' +
         '| select( .percentage_successfully_integrated == "50.00")'        
         , telemetry)
+
+    delete_index(index_name)
     
 
 def test_rejected():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = create_index(service)    
 
     # successfully integrated - #1
 
@@ -461,7 +485,7 @@ def test_rejected():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -478,13 +502,15 @@ def test_rejected():
         '| select( .count_rejected == "1")' +
         '| select( .percentage_rejected == "25.00")'        
         , telemetry)
+
+    delete_index(index_name)
     
 
 def test_awaiting_integration():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = create_index(service)    
 
     # awaiting_integration - #1
 
@@ -575,7 +601,7 @@ def test_awaiting_integration():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -592,14 +618,17 @@ def test_awaiting_integration():
         '| select( .count_awaiting_integration == "2")' +
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
-        , telemetry)   
+        , telemetry)
+
+    delete_index(index_name)
+
     
 @pytest.mark.skip(reason="work in progress...")
 def test_in_progress():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = create_index(service)   
 
     # 
 
@@ -609,7 +638,7 @@ def test_in_progress():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -627,4 +656,6 @@ def test_in_progress():
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
+
+    delete_index(index_name)
   
