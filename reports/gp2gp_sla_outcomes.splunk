@@ -26,7 +26,14 @@ calculate_sla_status %}
 
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
-{{ calculate_outcome() }}
+
+```| eval rel_time = relative_time(ehrRequestEventDateTime, "+20mins")
+| eval joetest_reltime = strftime(rel_time, "%H:%M:%S")
+| eval joetest_transCompat = strftime(transCompatStatEventDateTime, "%H:%M:%S")```
+
+```|table conversationId, registrationStatus, transCompatStatEventDateTime, joetest_reltime,joetest_transCompat```
+
+```{{ calculate_outcome() }}```
 
 ```|table registrationStatus```
 
