@@ -559,17 +559,274 @@ def test_ehr_requesting_outside_sla():
 
     # test #2.b - READY_TO_INTEGRATE inside SLA
 
+    conversation_id = 'test_ehr_requesting_inside_sla_test#2.b'
+
+    # test requires a datetime less than 20mins
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+    LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=now_minus_20_mins.strftime(
+                    "%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T10:00:00",
+                event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
     # test #3.a - INTEGRATED outside SLA
+
+    conversation_id = 'test_ehr_requesting_outside_sla_test#3.a'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:00:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:30:00",
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T10:00:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
 
     # test #3.b - INTEGRATED inside SLA
 
+    conversation_id = 'test_ehr_requesting_outside_sla_test#3.b'
+
+    # test requires a datetime less than 20mins
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+    LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=now_minus_20_mins.strftime(
+                    "%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T10:00:00",
+                event_type=EventType.EHR_INTEGRATIONS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
     # test #4.a - EHR_SENT outside SLA
+
+    conversation_id = 'test_ehr_requesting_outside_sla_test#4.a'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:00:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:30:00",
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T10:00:00",
+                event_type=EventType.EHR_RESPONSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
 
     # test #4.b - EHR_SENT inside SLA
 
-    # test #4.a - EHR_REQUESTED outside SLA
+    conversation_id = 'test_ehr_requesting_outside_sla_test#4.b'
 
-    # test #4.b - EHR_REQUESTED inside SLA
+    # test requires a datetime less than 20mins
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+    LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=now_minus_20_mins.strftime(
+                    "%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T10:00:00",
+                event_type=EventType.EHR_RESPONSES.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    # test #5.a - EHR_REQUESTED outside SLA
+
+    conversation_id = 'test_ehr_requesting_outside_sla_test#5.a'
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:00:00",
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime="2023-03-10T09:30:00",
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
+
+    # test #5.b - EHR_REQUESTED inside SLA
+
+    conversation_id = 'test_ehr_requesting_outside_sla_test#5.b'
+
+    # test requires a datetime less than 20mins
+    now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+    LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                payload=create_transfer_compatibility_payload(
+                    internalTransfer=False,
+                    transferCompatible=True
+                )
+            )),
+        sourcetype="myevent")
+
+    index.submit(
+        json.dumps(
+            create_sample_event(
+                conversation_id=conversation_id,
+                registration_event_datetime=now_minus_20_mins.strftime(
+                    "%Y-%m-%dT%H:%M:%S"),
+                event_type=EventType.EHR_REQUESTS.value,
+                sendingPracticeSupplierName="EMIS",
+                requestingPracticeSupplierName="TPP"
+            )),
+        sourcetype="myevent")
 
     # Act
 
@@ -588,4 +845,4 @@ def test_ehr_requesting_outside_sla():
     # Assert
     assert jq.first(
         '.[] ' +
-        '| select( .total_ehr_requesting_outside_sla=="2" )', telemetry)
+        '| select( .total_ehr_requesting_outside_sla=="5" )', telemetry)
