@@ -11,6 +11,7 @@ from helpers.splunk \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+from .base_test_report import splunk_index
 
 LOG = logging.getLogger(__name__)
 
@@ -45,16 +46,24 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-def teardown_function():
-    """Function delete test_index."""
-    service.indexes.delete("test_index")
+# def teardown_function():
+#     """Function delete test_index."""
+#     service.indexes.delete("test_index")
 
 
 def test_total_transfer_time_outside_sla_24_hours():
 
    # Arrange
 
-    index = get_or_create_index("test_index", service)
+    index_name, index = splunk_index.create(service)
+
+     # reporting window
+    yesterday = datetime.today() - timedelta(hours=24)
+    tomorrow = datetime.today() + timedelta(hours=24)
+
+    # test requires a datetime less than 24hrs
+    now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+    LOG.info(f"now_minus_20_mins: {now_minus_23_hours}")
 
     # test - #1
 
@@ -73,7 +82,7 @@ def test_total_transfer_time_outside_sla_24_hours():
         json.dumps(
             create_sample_event(
                 conversation_id='inside_sla_24_hours_1',
-                registration_event_datetime="2023-05-05T10:00:00",  # needs to be within 24 hours
+                registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"), # needs to be within 24 hours               
                 event_type=EventType.EHR_RESPONSES.value,
                 sendingPracticeSupplierName="EMIS",
                 requestingPracticeSupplierName="TPP"
@@ -196,7 +205,7 @@ def test_total_transfer_time_outside_sla_24_hours():
 
     test_query = get_search('gp2gp_sla_outcomes')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-05-31"
     })
@@ -210,13 +219,15 @@ def test_total_transfer_time_outside_sla_24_hours():
     assert jq.first(
         '.[] ' +
         '| select( .totalTransferTimeOutsideSla24Hours=="3" )', telemetry)
+    
+    splunk_index.delete(index_name)
 
 
 def test_ehr_sending_outside_sla():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)
+    index_name, index = splunk_index.create(service)
 
     # test requires a datetime less than 20mins
     now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
@@ -461,7 +472,7 @@ def test_ehr_sending_outside_sla():
 
     test_query = get_search('gp2gp_sla_outcomes')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -475,13 +486,15 @@ def test_ehr_sending_outside_sla():
     assert jq.first(
         '.[] ' +
         '| select( .total_ehr_sending_outside_sla=="4" )', telemetry)
+    
+    splunk_index.delete(index_name)
 
 
 def test_ehr_requesting_outside_sla():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)
+    index_name, index = splunk_index.create(service)
 
     # test #1.a - Eligibile for transfer outside SLA
 
@@ -832,7 +845,7 @@ def test_ehr_requesting_outside_sla():
 
     test_query = get_search('gp2gp_sla_outcomes')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -846,3 +859,5 @@ def test_ehr_requesting_outside_sla():
     assert jq.first(
         '.[] ' +
         '| select( .total_ehr_requesting_outside_sla=="5" )', telemetry)
+    
+    splunk_index.delete(index_name)
