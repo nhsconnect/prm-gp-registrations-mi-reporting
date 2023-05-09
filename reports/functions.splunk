@@ -52,7 +52,9 @@
     OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
     OR (registrationStatus=="INTEGRATION" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
     OR (registrationStatus=="EHR_SENT" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins")),1,0)
-| eval totalEhrRequestingOutsideSla = if(registrationStatus=="ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime,1,0)
+| eval totalEhrRequestingOutsideSla = if((registrationStatus=="ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime)
+    OR (registrationStatus=="READY_TO_INTEGRATE" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
+,1,0)
 
 {% endmacro %}
 
