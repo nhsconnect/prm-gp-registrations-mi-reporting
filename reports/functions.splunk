@@ -2,9 +2,12 @@
 | where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted AND isTransferCompatible==1)
 {% endmacro %}
 
-{% macro exclude_internal_transfers() %}
+{% macro calculate_internal_transfers() %}
 | spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
 | eval isInteralTransfer = if(internalTransfer == "true",1 ,0)
+{% endmacro %}
+
+{% macro exclude_internal_transfers() %}
 | where isInteralTransfer==0
 {% endmacro %}
 
