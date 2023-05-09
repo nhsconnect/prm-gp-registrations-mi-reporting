@@ -30,7 +30,7 @@ calculate_sla_status %}
 {{ calculate_sla_status() }}
 
 | stats 
-    count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours, 
+    count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours,
     count(eval(totalEhrSendingOutsideSla==1)) as total_ehr_sending_outside_sla,
     count(eval(totalEhrRequestingOutsideSla==1)) as total_ehr_requesting_outside_sla
 

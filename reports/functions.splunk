@@ -59,8 +59,7 @@
     OR (registrationStatus=="READY_TO_INTEGRATE" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
     OR (registrationStatus=="INTEGRATION" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
     OR (registrationStatus=="EHR_SENT" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
-    OR (registrationStatus=="EHR_REQUESTED" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
-,1,0)
+    OR (registrationStatus=="EHR_REQUESTED" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime),1,0)
 
 {% endmacro %}
 
