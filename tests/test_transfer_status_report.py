@@ -11,6 +11,7 @@ from helpers.splunk \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+from .base_test_report import splunk_index
 
 LOG = logging.getLogger(__name__)
 
@@ -45,16 +46,11 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-def teardown_function():
-    """Function delete test_index."""
-    service.indexes.delete("test_index")
-
-
 def test_total_eligible_for_electronic_transfer():
     
     # Arrange
 
-    index = get_or_create_index("test_index", service)
+    index_name, index = splunk_index.create(service)
     
 
     index.submit(
@@ -113,7 +109,7 @@ def test_total_eligible_for_electronic_transfer():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -126,12 +122,14 @@ def test_total_eligible_for_electronic_transfer():
     # Assert
     assert jq.first(
         '.[] | select( .total_eligible_for_electronic_transfer == "2" ) ', telemetry)
+
+    splunk_index.delete(index_name)
     
 def test_successfully_integrated():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = splunk_index.create(service)    
 
     # successfully integrated - #1
 
@@ -314,7 +312,7 @@ def test_successfully_integrated():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -331,13 +329,15 @@ def test_successfully_integrated():
         '| select( .count_successfully_integrated == "3")' +
         '| select( .percentage_successfully_integrated == "50.00")'        
         , telemetry)
+
+    splunk_index.delete(index_name)
     
 
 def test_rejected():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = splunk_index.create(service)    
 
     # successfully integrated - #1
 
@@ -461,7 +461,7 @@ def test_rejected():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -478,13 +478,15 @@ def test_rejected():
         '| select( .count_rejected == "1")' +
         '| select( .percentage_rejected == "25.00")'        
         , telemetry)
+
+    splunk_index.delete(index_name)
     
 
 def test_awaiting_integration():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = splunk_index.create(service)    
 
     # awaiting_integration - #1
 
@@ -575,7 +577,7 @@ def test_awaiting_integration():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -592,14 +594,17 @@ def test_awaiting_integration():
         '| select( .count_awaiting_integration == "2")' +
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
-        , telemetry)   
+        , telemetry)
+
+    splunk_index.delete(index_name)
+
     
 @pytest.mark.skip(reason="work in progress...")
 def test_in_progress():
 
     # Arrange
 
-    index = get_or_create_index("test_index", service)    
+    index_name, index = splunk_index.create(service)   
 
     # 
 
@@ -609,7 +614,7 @@ def test_in_progress():
 
     test_query = get_search('gp2gp_transfer_status_report')
     test_query = set_variables_on_query(test_query, {
-        "$index$": "test_index",
+        "$index$": index_name,
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-03-31"
     })
@@ -627,4 +632,6 @@ def test_in_progress():
         '| select( .percentage_awaiting_integration == "66.67")' +
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
-    
+
+    splunk_index.delete(index_name)
+  
