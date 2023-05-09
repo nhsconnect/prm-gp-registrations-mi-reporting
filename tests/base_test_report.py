@@ -1,5 +1,7 @@
 import logging
 import os
+import random
+import string
 from enum import Enum
 import pytest
 import json
@@ -12,6 +14,24 @@ from helpers.splunk \
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 
+
+splunk_token = os.environ['SPLUNK_TOKEN']
+splunk_host = os.environ.get('SPLUNK_HOST')     # defaults to localhost - see README
+service = client.connect(token=splunk_token)
+
+
+class splunk_index():
+
+    def delete(index_name: str):
+        """Delete splunk index"""
+        service.indexes.delete(index_name)
+
+
+    def create(service):
+        """Create splunk index"""
+        random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        index_name = "test_index_" + random_string
+        return index_name, service.indexes.create(index_name)
 
 
 class base_test_report():
