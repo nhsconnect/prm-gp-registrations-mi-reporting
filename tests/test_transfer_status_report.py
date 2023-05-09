@@ -46,11 +46,6 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-# def teardown_function():
-#     """Function delete test_index."""
-#     service.indexes.delete("test_index")
-
-
 def test_total_eligible_for_electronic_transfer():
     
     # Arrange
