@@ -3,6 +3,7 @@ index="$index$"
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
 filter_non_transfers,
+calculate_internal_transfers,
 exclude_internal_transfers,
 set_time_to_registration_datetime,
 filter_reporting_window,
@@ -18,6 +19,7 @@ calculate_sla_status %}
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
 {{ calculate_transfer_compatibility() }}
+{{ calculate_internal_transfers() }}
 {{ exclude_internal_transfers() }}
 
 | transaction conversationId keeporphans=t
@@ -27,21 +29,10 @@ calculate_sla_status %}
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 
-```| eval rel_time = relative_time(ehrRequestEventDateTime, "+20mins")
-| eval joetest_reltime = strftime(rel_time, "%H:%M:%S")
-| eval joetest_transCompat = strftime(transCompatStatEventDateTime, "%H:%M:%S")```
-
-```|table conversationId, registrationStatus, transCompatStatEventDateTime, joetest_reltime,joetest_transCompat```
-
-```{{ calculate_outcome() }}```
-
-```|table registrationStatus```
-
 | stats 
     count(eval(totalTransferTimeOutsideSla24Hours ==1)) as totalTransferTimeOutsideSla24Hours, 
     count(eval(totalEhrSendingOutsideSla==1)) as total_ehr_sending_outside_sla,
     count(eval(totalEhrRequestingOutsideSla==1)) as total_ehr_requesting_outside_sla
 
 
-```|table registrationStatus, outcome, totalTransferTimeOutsideAla24Hours, twentyFourHoursAgo, ehrResponseEventDateTime```
 
