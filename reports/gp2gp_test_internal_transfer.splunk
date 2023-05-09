@@ -1,0 +1,14 @@
+index="$index$"
+
+{% from 'functions.splunk' import
+set_time_to_registration_datetime,
+calculate_internal_transfers %}
+
+{{ set_time_to_registration_datetime() }}
+
+{{ calculate_internal_transfers() }}
+
+| transaction conversationId keeporphans=t
+
+| stats 
+    count(eval(isInteralTransfer==1)) as total_internal_transfer
