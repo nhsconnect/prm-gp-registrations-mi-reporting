@@ -1,7 +1,5 @@
 import logging
 import os
-import random
-import string
 from enum import Enum
 import pytest
 import json
@@ -13,6 +11,7 @@ from helpers.splunk \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
+from .base_test_report import splunk_index
 
 LOG = logging.getLogger(__name__)
 
@@ -52,29 +51,11 @@ def savedsearch(test_query):
 #     service.indexes.delete("test_index")
 
 
-def delete_index(index_name: str):
-    """Delete splunk index"""
-    service.indexes.delete(index_name)
-
-
-def create_index_name() -> str:
-    """Create unique index name"""
-    random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-    return "test_index_" + random_string
-
-
-def create_index(service):
-    """Create splunk index"""
-    index_name = create_index_name()
-    return index_name, service.indexes.create(index_name)
-
-
-
 def test_total_eligible_for_electronic_transfer():
     
     # Arrange
 
-    index_name, index = create_index(service)
+    index_name, index = splunk_index.create(service)
     
 
     index.submit(
@@ -147,13 +128,13 @@ def test_total_eligible_for_electronic_transfer():
     assert jq.first(
         '.[] | select( .total_eligible_for_electronic_transfer == "2" ) ', telemetry)
 
-    delete_index(index_name)
+    splunk_index.delete(index_name)
     
 def test_successfully_integrated():
 
     # Arrange
 
-    index_name, index = create_index(service)    
+    index_name, index = splunk_index.create(service)    
 
     # successfully integrated - #1
 
@@ -354,14 +335,14 @@ def test_successfully_integrated():
         '| select( .percentage_successfully_integrated == "50.00")'        
         , telemetry)
 
-    delete_index(index_name)
+    splunk_index.delete(index_name)
     
 
 def test_rejected():
 
     # Arrange
 
-    index_name, index = create_index(service)    
+    index_name, index = splunk_index.create(service)    
 
     # successfully integrated - #1
 
@@ -503,14 +484,14 @@ def test_rejected():
         '| select( .percentage_rejected == "25.00")'        
         , telemetry)
 
-    delete_index(index_name)
+    splunk_index.delete(index_name)
     
 
 def test_awaiting_integration():
 
     # Arrange
 
-    index_name, index = create_index(service)    
+    index_name, index = splunk_index.create(service)    
 
     # awaiting_integration - #1
 
@@ -620,7 +601,7 @@ def test_awaiting_integration():
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)
 
-    delete_index(index_name)
+    splunk_index.delete(index_name)
 
     
 @pytest.mark.skip(reason="work in progress...")
@@ -628,7 +609,7 @@ def test_in_progress():
 
     # Arrange
 
-    index_name, index = create_index(service)   
+    index_name, index = splunk_index.create(service)   
 
     # 
 
@@ -657,5 +638,5 @@ def test_in_progress():
         '| select( .percentage_rejected == "33.33")'        
         , telemetry)   
 
-    delete_index(index_name)
+    splunk_index.delete(index_name)
   
