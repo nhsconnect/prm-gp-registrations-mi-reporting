@@ -210,10 +210,8 @@ def test_outcome_technical_failure_2():
     index_name, index = splunk_index.create(service)
 
     # reporting window       
-    report_start = datetime.today().date().replace(day=1)
-    print(f"report start: {report_start}")
-    report_end = datetime.today().date().replace(day=31)
-    print(f"report end: {report_end}")
+    report_start = datetime.today().date().replace(day=1)   
+    report_end = datetime.today().date().replace(day=31)    
     
     try:
 
@@ -274,17 +272,24 @@ def test_outcome_technical_failure_2():
 
 def test_outcome_in_progress():
     '''
-    This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR REQUESTING OUTSIDE SLA of false.
+    This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR_REQUESTING_OUTSIDE_SLA = false (test 1.a).
+    Test (1.b) is there to validate the test 1.a is the only one with EHR_REQUESTING_OUTSIDE_SLA = false.
     Registraion status for this test should be EHR_SENT.    
     '''
 
     # Arrange
 
-    index_name, index = splunk_index.create(service)
+    index_name, index = splunk_index.create(service)   
+
+    # reporting window       
+    report_start = datetime.today().date().replace(day=1)   
+    report_end = datetime.today().date().replace(day=31)     
 
     try:
 
-        conversation_id = 'test_outcome_in_progress'
+        # test 1.a - inside SLA
+
+        conversation_id = 'test_outcome_in_progress_inside_sla'
 
         # test requires a datetime less than 24hrs
         now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
@@ -316,7 +321,42 @@ def test_outcome_in_progress():
             json.dumps(
                 create_sample_event(
                     conversation_id=conversation_id,
-                    registration_event_datetime="2023-05-10T06:00:00",
+                    registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value
+                )),
+            sourcetype="myevent")
+        
+        # test 1.b - outside SLA
+
+        conversation_id = 'test_outcome_in_progress_outside_sla'
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-01T04:00:00",
+                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                    payload=create_transfer_compatibility_payload(
+                        internalTransfer=False,
+                        transferCompatible=True
+                    )
+                )),
+            sourcetype="myevent")
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-01T05:00:00",
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent")
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-05T07:00:00",
                     event_type=EventType.EHR_RESPONSES.value
                 )),
             sourcetype="myevent")
@@ -326,8 +366,8 @@ def test_outcome_in_progress():
         test_query = get_search('gp2gp_outcome_report')
         test_query = set_variables_on_query(test_query, {
             "$index$": index_name,
-            "$report_start$": "2023-03-01",
-            "$report_end$": "2023-05-31"
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
         })
 
         sleep(2)

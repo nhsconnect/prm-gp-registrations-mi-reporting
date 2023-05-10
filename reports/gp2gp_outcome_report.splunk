@@ -25,7 +25,9 @@ calculate_outcome %}
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
-| table conversationId, outcome, totalTransferTimeOutsideSla24Hours
+
+```| table conversationId, outcome, registrationStatus,totalTransferTimeOutsideSla24Hours```
+
 
 | stats
     first(outcome) as outcome, 
