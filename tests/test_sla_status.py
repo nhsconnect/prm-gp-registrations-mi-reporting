@@ -46,16 +46,17 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-# def teardown_function():
-#     """Function delete test_index."""
-#     service.indexes.delete("test_index")
+def teardown_function():
+    """Function delete test_index."""
+    service.indexes.delete("test_index_lorenzo")
 
 
 def test_total_transfer_time_outside_sla_24_hours():
 
    # Arrange
 
-    index_name, index = splunk_index.create(service)
+    # index_name, index = splunk_index.create(service)
+    index = get_or_create_index("test_index_lorenzo", service)
 
      # reporting window
     yesterday = datetime.today() - timedelta(hours=24)
@@ -205,7 +206,7 @@ def test_total_transfer_time_outside_sla_24_hours():
 
     test_query = get_search('gp2gp_sla_outcomes')
     test_query = set_variables_on_query(test_query, {
-        "$index$": index_name,
+        "$index$": "test_index_lorenzo",
         "$report_start$": "2023-03-01",
         "$report_end$": "2023-05-31"
     })
@@ -220,7 +221,7 @@ def test_total_transfer_time_outside_sla_24_hours():
         '.[] ' +
         '| select( .totalTransferTimeOutsideSla24Hours=="3" )', telemetry)
     
-    splunk_index.delete(index_name)
+    # splunk_index.delete(index_name)
 
 
 def test_ehr_sending_outside_sla():
