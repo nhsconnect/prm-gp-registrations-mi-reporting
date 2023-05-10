@@ -72,6 +72,7 @@
     registrationStatus == "READY_TO_INTEGRATE","AWAITING_INTEGRATION",
     registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 1, "TECHNICAL_FAILURE",
     registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 0, "IN_PROGRESS",
+    registrationStatus == "EHR_REQUESTED" AND totalEhrSendingOutsideSla == 1, "TECHNICAL_FAILURE",
     
    
     
