@@ -12,6 +12,7 @@ from helpers.splunk \
 from datetime import datetime, timedelta, date
 from jinja2 import Environment, FileSystemLoader
 from .base_test_report import splunk_index
+from helpers.date_helper import create_date_time
 
 LOG = logging.getLogger(__name__)
 
@@ -44,6 +45,8 @@ def get_search(search_name):
 
 def savedsearch(test_query):
     return "search "+test_query
+
+
 
 
 def test_outcome_successful_integration():
@@ -378,6 +381,66 @@ def test_outcome_in_progress():
         # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
         assert jq.first(
             '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
+
+
+    finally:
+        splunk_index.delete(index_name)
+
+def test_outcome_technical_failure_3():
+    '''   
+    Registraion status for this test should be EHR_REQUESTED. EHR_SENDING_OUTSIDE_SLA = true.
+    Note: SLA for this is 20mins
+    '''
+
+    # Arrange
+
+    index_name, index = splunk_index.create(service)   
+
+    # reporting window       
+    report_start = datetime.today().date().replace(day=1)   
+    report_end = datetime.today().date().replace(day=31)     
+   
+
+    try:
+
+        # test 1.a - outside SLA
+
+        conversation_id = 'test_outcome_technical_failure_3_outside_sla'      
+
+       
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-01T04:00:00",
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent")      
+        
+        # test 1.b - inside SLA
+
+        # Notes-
+        # use new create_date_time helper to generate event requested datetime inside the sla of 20mins
+        # test should still pass as only looking for outside SLA.
+        
+
+        # Act
+
+        test_query = get_search('gp2gp_outcome_report')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+        assert jq.first(
+            '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
 
 
     finally:
