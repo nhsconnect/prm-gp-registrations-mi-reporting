@@ -1,3 +1,7 @@
+index="$index$"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| sort 0 _time
+
 {% from 'functions.splunk' import 
 set_time_to_registration_datetime,
 filter_reporting_window,
@@ -5,28 +9,25 @@ calculate_registration_status,
 calculate_sla_status,
 calculate_outcome %}
 
-index="$index$"
 | spath output=integration_outcome path=payload{}.integration.outcome ``` calculate_outcome() depends on this. ```
 | eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
 | eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
-{{ set_time_to_registration_datetime() }}
 
-| streamstats earliest(_time) as conversationStart by conversationId
+```| streamstats earliest(_time) as conversationStart by conversationId```
 
-{{ filter_reporting_window() }}
+```{{ filter_reporting_window() }}```
 
 | transaction conversationId keeporphans=t
 
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
+| table conversationId, outcome, totalTransferTimeOutsideSla24Hours
 
-| stats 
-    first(registrationStatus) as registrationStatus,
-    first(totalTransferTimeOutsideSla24Hours) as totalTransferTimeOutsideSla24Hours,
+| stats
     first(outcome) as outcome, 
-    count(outcome) as count    
-| table outcome, count, registrationStatus, totalTransferTimeOutsideSla24Hours
+    count(outcome) as count by conversationId
+

@@ -48,7 +48,7 @@
 {% macro calculate_sla_status() %}
 | eval twentyMinsAgo = relative_time(now(), "-20m")
 | eval twentyFourHoursAgo = relative_time(now(), "-24h")
-| eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime)
+| eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime) 
     OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h"))
     OR (registrationStatus=="INTEGRATION" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h")),1,0)    
 | eval totalEhrSendingOutsideSla = if((registrationStatus=="EHR_REQUESTED" AND twentyMinsAgo > ehrRequestEventDateTime)
@@ -71,7 +71,7 @@
     registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
     registrationStatus == "READY_TO_INTEGRATE","AWAITING_INTEGRATION",
     registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 1, "TECHNICAL_FAILURE",
-    ```registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 0, "IN_PROGRESS",```
+    registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 0, "IN_PROGRESS",
     
    
     

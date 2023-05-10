@@ -9,7 +9,7 @@ import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from jinja2 import Environment, FileSystemLoader
 from .base_test_report import splunk_index
 
@@ -202,102 +202,143 @@ def test_outcome_awaiting_integration():
 
 
 def test_outcome_technical_failure_2():
+    '''
+    STATUS = EHR_SENT AND TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = true
+    '''
 
     # Arrange
-
     index_name, index = splunk_index.create(service)
 
-    conversation_id = 'test_outcome_technical_failure'
+    # reporting window       
+    report_start = datetime.today().date().replace(day=1)
+    print(f"report start: {report_start}")
+    report_end = datetime.today().date().replace(day=31)
+    print(f"report end: {report_end}")
+    
+    try:
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-03-10T08:00:00",
-                event_type=EventType.EHR_RESPONSES.value
-            )),
-        sourcetype="myevent")
-    # Act
+         # test requires a datetime less than 24hrs
+        now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+        LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
-    test_query = get_search('gp2gp_outcome_report')
-    test_query = set_variables_on_query(test_query, {
-        "$index$": index_name,
-        "$report_start$": "2023-03-01",
-        "$report_end$": "2023-03-31"
-    })
+        now_minus_25_hours = datetime.today() - timedelta(hours=25, minutes=0)
+        LOG.info(f"now_minus_25_hours: {now_minus_25_hours}")  
 
-    sleep(2)
+        # Outside SLA
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id='outside_sla_24_hours',
+                    registration_event_datetime=now_minus_25_hours.strftime("%Y-%m-%dT%H:%M:%S"), # needs to be outside 24 hours
+                    event_type=EventType.EHR_RESPONSES.value,
+                    sendingPracticeSupplierName="EMIS",
+                    requestingPracticeSupplierName="TPP"
+                )),
+            sourcetype="myevent")
 
-    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    LOG.info(f'telemetry: {telemetry}')
+        # Inside SLA
 
-    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
-    assert jq.first(
-        '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id='inside_sla_24_hours',
+                    registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"), # needs to be within 24 hours
+                    event_type=EventType.EHR_RESPONSES.value,
+                    sendingPracticeSupplierName="EMIS",
+                    requestingPracticeSupplierName="TPP"
+                )),
+            sourcetype="myevent")
 
-    splunk_index.delete(index_name)
+        # Act
+
+        test_query = get_search('gp2gp_outcome_report')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+        assert jq.first(
+            '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
+      
+
+    finally:        
+        splunk_index.delete(index_name)
 
 
 def test_outcome_in_progress():
+    '''
+    This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR REQUESTING OUTSIDE SLA of false.
+    Registraion status for this test should be EHR_SENT.    
+    '''
 
     # Arrange
 
     index_name, index = splunk_index.create(service)
 
-    conversation_id = 'test_outcome_in_progress'
+    try:
 
-    # registration_event_datetime="2023-03-10T08:00:00",
+        conversation_id = 'test_outcome_in_progress'
 
-    # test requires a datetime less than 24hrs
-    now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
-    LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
+        # test requires a datetime less than 24hrs
+        now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+        LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                "test_ehr_requesting_outside_sla_test#1.a",
-                registration_event_datetime="2023-05-09T06:15:00",
-                event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                payload=create_transfer_compatibility_payload(
-                    internalTransfer=False,
-                    transferCompatible=True
-                )
-            )),
-        sourcetype="myevent")
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-10T04:00:00",
+                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                    payload=create_transfer_compatibility_payload(
+                        internalTransfer=False,
+                        transferCompatible=True
+                    )
+                )),
+            sourcetype="myevent")
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-05-09T07:00:00",
-                event_type=EventType.EHR_REQUESTS.value
-            )),
-        sourcetype="myevent")
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-10T05:00:00",
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent")
 
-    index.submit(
-        json.dumps(
-            create_sample_event(
-                conversation_id,
-                registration_event_datetime="2023-05-09T08:00:00",
-                event_type=EventType.EHR_RESPONSES.value
-            )),
-        sourcetype="myevent")
-    # Act
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-10T06:00:00",
+                    event_type=EventType.EHR_RESPONSES.value
+                )),
+            sourcetype="myevent")
 
-    test_query = get_search('gp2gp_outcome_report')
-    test_query = set_variables_on_query(test_query, {
-        "$index$": index_name,
-        "$report_start$": "2023-03-01",
-        "$report_end$": "2023-03-31"
-    })
+        # Act
 
-    sleep(2)
+        test_query = get_search('gp2gp_outcome_report')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": "2023-03-01",
+            "$report_end$": "2023-05-31"
+        })
 
-    telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
-    LOG.info(f'telemetry: {telemetry}')
+        sleep(2)
 
-    # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
-    assert jq.first(
-        '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
 
-    splunk_index.delete(index_name)
+        # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+        assert jq.first(
+            '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
+
+
+    finally:
+        splunk_index.delete(index_name)
