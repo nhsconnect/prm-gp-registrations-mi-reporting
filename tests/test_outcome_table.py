@@ -466,9 +466,9 @@ def test_outcome_technical_failure_3():
 
 def test_outcome_in_progress_2():
     '''
-    This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR_REQUESTING_OUTSIDE_SLA = false (test 1.a).
-    Test (1.b) is there to validate the test 1.a is the only one with EHR_REQUESTING_OUTSIDE_SLA = false.
-    Registraion status for this test should be EHR_SENT.    
+    This test requires an EHR_REQUEST within 20 mins to get an EHR_SENDING_OUTSIDE_SLA = false (test 1.a).
+    Test (1.b) is there to validate the test 1.a is the only one with EHR_SENDING_OUTSIDE_SLA = true.
+    Registraion status for this test should be EHR_REQUESTED.    
     '''
 
     # Arrange
@@ -532,3 +532,5 @@ def test_outcome_in_progress_2():
 
     finally:
         splunk_index.delete(index_name)
+
+def test_technical_failure_4():
