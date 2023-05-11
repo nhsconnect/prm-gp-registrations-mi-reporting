@@ -29,7 +29,6 @@ calculate_outcome %}
 ```| table conversationId, outcome, registrationStatus, totalEhrSendingOutsideSla```
 
 
-| stats
-    first(outcome) as outcome, 
-    count(outcome) as count by conversationId
+| stats 
+    count(outcome) as count by outcome
 
