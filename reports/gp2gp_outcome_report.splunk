@@ -28,7 +28,7 @@ calculate_outcome %}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-```| table conversationId, outcome, registrationStatus, totalEhrRequestingOutsideSla, twentyMinsAgo, transCompatStatEventDateTime, isTransferCompatible```
+```| table conversationId, outcome, registrationStatus, totalEhrRequestingOutsideSla, twentyMinsAgo```
 
 
 | stats 
