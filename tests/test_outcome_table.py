@@ -691,9 +691,7 @@ def test_outcome_in_progress_3():
 
 def test_not_eligible_for_electronic_transfer():
     '''
-    This test requires an EHR_REQUEST within 20 mins to get an EHR_SENDING_OUTSIDE_SLA = false (test 1.a).
-    Test (1.b) is there to validate the test 1.a is the only one with EHR_SENDING_OUTSIDE_SLA = true.
-    Registraion status for this test should be EHR_REQUESTED.    
+    This test checks transfer compatibility payload (test 1.a) and demographic trace status (DTS) payload (test 1.b)   
     '''
 
     # Arrange
