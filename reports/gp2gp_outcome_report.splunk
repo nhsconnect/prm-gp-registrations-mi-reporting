@@ -10,7 +10,6 @@ calculate_transfer_compatibility,
 calculate_sla_status,
 calculate_outcome %}
 
-```| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible```
 | spath output=integration_outcome path=payload{}.integration.outcome ``` calculate_outcome() depends on this. ```
 | spath output=dts_matched path=payload{}.demographicTraceStatus.matched
 | eval registrationsEvent = if(eventType=="REGISTRATIONS", 1 ,0)
@@ -21,17 +20,11 @@ calculate_outcome %}
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 {{ calculate_transfer_compatibility() }}
 
-```| streamstats earliest(_time) as conversationStart by conversationId```
-
-```{{ filter_reporting_window() }}```
-
 | transaction conversationId keeporphans=t
 
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
-
-```| table conversationId, outcome, registrationStatus, is_dts_matched```
 
 | stats 
     count(outcome) as count by outcome
