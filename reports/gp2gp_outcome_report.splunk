@@ -12,6 +12,9 @@ calculate_outcome %}
 
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome ``` calculate_outcome() depends on this. ```
+| spath output=dts_matched path=payload{}.demographicTraceStatus.matched
+| eval registrationsEvent = if(eventType=="REGISTRATIONS", 1 ,0)
+| eval is_dts_matched = if(registrationsEvent ==1 AND dts_matched == "true",1 ,0)
 | eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
 | eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
@@ -28,8 +31,7 @@ calculate_outcome %}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-```| table conversationId, outcome, registrationStatus, totalEhrRequestingOutsideSla, twentyMinsAgo```
-
+```| table conversationId, outcome, registrationStatus, is_dts_matched```
 
 | stats 
     count(outcome) as count by outcome

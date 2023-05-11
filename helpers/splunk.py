@@ -38,7 +38,7 @@ def get_telemetry_from_splunk(search_query, service) -> None:
     return telemetry
 
 
-def create_integration_payload(outcome=None):
+def create_integration_payload(outcome=None) -> dict:
     return {
         "integration": {
             "outcome": outcome
@@ -46,7 +46,7 @@ def create_integration_payload(outcome=None):
     }
 
 
-def create_transfer_compatibility_payload(internalTransfer: bool, transferCompatible: bool, reason: str = None):
+def create_transfer_compatibility_payload(internalTransfer: bool, transferCompatible: bool, reason: str = None) -> dict:
     return {
         "transferCompatibilityStatus": {
             "internalTransfer": internalTransfer,
@@ -56,12 +56,30 @@ def create_transfer_compatibility_payload(internalTransfer: bool, transferCompat
     }
 
 
-def create_error_payload(errorCode: str, errorDescription: str, failurePoint: str):
+def create_error_payload(errorCode: str, errorDescription: str, failurePoint: str) -> dict:
     return {
         "error": {
             "errorCode": errorCode,
             "errorDescription": errorDescription,
             "failurePoint": failurePoint
+        }
+    }
+
+
+def create_registration_payload(returningPatient: bool = False, multifactorAuthenticationPresent: bool = True, dtsMatched: bool = True) -> dict:
+    return {
+        "registration": {
+            "type": "NEW_GP_REGISTRATION",
+            "returningPatient": returningPatient,
+            "multifactorAuthenticationPresent": multifactorAuthenticationPresent
+        },
+        "demographicTraceStatus": {
+            "matched": dtsMatched,
+            "reason": "no PDS trace results returned",
+            "multifactorAuthenticationPresent": True
+        },
+        "gpLinks": {
+            "gpLinksComplete": True
         }
     }
 
@@ -73,7 +91,7 @@ def create_sample_event(
     payload=None,
     requestingPracticeSupplierName="TEST_SUPPLIER",
     sendingPracticeSupplierName="TEST_SUPPLIER2"
-):
+) -> dict:
     return {
         "eventId": str(uuid.uuid4()),
         "eventGeneratedDateTime": "2023-03-20T12:53:01",
