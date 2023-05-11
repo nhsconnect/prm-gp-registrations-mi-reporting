@@ -10,7 +10,7 @@ calculate_transfer_compatibility,
 calculate_sla_status,
 calculate_outcome %}
 
-| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+```| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible```
 | spath output=integration_outcome path=payload{}.integration.outcome ``` calculate_outcome() depends on this. ```
 | spath output=dts_matched path=payload{}.demographicTraceStatus.matched
 | eval registrationsEvent = if(eventType=="REGISTRATIONS", 1 ,0)

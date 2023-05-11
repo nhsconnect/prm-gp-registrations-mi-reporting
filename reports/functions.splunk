@@ -12,6 +12,7 @@
 {% endmacro %}
 
 {% macro calculate_transfer_compatibility() %}
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | eventstats latest(transCompatStatEventDateTime) as latestTransferCompatibilityEventDateTime by conversationId
 | eval transCompatStatEventDateTimeFormatted = strftime(latestTransferCompatibilityEventDateTime,"%Y-%m-%dT%H:%M:%S")
 | eval isTransferCompatible = if(transferCompatible == "true", 1, 0)
