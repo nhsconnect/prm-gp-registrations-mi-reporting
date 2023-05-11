@@ -14,6 +14,12 @@ from jinja2 import Environment, FileSystemLoader
 from .base_test_report import splunk_index
 from helpers.date_helper import create_date_time
 
+
+"""
+This test file tests the outcome scenarios as defined in the Mural board - "Enhanced MI Reporting Requirements".
+https://app.mural.co/t/nhsdigital8118/m/nhsdigital8118/1678789024199/eb0e25c47a42b88883d07af78f4814d8da521c13?sender=ud36bdee691db869bb8a35429
+"""
+
 LOG = logging.getLogger(__name__)
 
 
