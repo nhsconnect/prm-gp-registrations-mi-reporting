@@ -273,7 +273,7 @@ def test_outcome_technical_failure_2():
         splunk_index.delete(index_name)
 
 
-def test_outcome_in_progress():
+def test_outcome_in_progress_1():
     '''
     This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR_REQUESTING_OUTSIDE_SLA = false (test 1.a).
     Test (1.b) is there to validate the test 1.a is the only one with EHR_REQUESTING_OUTSIDE_SLA = false.
@@ -412,7 +412,7 @@ def test_outcome_technical_failure_3():
             json.dumps(
                 create_sample_event(
                     conversation_id=conversation_id,
-                    registration_event_datetime="2023-05-01T04:00:00",
+                    registration_event_datetime="2023-05-02T10:00:00",
                     event_type=EventType.EHR_REQUESTS.value
                 )),
             sourcetype="myevent")      
@@ -422,6 +422,24 @@ def test_outcome_technical_failure_3():
         # Notes-
         # use new create_date_time helper to generate event requested datetime inside the sla of 20mins
         # test should still pass as only looking for outside SLA.
+
+        # 
+
+        conversation_id = 'test_outcome_technical_failure_3_inside_sla'   
+
+         # test requires a datetime less than 24hrs
+        now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")   
+
+       
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent") 
         
 
         # Act
@@ -438,9 +456,78 @@ def test_outcome_technical_failure_3():
         telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
         LOG.info(f'telemetry: {telemetry}')
 
-        # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
+        # Assert - 
         assert jq.first(
             '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
+
+
+    finally:
+        splunk_index.delete(index_name)
+
+def test_outcome_in_progress_2():
+    '''
+    This test requires EHR_REQUEST and EHR_RESPONSE events within 24 hours to get an EHR_REQUESTING_OUTSIDE_SLA = false (test 1.a).
+    Test (1.b) is there to validate the test 1.a is the only one with EHR_REQUESTING_OUTSIDE_SLA = false.
+    Registraion status for this test should be EHR_SENT.    
+    '''
+
+    # Arrange
+
+    index_name, index = splunk_index.create(service)   
+
+    # reporting window       
+    report_start = datetime.today().date().replace(day=1)   
+    report_end = datetime.today().date().replace(day=31)     
+
+    try:
+
+        # test 1.a - inside SLA
+
+        conversation_id = 'test_outcome_in_progress_2_inside_sla'
+
+        # test requires a datetime less than 20mins
+        now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")       
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent")       
+        
+        # test 1.b - outside SLA
+
+        conversation_id = 'test_outcome_in_progress_2_outside_sla'       
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-01T05:00:00",
+                    event_type=EventType.EHR_REQUESTS.value
+                )),
+            sourcetype="myevent")       
+
+        # Act
+
+        test_query = get_search('gp2gp_outcome_report')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert -
+        assert jq.first(
+            '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
 
 
     finally:
