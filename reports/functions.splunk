@@ -39,9 +39,9 @@
     readyToIntegrate == 1, "READY_TO_INTEGRATE", 
     ehrResponseEvent == 1, "EHR_SENT",   
     ehrRequestEvent == 1, "EHR_REQUESTED",       
-    isTransferCompatible == 1, "ELIGIBLE_FOR_TRANSFER",        
-    isTransferCompatible == 0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
-    isRegistration ==1,"REGISTRATION",
+    (transCompatStatEvent==1 AND isTransferCompatible == 1), "ELIGIBLE_FOR_TRANSFER",
+    (transCompatStatEvent==1 AND isTransferCompatible == 0), "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
+    isRegistration == 1,"REGISTRATION",
     1=1, "UNKNOWN")
 {% endmacro %}
 
@@ -75,7 +75,11 @@
     registrationStatus == "EHR_REQUESTED" AND totalEhrSendingOutsideSla == 1, "TECHNICAL_FAILURE",
     registrationStatus == "EHR_REQUESTED" AND totalEhrSendingOutsideSla == 0, "IN_PROGRESS",
     registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND totalEhrRequestingOutsideSla == 1, "TECHNICAL_FAILURE",
-    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND totalEhrRequestingOutsideSla == 0, "IN_PROGRESS",  
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND totalEhrRequestingOutsideSla == 0, "IN_PROGRESS",
+    registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
+    registrationStatus == "REGISTRATION" AND is_dts_matched==0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
+    
+
 
     
    
