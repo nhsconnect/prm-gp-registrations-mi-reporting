@@ -47,8 +47,6 @@ def savedsearch(test_query):
     return "search "+test_query
 
 
-
-
 def test_outcome_successful_integration():
 
     # Arrange
@@ -212,25 +210,26 @@ def test_outcome_technical_failure_2():
     # Arrange
     index_name, index = splunk_index.create(service)
 
-    # reporting window       
-    report_start = datetime.today().date().replace(day=1)   
-    report_end = datetime.today().date().replace(day=31)    
-    
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
+
     try:
 
-         # test requires a datetime less than 24hrs
+        # test requires a datetime less than 24hrs
         now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
         LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
         now_minus_25_hours = datetime.today() - timedelta(hours=25, minutes=0)
-        LOG.info(f"now_minus_25_hours: {now_minus_25_hours}")  
+        LOG.info(f"now_minus_25_hours: {now_minus_25_hours}")
 
         # Outside SLA
         index.submit(
             json.dumps(
                 create_sample_event(
                     conversation_id='outside_sla_24_hours',
-                    registration_event_datetime=now_minus_25_hours.strftime("%Y-%m-%dT%H:%M:%S"), # needs to be outside 24 hours
+                    registration_event_datetime=now_minus_25_hours.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),  # needs to be outside 24 hours
                     event_type=EventType.EHR_RESPONSES.value,
                     sendingPracticeSupplierName="EMIS",
                     requestingPracticeSupplierName="TPP"
@@ -243,7 +242,8 @@ def test_outcome_technical_failure_2():
             json.dumps(
                 create_sample_event(
                     conversation_id='inside_sla_24_hours',
-                    registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"), # needs to be within 24 hours
+                    registration_event_datetime=now_minus_23_hours.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),  # needs to be within 24 hours
                     event_type=EventType.EHR_RESPONSES.value,
                     sendingPracticeSupplierName="EMIS",
                     requestingPracticeSupplierName="TPP"
@@ -267,9 +267,8 @@ def test_outcome_technical_failure_2():
         # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
         assert jq.first(
             '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
-      
 
-    finally:        
+    finally:
         splunk_index.delete(index_name)
 
 
@@ -282,11 +281,11 @@ def test_outcome_in_progress_1():
 
     # Arrange
 
-    index_name, index = splunk_index.create(service)   
+    index_name, index = splunk_index.create(service)
 
-    # reporting window       
-    report_start = datetime.today().date().replace(day=1)   
-    report_end = datetime.today().date().replace(day=31)     
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
 
     try:
 
@@ -324,11 +323,12 @@ def test_outcome_in_progress_1():
             json.dumps(
                 create_sample_event(
                     conversation_id=conversation_id,
-                    registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"),
+                    registration_event_datetime=now_minus_23_hours.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),
                     event_type=EventType.EHR_RESPONSES.value
                 )),
             sourcetype="myevent")
-        
+
         # test 1.b - outside SLA
 
         conversation_id = 'test_outcome_in_progress_outside_sla'
@@ -382,9 +382,9 @@ def test_outcome_in_progress_1():
         assert jq.first(
             '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
 
-
     finally:
         splunk_index.delete(index_name)
+
 
 def test_outcome_technical_failure_3():
     '''   
@@ -394,20 +394,18 @@ def test_outcome_technical_failure_3():
 
     # Arrange
 
-    index_name, index = splunk_index.create(service)   
+    index_name, index = splunk_index.create(service)
 
-    # reporting window       
-    report_start = datetime.today().date().replace(day=1)   
-    report_end = datetime.today().date().replace(day=31)     
-   
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
 
     try:
 
         # test 1.a - outside SLA
 
-        conversation_id = 'test_outcome_technical_failure_3_outside_sla'      
+        conversation_id = 'test_outcome_technical_failure_3_outside_sla'
 
-       
         index.submit(
             json.dumps(
                 create_sample_event(
@@ -415,32 +413,31 @@ def test_outcome_technical_failure_3():
                     registration_event_datetime="2023-05-02T10:00:00",
                     event_type=EventType.EHR_REQUESTS.value
                 )),
-            sourcetype="myevent")      
-        
+            sourcetype="myevent")
+
         # test 1.b - inside SLA
 
         # Notes-
         # use new create_date_time helper to generate event requested datetime inside the sla of 20mins
         # test should still pass as only looking for outside SLA.
 
-        # 
+        #
 
-        conversation_id = 'test_outcome_technical_failure_3_inside_sla'   
+        conversation_id = 'test_outcome_technical_failure_3_inside_sla'
 
-         # test requires a datetime less than 24hrs
+        # test requires a datetime less than 24hrs
         now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
-        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")   
+        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
-       
         index.submit(
             json.dumps(
                 create_sample_event(
                     conversation_id=conversation_id,
-                    registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                    registration_event_datetime=now_minus_18_mins.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),
                     event_type=EventType.EHR_REQUESTS.value
                 )),
-            sourcetype="myevent") 
-        
+            sourcetype="myevent")
 
         # Act
 
@@ -456,13 +453,13 @@ def test_outcome_technical_failure_3():
         telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
         LOG.info(f'telemetry: {telemetry}')
 
-        # Assert - 
+        # Assert -
         assert jq.first(
             '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
 
-
     finally:
         splunk_index.delete(index_name)
+
 
 def test_outcome_in_progress_2():
     '''
@@ -473,11 +470,11 @@ def test_outcome_in_progress_2():
 
     # Arrange
 
-    index_name, index = splunk_index.create(service)   
+    index_name, index = splunk_index.create(service)
 
-    # reporting window       
-    report_start = datetime.today().date().replace(day=1)   
-    report_end = datetime.today().date().replace(day=31)     
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
 
     try:
 
@@ -487,20 +484,21 @@ def test_outcome_in_progress_2():
 
         # test requires a datetime less than 20mins
         now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
-        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")       
+        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
         index.submit(
             json.dumps(
                 create_sample_event(
                     conversation_id=conversation_id,
-                    registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                    registration_event_datetime=now_minus_18_mins.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),
                     event_type=EventType.EHR_REQUESTS.value
                 )),
-            sourcetype="myevent")       
-        
+            sourcetype="myevent")
+
         # test 1.b - outside SLA
 
-        conversation_id = 'test_outcome_in_progress_2_outside_sla'       
+        conversation_id = 'test_outcome_in_progress_2_outside_sla'
 
         index.submit(
             json.dumps(
@@ -509,7 +507,7 @@ def test_outcome_in_progress_2():
                     registration_event_datetime="2023-05-01T05:00:00",
                     event_type=EventType.EHR_REQUESTS.value
                 )),
-            sourcetype="myevent")       
+            sourcetype="myevent")
 
         # Act
 
@@ -529,8 +527,83 @@ def test_outcome_in_progress_2():
         assert jq.first(
             '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "1" )', telemetry)
 
-
     finally:
         splunk_index.delete(index_name)
 
+
 def test_technical_failure_4():
+    '''
+    This test requires a TRANSFER_COMPATIBILITY_STATUSES event with no further events within 20 mins to generate an EHR_REQUESTING_OUTSIDE_SLA = true status (test 1.a).
+    Test (1.b) is there to validate the test 1.a and generates and event within 20mins to generate an EHR_REQUESTING_OUTSIDE_SLA = false.
+    Registraion status for this test should be ELIGIBLE_FOR_TRANSFER.    
+    '''
+
+    # Arrange
+
+    index_name, index = splunk_index.create(service)
+
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
+
+    try:
+
+        # test 1.a - outside SLA
+
+        conversation_id = 'test_technical_failure_4_outside_sla'
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime="2023-05-01T04:00:00",
+                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                    payload=create_transfer_compatibility_payload(
+                        internalTransfer=False,
+                        transferCompatible=True
+                    )
+                )),
+            sourcetype="myevent")
+
+        # test 1.b - inside SLA
+
+        # test requires a datetime less than 20mins
+        now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+        LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
+
+        conversation_id = 'test_technical_failure_4_inside_sla'
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=now_minus_18_mins.strftime(
+                        "%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                    payload=create_transfer_compatibility_payload(
+                        internalTransfer=False,
+                        transferCompatible=True
+                    )
+                )),
+            sourcetype="myevent")
+
+        # Act
+
+        test_query = get_search('gp2gp_outcome_report')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert -
+        assert jq.first(
+            '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
+
+    finally:
+        splunk_index.delete(index_name)

@@ -74,6 +74,7 @@
     registrationStatus == "EHR_SENT" AND totalTransferTimeOutsideSla24Hours == 0, "IN_PROGRESS",
     registrationStatus == "EHR_REQUESTED" AND totalEhrSendingOutsideSla == 1, "TECHNICAL_FAILURE",
     registrationStatus == "EHR_REQUESTED" AND totalEhrSendingOutsideSla == 0, "IN_PROGRESS",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND totalEhrRequestingOutsideSla == 1, "TECHNICAL_FAILURE",
     
    
     
