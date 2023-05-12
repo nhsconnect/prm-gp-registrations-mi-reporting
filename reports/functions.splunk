@@ -84,6 +84,7 @@
 
 {% macro calculate_integration_sla_status() %}
 
-| eval integratedUnder8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
+| eval integratedUnder8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)
+| eval integratedOver8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime > relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
    
 {% endmacro %}
