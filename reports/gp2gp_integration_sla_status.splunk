@@ -32,4 +32,5 @@ calculate_integration_sla_status %}
 
 
 | stats 
-    count(eval(integratedUnder8Days ==1)) as total_integrated_under_8_days
+    count(eval(integratedUnder8Days == 1)) as total_integrated_under_8_days
+    count(eval(integratedOver8Days == 1)) as total_integrated_over_8_days

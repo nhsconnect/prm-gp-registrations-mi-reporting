@@ -125,3 +125,83 @@ def test_integrated_under_8_days():
 
     finally:
         splunk_index.delete(index_name)
+
+def test_integrated_over_8_days():
+    # Arrange
+
+    index_name, index = splunk_index.create(service)
+
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
+
+    try:              
+
+         # test - #1.a - outside SLA - integrated over 8 days     
+
+        conversation_id = 'test_integrated_over_8_days'
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+        
+        #registration_event_datetime must be over 8 days from EHR_RESPONSE event datetime.        
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"), 
+                    event_type=EventType.EHR_INTEGRATIONS.value                    
+                )),
+            sourcetype="myevent")
+
+        # test - #1.b - within SLA - integrated under 8 days
+
+        conversation_id = 'test_integrated_under_8_days'
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+        
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_INTEGRATIONS.value                    
+                )),
+            sourcetype="myevent")
+        
+       
+       
+        # Act
+
+        test_query = get_search('gp2gp_integration_sla_status')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert
+        assert jq.first(
+            '.[] ' +
+            '| select( .total_integrated_over_8_days=="1" )', telemetry)
+
+    finally:
+        splunk_index.delete(index_name)
