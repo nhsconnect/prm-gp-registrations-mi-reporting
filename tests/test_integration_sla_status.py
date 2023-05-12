@@ -205,3 +205,169 @@ def test_integrated_over_8_days():
 
     finally:
         splunk_index.delete(index_name)
+
+
+def test_not_integrated_over_8_days():
+    # Arrange
+
+    index_name, index = splunk_index.create(service)
+
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
+
+    try:              
+
+         # test - #1.a - outside SLA - not integrated over 8 days
+
+        conversation_id = 'test_not_integrated_over_8_days'
+
+        # registration_event_datetime must be more than 8 days from now
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+        
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
+                )),
+            sourcetype="myevent")  
+
+        # test - #1.b - within SLA - no integrated under 8 days 
+
+        conversation_id = 'test_not_integrated_under_8_days'
+
+        # registration_event_datetime must be less than 8 days from now
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+                
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
+                )),
+            sourcetype="myevent")      
+        
+       
+       
+        # Act
+
+        test_query = get_search('gp2gp_integration_sla_status')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert
+        assert jq.first(
+            '.[] ' +
+            '| select( .total_not_integrated_over_8_days=="1" )', telemetry)
+
+    finally:
+        splunk_index.delete(index_name)
+
+
+def test_not_integrated_under_8_days():
+    # Arrange
+
+    index_name, index = splunk_index.create(service)
+
+    # reporting window
+    report_start = datetime.today().date().replace(day=1)
+    report_end = datetime.today().date().replace(day=31)
+
+    try:              
+
+         # test - #1.a - inside SLA - not integrated under 8 days
+
+        conversation_id = 'test_not_integrated_under_8_days'
+
+        # registration_event_datetime must be less than 8 days from now
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+                
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
+                )),
+            sourcetype="myevent") 
+
+ 
+
+        # test - #1.b - within SLA - no integrated over 8 days 
+
+     
+        conversation_id = 'test_not_integrated_over_8_days'
+
+        # registration_event_datetime must be more than 8 days from now
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.EHR_RESPONSES.value                    
+                )),
+            sourcetype="myevent")
+        
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id=conversation_id,
+                    registration_event_datetime=(datetime.now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
+                )),
+            sourcetype="myevent") 
+       
+       
+        # Act
+
+        test_query = get_search('gp2gp_integration_sla_status')
+        test_query = set_variables_on_query(test_query, {
+            "$index$": index_name,
+            "$report_start$": report_start.strftime("%Y-%m-%d"),
+            "$report_end$": report_end.strftime("%Y-%m-%d")
+        })
+
+        sleep(2)
+
+        telemetry = get_telemetry_from_splunk(savedsearch(test_query), service)
+        LOG.info(f'telemetry: {telemetry}')
+
+        # Assert
+        assert jq.first(
+            '.[] ' +
+            '| select( .total_not_integrated_under_8_days=="1" )', telemetry)
+
+    finally:
+        splunk_index.delete(index_name)

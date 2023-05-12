@@ -1,4 +1,4 @@
-{% macro filter_non_transfers() %}
+splunk{% macro filter_non_transfers() %}
 | where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted AND isTransferCompatible==1)
 {% endmacro %}
 
@@ -86,5 +86,7 @@
 
 | eval integratedUnder8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)
 | eval integratedOver8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime > relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
+| eval notIntegratedOver8Days = if(registrationStatus == "READY_TO_INTEGRATE" AND now() > relative_time(ehrResponseEventDateTime, "+8d") ,1,0) 
+| eval notIntegratedUnder8Days = if(registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
    
 {% endmacro %}
