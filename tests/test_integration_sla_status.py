@@ -45,7 +45,7 @@ def get_search(search_name):
 def savedsearch(test_query):
     return "search "+test_query
 
-def test_integrated_within_8_days():
+def test_integrated_under_8_days():
     # Arrange
 
     index_name, index = splunk_index.create(service)
@@ -60,9 +60,9 @@ def test_integrated_within_8_days():
         ehr_response_datetime = datetime.now().replace(day=1)
         ehr_integrated_datetime = datetime.now().replace(day=7)        
 
-        # test - #1.a - within SLA - integrated within 8 days
+        # test - #1.a - within SLA - integrated under 8 days
 
-        conversation_id = 'test_integrated_within_8_days'
+        conversation_id = 'test_integrated_under_8_days'
 
         index.submit(
             json.dumps(
