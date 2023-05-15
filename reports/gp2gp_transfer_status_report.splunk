@@ -3,6 +3,7 @@ index="$index$"
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
 filter_non_transfers,
+calculate_internal_transfers,
 exclude_internal_transfers,
 set_time_to_registration_datetime,
 filter_reporting_window,
@@ -18,9 +19,16 @@ calculate_sla_status %}
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
 {{ calculate_transfer_compatibility() }}
+{{ calculate_internal_transfers() }}
 {{ exclude_internal_transfers() }}
 
+
+
 | transaction conversationId keeporphans=t
+
+
+
+
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
 
@@ -33,7 +41,8 @@ calculate_sla_status %}
 
 
 | eventstats count as total_eligible_for_electronic_transfer
-| eventstats count(eval(outcome=="SUCCESS")) as count_successfully_integrated
+
+| eventstats count(eval(outcome=="SUCCESSFUL_INTEGRATION")) as count_successfully_integrated
 | eventstats count(eval(outcome=="REJECTED")) as count_rejected
 | eventstats count(eval(outcome=="AWAITING_INTEGRATION")) as count_awaiting_integration
 
@@ -56,5 +65,5 @@ calculate_sla_status %}
     first(slaStatus) as slaStatus,
     first(twentyFourHoursAgo) as twentyFourHoursAgo, 
     first(transCompatStatEventDateTime) as transCompatStatEventDateTime,
-    values(errorHistory) as errorHistory,       
-    dc(conversationId) by scenario
+    ```values(errorHistory) as errorHistory,       
+    dc(conversationId) by scenario```
