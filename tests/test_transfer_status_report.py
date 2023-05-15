@@ -8,6 +8,7 @@ from helpers.splunk \
     import get_telemetry_from_splunk,  create_sample_event, set_variables_on_query, \
     create_integration_payload, create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
+from datetime import datetime, timedelta
 
 
 class TestTransferStatusReport(TestBase):
@@ -581,6 +582,100 @@ class TestTransferStatusReport(TestBase):
         index_name, index = self.create_index()
 
         try:
+              # test requires a datetime less than 20mins
+            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
+
+            # test_#1 - compatible and within SLA
+            conversationId = 'test_in_progress_within_sla'
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")           
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_18_mins.strftime(
+                            "%Y-%m-%dT%H:%M:%S"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+            
+            # test_#2 - compatible and within SLA
+
+            conversationId = 'test_in_progress_within_sla_2'
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_18_mins.strftime(
+                            "%Y-%m-%dT%H:%M:%S"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+            
+            # test_#3 - compatible but outside SLA
+           
+
+            conversationId = 'test_in_progress_outside_sla'
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+
 
             # Act
 
@@ -601,9 +696,8 @@ class TestTransferStatusReport(TestBase):
             assert jq.first(
                 '.[] ' +
                 '| select( .total_eligible_for_electronic_transfer=="3" )' +
-                '| select( .count_awaiting_integration == "2")' +
-                '| select( .percentage_awaiting_integration == "66.67")' +
-                '| select( .percentage_rejected == "33.33")', telemetry)
+                '| select( .count_in_progress == "2")' +
+                '| select( .percentage_in_progress == "66.67")', telemetry)
 
         finally:
             self.delete_index(index_name)
