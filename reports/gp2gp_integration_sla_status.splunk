@@ -1,0 +1,38 @@
+index="$index$"
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+{% from 'functions.splunk' import
+calculate_transfer_compatibility,
+filter_non_transfers,
+calculate_internal_transfers,
+exclude_internal_transfers,
+set_time_to_registration_datetime,
+filter_reporting_window,
+calculate_outcome,
+calculate_registration_status,
+calculate_integration_sla_status %}
+
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| spath output=integration_outcome path=payload{}.integration.outcome
+| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
+| eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
+| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
+| eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
+| eval ehrIntegrationEventDateTime = if(eventType="EHR_INTEGRATIONS",_time, null())
+
+{{ calculate_transfer_compatibility() }}
+{{ calculate_internal_transfers() }}
+{{ exclude_internal_transfers() }}
+
+| transaction conversationId keeporphans=t
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+
+{{ calculate_registration_status() }}
+{{ calculate_integration_sla_status() }}
+
+
+| stats 
+    count(eval(integratedUnder8Days == 1)) as total_integrated_under_8_days
+    count(eval(integratedOver8Days == 1)) as total_integrated_over_8_days
+    count(eval(notIntegratedOver8Days == 1)) as total_not_integrated_over_8_days
+    count(eval(notIntegratedUnder8Days == 1)) as total_not_integrated_under_8_days
