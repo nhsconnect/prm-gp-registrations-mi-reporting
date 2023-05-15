@@ -1,4 +1,4 @@
-splunk{% macro filter_non_transfers() %}
+{% macro filter_non_transfers() %}
 | where eventType!="TRANSFER_COMPATIBILITY_STATUSES" OR (eventType=="TRANSFER_COMPATIBILITY_STATUSES" AND registrationEventDateTime==transCompatStatEventDateTimeFormatted AND isTransferCompatible==1)
 {% endmacro %}
 
