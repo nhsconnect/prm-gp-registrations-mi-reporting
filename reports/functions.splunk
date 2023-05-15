@@ -81,3 +81,12 @@
     registrationStatus == "REGISTRATION" AND is_dts_matched==0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",    
     1=1, "UNKNOWN")
 {% endmacro %}
+
+{% macro calculate_integration_sla_status() %}
+
+| eval integratedUnder8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)
+| eval integratedOver8Days = if(registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime > relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
+| eval notIntegratedOver8Days = if(registrationStatus == "READY_TO_INTEGRATE" AND now() > relative_time(ehrResponseEventDateTime, "+8d") ,1,0) 
+| eval notIntegratedUnder8Days = if(registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
+   
+{% endmacro %}
