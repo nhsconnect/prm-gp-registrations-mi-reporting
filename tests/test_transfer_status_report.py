@@ -12,9 +12,11 @@ from helpers.splunk \
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from .base_test_report import splunk_index
+from dotenv import load_dotenv
 
 LOG = logging.getLogger(__name__)
 
+load_dotenv()
 
 class EventType(Enum):
     READY_TO_INTEGRATE_STATUSES = 'READY_TO_INTEGRATE_STATUSES'
@@ -26,12 +28,11 @@ class EventType(Enum):
     TRANSFER_COMPATIBILITY_STATUSES = 'TRANSFER_COMPATIBILITY_STATUSES'
 
 
-splunk_token = os.environ['SPLUNK_TOKEN']
-
 # defaults to localhost - see README
 splunk_host = os.environ.get('SPLUNK_HOST')
 
-service = client.connect(token=splunk_token)
+#service = client.connect(token=splunk_token)
+service = client.connect(username=os.environ.get('SPLUNK_ADMIN_USERNAME'))
 
 
 def get_search(search_name):
