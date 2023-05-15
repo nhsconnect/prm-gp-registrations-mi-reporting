@@ -98,207 +98,210 @@ class TestTransferStatusReport(TestBase):
 
         index_name, index = self.create_index()
 
-        # successfully integrated - #1
+        try:
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_1',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #1
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_1',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_1',
-                    registration_event_datetime="2023-03-10T08:00:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(outcome="INTEGRATED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # successfully integrated - #2
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_1',
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="INTEGRATED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_2',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #2
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_2',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_2',
-                    registration_event_datetime="2023-03-10T08:10:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="INTEGRATED_AND_SUPPRESSED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # successfully integrated - #3
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_2',
+                        registration_event_datetime="2023-03-10T08:10:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="INTEGRATED_AND_SUPPRESSED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_3',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #3
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_3',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_3',
-                    registration_event_datetime="2023-03-10T08:20:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="SUPPRESSED_AND_REACTIVATED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # rejected
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_3',
+                        registration_event_datetime="2023-03-10T08:20:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="SUPPRESSED_AND_REACTIVATED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_rejected',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # rejected
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_rejected',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_rejected',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(outcome="REJECTED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # failed to integrate # 1
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_rejected',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="REJECTED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_failed_to_integrate_#1',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # failed to integrate # 1
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_failed_to_integrate_#1',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_failed_to_integrate_#1',
-                    registration_event_datetime="2023-03-10T09:10:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="FAILED_TO_INTEGRATE")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # failed to integrate # 2
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_failed_to_integrate_#1',
+                        registration_event_datetime="2023-03-10T09:10:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_failed_to_integrate_#2',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # failed to integrate # 2
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_failed_to_integrate_#2',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_successfully_integrated_failed_to_integrate_#2',
-                    registration_event_datetime="2023-03-10T09:10:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="FAILED_TO_INTEGRATE")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # Act
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_successfully_integrated_failed_to_integrate_#2',
+                        registration_event_datetime="2023-03-10T09:10:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
 
-        test_query = self.get_search('gp2gp_transfer_status_report')
-        test_query = set_variables_on_query(test_query, {
-            "$index$": index_name,
-            "$report_start$": "2023-03-01",
-            "$report_end$": "2023-03-31"
-        })
+            # Act
 
-        sleep(2)
+            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": "2023-03-01",
+                "$report_end$": "2023-03-31"
+            })
 
-        telemetry = get_telemetry_from_splunk(
-            self.savedsearch(test_query), self.splunk_service)
-        self.LOG.info(f'telemetry: {telemetry}')
+            sleep(2)
 
-        # Assert
-        assert jq.first(
-            '.[] ' +
-            '| select( .total_eligible_for_electronic_transfer=="6" )' +
-            '| select( .count_successfully_integrated == "3")' +
-            '| select( .percentage_successfully_integrated == "50.00")', telemetry)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
 
-        self.delete_index(index_name)
+            # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_eligible_for_electronic_transfer=="6" )' +
+                '| select( .count_successfully_integrated == "3")' +
+                '| select( .percentage_successfully_integrated == "50.00")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
 
     def test_rejected(self):
 
@@ -306,147 +309,150 @@ class TestTransferStatusReport(TestBase):
 
         index_name, index = self.create_index()
 
-        # successfully integrated - #1
+        try:
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_1',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #1
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_1',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_1',
-                    registration_event_datetime="2023-03-10T08:00:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(outcome="INTEGRATED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # successfully integrated - #2
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_1',
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="INTEGRATED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_2',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #2
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_2',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_2',
-                    registration_event_datetime="2023-03-10T08:10:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="INTEGRATED_AND_SUPPRESSED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # successfully integrated - #3
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_2',
+                        registration_event_datetime="2023-03-10T08:10:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="INTEGRATED_AND_SUPPRESSED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_3',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # successfully integrated - #3
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_3',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_3',
-                    registration_event_datetime="2023-03-10T08:20:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(
-                        outcome="SUPPRESSED_AND_REACTIVATED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # rejected
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_3',
+                        registration_event_datetime="2023-03-10T08:20:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="SUPPRESSED_AND_REACTIVATED")
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_4',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # rejected
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_4',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'test_rejected_4',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(outcome="REJECTED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # Act
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_rejected_4',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="REJECTED")
+                    )),
+                sourcetype="myevent")
 
-        test_query = self.get_search('gp2gp_transfer_status_report')
-        test_query = set_variables_on_query(test_query, {
-            "$index$": index_name,
-            "$report_start$": "2023-03-01",
-            "$report_end$": "2023-03-31"
-        })
+            # Act
 
-        sleep(2)
+            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": "2023-03-01",
+                "$report_end$": "2023-03-31"
+            })
 
-        telemetry = get_telemetry_from_splunk(
-            self.savedsearch(test_query), self.splunk_service)
-        self.LOG.info(f'telemetry: {telemetry}')
+            sleep(2)
 
-        # Assert
-        assert jq.first(
-            '.[] ' +
-            '| select( .total_eligible_for_electronic_transfer=="4" )' +
-            '| select( .count_rejected == "1")' +
-            '| select( .percentage_rejected == "25.00")', telemetry)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
 
-        self.delete_index(index_name)
+            # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_eligible_for_electronic_transfer=="4" )' +
+                '| select( .count_rejected == "1")' +
+                '| select( .percentage_rejected == "25.00")', telemetry)
+        
+        finally:
+            self.delete_index(index_name)
 
     def test_awaiting_integration(self):
 
@@ -454,144 +460,150 @@ class TestTransferStatusReport(TestBase):
 
         index_name, index = self.create_index()
 
-        # awaiting_integration - #1
+        try:
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_1',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # awaiting_integration - #1
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_1',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_1',
-                    registration_event_datetime="2023-03-10T09:10:00",
-                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # awaiting_integration - #2
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_1',
+                        registration_event_datetime="2023-03-10T09:10:00",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_2',
-                    registration_event_datetime="2023-03-10T09:20:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # awaiting_integration - #2
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_2',
+                        registration_event_datetime="2023-03-10T09:20:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_2',
-                    registration_event_datetime="2023-03-10T09:30:00",
-                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # rejected
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_2',
+                        registration_event_datetime="2023-03-10T09:30:00",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_3',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                    sendingPracticeSupplierName="EMIS",
-                    requestingPracticeSupplierName="TPP",
-                    payload=create_transfer_compatibility_payload(
-                        internalTransfer=False,
-                        transferCompatible=True,
-                        reason="test1"
-                    )
+            # rejected
 
-                )),
-            sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_3',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-        index.submit(
-            json.dumps(
-                create_sample_event(
-                    'awaiting_integration_3',
-                    registration_event_datetime="2023-03-10T09:00:00",
-                    event_type=EventType.EHR_INTEGRATIONS.value,
-                    payload=create_integration_payload(outcome="REJECTED")
-                )),
-            sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
-        # Act
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'awaiting_integration_3',
+                        registration_event_datetime="2023-03-10T09:00:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="REJECTED")
+                    )),
+                sourcetype="myevent")
 
-        test_query = self.get_search('gp2gp_transfer_status_report')
-        test_query = set_variables_on_query(test_query, {
-            "$index$": index_name,
-            "$report_start$": "2023-03-01",
-            "$report_end$": "2023-03-31"
-        })
+            # Act
 
-        sleep(2)
+            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": "2023-03-01",
+                "$report_end$": "2023-03-31"
+            })
 
-        telemetry = get_telemetry_from_splunk(
-            self.savedsearch(test_query), self.splunk_service)
-        self.LOG.info(f'telemetry: {telemetry}')
+            sleep(2)
 
-        # Assert
-        assert jq.first(
-            '.[] ' +
-            '| select( .total_eligible_for_electronic_transfer=="3" )' +
-            '| select( .count_awaiting_integration == "2")' +
-            '| select( .percentage_awaiting_integration == "66.67")' +
-            '| select( .percentage_rejected == "33.33")', telemetry)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
 
-        self.delete_index(index_name)
+            # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_eligible_for_electronic_transfer=="3" )' +
+                '| select( .count_awaiting_integration == "2")' +
+                '| select( .percentage_awaiting_integration == "66.67")' +
+                '| select( .percentage_rejected == "33.33")', telemetry)
 
-    @pytest.mark.skip(reason="work in progress...")
+        finally:
+            self.delete_index(index_name)
+
+
     def test_in_progress(self):
 
         # Arrange
 
         index_name, index = self.create_index()
 
-        # Act
+        try:
 
-        test_query = self.get_search('gp2gp_transfer_status_report')
-        test_query = set_variables_on_query(test_query, {
-            "$index$": index_name,
-            "$report_start$": "2023-03-01",
-            "$report_end$": "2023-03-31"
-        })
+            # Act
 
-        sleep(2)
+            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": "2023-03-01",
+                "$report_end$": "2023-03-31"
+            })
 
-        telemetry = get_telemetry_from_splunk(
-            self.savedsearch(test_query), self.splunk_service)
-        self.LOG.info(f'telemetry: {telemetry}')
+            sleep(2)
 
-        # Assert
-        assert jq.first(
-            '.[] ' +
-            '| select( .total_eligible_for_electronic_transfer=="3" )' +
-            '| select( .count_awaiting_integration == "2")' +
-            '| select( .percentage_awaiting_integration == "66.67")' +
-            '| select( .percentage_rejected == "33.33")', telemetry)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
 
-        self.delete_index(index_name)
+            # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_eligible_for_electronic_transfer=="3" )' +
+                '| select( .count_awaiting_integration == "2")' +
+                '| select( .percentage_awaiting_integration == "66.67")' +
+                '| select( .percentage_rejected == "33.33")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
