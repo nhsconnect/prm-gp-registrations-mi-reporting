@@ -45,10 +45,12 @@ calculate_sla_status %}
 | eventstats count(eval(outcome=="SUCCESSFUL_INTEGRATION")) as count_successfully_integrated
 | eventstats count(eval(outcome=="REJECTED")) as count_rejected
 | eventstats count(eval(outcome=="AWAITING_INTEGRATION")) as count_awaiting_integration
+| eventstats count(eval(outcome=="IN_PROGRESS")) as count_in_progress
 
 | eval percentage_successfully_integrated=round((count_successfully_integrated/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_rejected=round((count_rejected/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_awaiting_integration=round((count_awaiting_integration/total_eligible_for_electronic_transfer) * 100,2)
+| eval percentage_in_progress=round((count_in_progress/total_eligible_for_electronic_transfer) *100,2)
 | stats 
     first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
     first(count_successfully_integrated) as count_successfully_integrated,
@@ -57,6 +59,8 @@ calculate_sla_status %}
     first(percentage_rejected) as percentage_rejected,
     first(count_awaiting_integration) as count_awaiting_integration,
     first(percentage_awaiting_integration) as percentage_awaiting_integration
+    first(count_in_progress) as count_in_progress
+    first(percentage_in_progress) as percentage_in_progress
 
 
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
