@@ -701,3 +701,130 @@ class TestTransferStatusReport(TestBase):
 
         finally:
             self.delete_index(index_name)
+
+
+    def test_transfer_status_report_technical_failure(self):
+
+        # Arrange
+
+        index_name, index = self.create_index()
+
+        try:            
+
+            # test_#1 - compatible and within SLA
+            conversationId = 'test_technical_failure_failed_to_integrate'
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T08:00:00",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True                            
+                        )
+
+                    )),
+                sourcetype="myevent")           
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime="2023-03-10T08:10:00",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+            
+            # test_#2 - compatible and TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = true
+
+            # test requires a datetime greater than 24 hours
+            now_minus_25_hours = datetime.today() - timedelta(hours=25, minutes=0)
+            self.LOG.info(f"now_minus_25_mins: {now_minus_25_hours}")
+
+            conversationId = 'test_technical_failure_TOTAL_TRANSFER_TIME_OUTSIDE_SLA_24_HOURS'
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_25_hours.strftime("%Y-%m-%dT%H:%M:%S"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+            
+            # # test_#3 - compatible but outside SLA
+           
+
+            # conversationId = 'test_in_progress_outside_sla'
+
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime="2023-03-10T08:00:00",
+            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+            #             sendingPracticeSupplierName="EMIS",
+            #             requestingPracticeSupplierName="TPP",
+            #             payload=create_transfer_compatibility_payload(
+            #                 internalTransfer=False,
+            #                 transferCompatible=True,
+            #                 reason="test1"
+            #             )
+
+            #         )),
+            #     sourcetype="myevent")
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime="2023-03-10T09:00:00",
+            #             event_type=EventType.EHR_REQUESTS.value
+            #         )),
+            #     sourcetype="myevent")
+
+
+            # Act
+
+            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": "2023-03-01",
+                "$report_end$": "2023-03-31"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_eligible_for_electronic_transfer=="2" )' +
+                '| select( .count_technical_failure == "2")' +
+                '| select( .percentage_technical_failure == "100.00")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
