@@ -9,3 +9,4 @@ splunk_uploader.txt
 build/deployment.zip
 .chalice/deployments
 .venv/
+.env.development
