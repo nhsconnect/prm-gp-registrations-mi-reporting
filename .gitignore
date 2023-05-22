@@ -10,3 +10,4 @@ build/deployment.zip
 .chalice/deployments
 .venv/
 .env.development
+my_query

@@ -46,6 +46,11 @@ class TestBase(ABC):
                             '../reports')
         env = Environment(loader=FileSystemLoader(path))
         template = env.get_template(f'{search_name}.splunk')
+
+        # using with statement
+        with open('my_query', 'w') as file:
+            file.write(template.render())
+
         return template.render()
 
 
