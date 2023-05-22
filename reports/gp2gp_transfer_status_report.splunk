@@ -1,14 +1,17 @@
 index="$index$"
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
 filter_non_transfers,
+calculate_internal_transfers,
 exclude_internal_transfers,
 set_time_to_registration_datetime,
 filter_reporting_window,
 calculate_outcome,
 calculate_registration_status,
 calculate_sla_status %}
+
+{{ set_time_to_registration_datetime() }}
 
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome
@@ -18,9 +21,16 @@ calculate_sla_status %}
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
 {{ calculate_transfer_compatibility() }}
+{{ calculate_internal_transfers() }}
 {{ exclude_internal_transfers() }}
 
+
+
 | transaction conversationId keeporphans=t
+
+
+
+
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
 
@@ -33,13 +43,19 @@ calculate_sla_status %}
 
 
 | eventstats count as total_eligible_for_electronic_transfer
-| eventstats count(eval(outcome=="SUCCESS")) as count_successfully_integrated
+
+| eventstats count(eval(outcome=="SUCCESSFUL_INTEGRATION")) as count_successfully_integrated
 | eventstats count(eval(outcome=="REJECTED")) as count_rejected
 | eventstats count(eval(outcome=="AWAITING_INTEGRATION")) as count_awaiting_integration
+| eventstats count(eval(outcome=="IN_PROGRESS")) as count_in_progress
+| eventstats count(eval(outcome=="TECHNICAL_FAILURE")) as count_technical_failure
 
 | eval percentage_successfully_integrated=round((count_successfully_integrated/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_rejected=round((count_rejected/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_awaiting_integration=round((count_awaiting_integration/total_eligible_for_electronic_transfer) * 100,2)
+| eval percentage_in_progress=round((count_in_progress/total_eligible_for_electronic_transfer) *100,2)
+| eval percentage_technical_failure=round((count_technical_failure/total_eligible_for_electronic_transfer) *100,2)
+
 | stats 
     first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
     first(count_successfully_integrated) as count_successfully_integrated,
@@ -48,6 +64,10 @@ calculate_sla_status %}
     first(percentage_rejected) as percentage_rejected,
     first(count_awaiting_integration) as count_awaiting_integration,
     first(percentage_awaiting_integration) as percentage_awaiting_integration
+    first(count_in_progress) as count_in_progress
+    first(percentage_in_progress) as percentage_in_progress
+    first(count_technical_failure) as count_technical_failure
+    first(percentage_technical_failure) as percentage_technical_failure
 
 
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
@@ -55,6 +75,4 @@ calculate_sla_status %}
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
     first(slaStatus) as slaStatus,
     first(twentyFourHoursAgo) as twentyFourHoursAgo, 
-    first(transCompatStatEventDateTime) as transCompatStatEventDateTime,
-    values(errorHistory) as errorHistory,       
-    dc(conversationId) by scenario
+    first(transCompatStatEventDateTime) as transCompatStatEventDateTime    
