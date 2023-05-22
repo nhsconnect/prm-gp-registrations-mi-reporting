@@ -73,6 +73,17 @@ calculate_sla_status %}
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
     first(registrationStatus) as registrationStatus,
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
-    first(slaStatus) as slaStatus,
-    first(twentyFourHoursAgo) as twentyFourHoursAgo, 
-    first(transCompatStatEventDateTime) as transCompatStatEventDateTime    
+    first(slaStatus) as slaStatus
+
+    | table 
+        total_eligible_for_electronic_transfer, 
+        count_successfully_integrated, 
+        percentage_successfully_integrated, 
+        count_rejected, 
+        percentage_rejected, 
+        count_awaiting_integration, 
+        percentage_awaiting_integration, 
+        count_in_progress, 
+        percentage_in_progress, 
+        count_technical_failure, 
+        percentage_technical_failure
