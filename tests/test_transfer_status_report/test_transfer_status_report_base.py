@@ -11,7 +11,7 @@ from tests.test_base import TestBase, EventType
 from datetime import datetime, timedelta
 
 
-class TestTransferStatusReport(TestBase):
+class TestTransferStatusReportBase(TestBase):
 
     def test_total_eligible_for_electronic_transfer(self):
 
@@ -73,7 +73,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -281,7 +281,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -432,7 +432,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -550,7 +550,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -679,7 +679,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -866,7 +866,7 @@ class TestTransferStatusReport(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report')
+            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",

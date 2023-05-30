@@ -1,4 +1,4 @@
-index="$index$"
+{% macro gp2gp_transfer_status_report_snapshot_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -75,15 +75,7 @@ calculate_sla_status %}
     first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
     first(slaStatus) as slaStatus
 
-    | table 
-        total_eligible_for_electronic_transfer, 
-        count_successfully_integrated, 
-        percentage_successfully_integrated, 
-        count_rejected, 
-        percentage_rejected, 
-        count_awaiting_integration, 
-        percentage_awaiting_integration, 
-        count_in_progress, 
-        percentage_in_progress, 
-        count_technical_failure, 
-        percentage_technical_failure
+{% endmacro %}
+
+index="$index$"
+{{ gp2gp_transfer_status_report_snapshot_base() }}
