@@ -39,7 +39,7 @@ def main(event, context):
         splunk_host='localhost',       
         splunk_port = 8089,
         splunk_admin_username = 'admin',      
-        splunk_app_id ='joe_lorenzo_app1'
+        splunk_app_id ='GP2GP_Dashboards'
     )  
 
     print("deploying reports...")
