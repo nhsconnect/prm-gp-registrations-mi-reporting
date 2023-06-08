@@ -17,16 +17,15 @@ def deploy_reports(splunkConfig: SplunkConfig):
     # report files stored in s3 bucket
     # bucket = s3.Bucket(splunkConfig.s3_bucket_name)
 
-    try:
+    try:        
+        
         connectionHanlder = binding.handler(timeout=10)
 
-        service = client.connect(            
-            # scheme=splunkConfig.splunk_scheme,
+        service = client.connect(
             host=splunkConfig.splunk_host,
-            port=splunkConfig.splunk_port,
-            token=splunkConfig.splunk_token,
+            port=splunkConfig.splunk_port,            
             username=splunkConfig.splunk_admin_username,
-            app=splunkConfig.splunk_app_id,
+            # app=splunkConfig.splunk_app_id,
             connectionHanlder=connectionHanlder)
         
         print(f"splunk admin username: {splunkConfig.splunk_admin_username}")
