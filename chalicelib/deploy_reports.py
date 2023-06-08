@@ -25,7 +25,7 @@ def deploy_reports(splunkConfig: SplunkConfig):
             host=splunkConfig.splunk_host,
             port=splunkConfig.splunk_port,
             token=splunkConfig.splunk_token,
-            username=splunkConfig.splunk_admin_username,
+            #username=splunkConfig.splunk_admin_username,
             app=splunkConfig.splunk_app_id,
             connectionHanlder=connectionHanlder)
         
