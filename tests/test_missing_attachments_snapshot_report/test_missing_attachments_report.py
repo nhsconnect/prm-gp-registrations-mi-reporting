@@ -8,7 +8,7 @@ from splunklib import client
 import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
-    create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
+    create_integration_payload,  create_error_payload, create_transfer_compatibility_payload,create_ehr_response_payload
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase, EventType
@@ -93,6 +93,95 @@ class TestMissingAttachments(TestBase):
             
         finally:
             self.delete_index(index_name)
+
+    '''a count where the outcome is READY_TO_INTEGRATE (or later event) and there are no placeholders (EHR Response) 
+    and no document migration failures (document-responses). % - count/ number of transfers * 100.'''
+    def test_transferred_with_no_missing_attachments(self):
+
+        # reporting window
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=30)
+
+        try:
+            # Arrange
+            index_name, index = self.create_index()     
+
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id='test_#1',
+            #             registration_event_datetime=create_date_time(date=report_start,time="09:00:00"),
+            #             event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
+            #         )),
+            #     sourcetype="myevent")       
+
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id='test_#1',
+            #             registration_event_datetime=create_date_time(date=report_start,time="09:30:00"),
+            #             event_type=EventType.EHR_RESPONSES.value,
+            #             payload=create_ehr_response_payload(number_of_placeholders=0)               
+            #         )),
+            #     sourcetype="myevent")
+            
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime=create_date_time(date=report_start,time="09:00:00"),
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
+                    )),
+                sourcetype="myevent")       
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime=create_date_time(date=report_start,time="09:30:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=4)               
+                    )),
+                sourcetype="myevent")
+
+
+            foo =  create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime=create_date_time(date=report_start,time="09:30:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=4))            
+                   
+            print(f"foo: {foo}")
+
+
+            
+
+            # Act
+
+            test_query = self.get_search('gp2gp_missing_attachments_report')
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$report_start$": report_start.strftime("%Y-%m-%d"),
+                "$report_end$": report_end.strftime("%Y-%m-%d")
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')         
+            
+             # Assert
+            assert jq.first(
+                '.[] ' +
+                '| select( .total_records_transfered=="2" )' +
+                '| select( .transferred_with_no_missing_attachments == "1")', telemetry)
+            
+        finally:
+            self.delete_index(index_name)
+
+
+        
+
 
 
 
