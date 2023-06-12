@@ -15,7 +15,7 @@ from tests.test_base import TestBase, EventType
 from helpers.date_helper import create_date_time
 
 
-class TestInternalTransfers(TestBase):
+class TestMissingAttachments(TestBase):
 
     '''a count where the status is READY_TO_INTEGRATE or INTEGRATION.'''
 
