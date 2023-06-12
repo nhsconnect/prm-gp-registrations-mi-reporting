@@ -40,6 +40,28 @@ def get_telemetry_from_splunk(search_query, service) -> None:
     return telemetry
 
 
+def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_placeholders: int = 0) -> dict:
+  
+    placeholders =[]
+
+    for i in range(number_of_placeholders):
+        placeholders.append(
+            {
+                "generatedBy": "PRE_EXISTING",
+                "clinicalType": f"SCANNED_DOCUMENT_{i}",
+                "reason": "FILE_NOT_FOUND",
+                "originalMimeType": "application/pdf"
+            }
+        )
+
+    return {
+        "ehr": {
+            "ehrStructuredSizeBytes": ehrStructuredSizeBytes,
+            "placeholders": placeholders
+        }
+    }
+
+
 def create_integration_payload(outcome=None) -> dict:
     return {
         "integration": {
