@@ -16,6 +16,5 @@ from tests.test_base import TestBase, EventType
 
 class TestTransferStatusTrendingReport(TestBase):
 
-    def test_user_filters(self):     
-
-    
+    def test_user_filters(self):
+        
