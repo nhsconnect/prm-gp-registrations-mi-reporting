@@ -199,7 +199,7 @@ class TestOutcomeTable(TestBase):
 
             # reporting window
             report_start = datetime.today().date().replace(day=1)
-            report_end = datetime.today().date().replace(day=31)            
+            report_end = datetime.today().date().replace(day=28)            
 
             # test requires a datetime less than 24hrs
             now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
@@ -270,7 +270,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
@@ -384,7 +384,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
@@ -460,7 +460,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
@@ -530,7 +530,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
@@ -608,7 +608,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
@@ -686,7 +686,7 @@ class TestOutcomeTable(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
