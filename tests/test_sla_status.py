@@ -23,7 +23,7 @@ class TestSlaStatus(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=31)
+        report_end = datetime.today().date().replace(day=28)
 
         try:
 
