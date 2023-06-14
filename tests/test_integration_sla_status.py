@@ -9,6 +9,7 @@ import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
+from helpers.datetime_helper import datetime_utc_now
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase, EventType
@@ -22,14 +23,14 @@ class TestIntegrationSlaStatus(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:       
 
             # test requires a date difference of less than 8 days.
-            ehr_response_datetime = datetime.now().replace(day=1)
-            ehr_integrated_datetime = datetime.now().replace(day=7)        
+            ehr_response_datetime = datetime_utc_now().replace(day=1)
+            ehr_integrated_datetime = datetime_utc_now().replace(day=7)        
 
             # test - #1.a - within SLA - integrated under 8 days
 
@@ -61,7 +62,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -70,7 +71,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -103,8 +104,8 @@ class TestIntegrationSlaStatus(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:              
 
@@ -116,7 +117,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -126,7 +127,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=(datetime_utc_now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"), 
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -139,7 +140,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -148,7 +149,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -184,8 +185,8 @@ class TestIntegrationSlaStatus(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:              
 
@@ -198,7 +199,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -207,7 +208,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent")  
@@ -221,7 +222,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -230,7 +231,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"), 
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent")      
@@ -266,8 +267,8 @@ class TestIntegrationSlaStatus(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:              
 
@@ -280,7 +281,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -289,7 +290,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"), 
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent") 
@@ -306,7 +307,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -315,7 +316,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime.now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent") 
