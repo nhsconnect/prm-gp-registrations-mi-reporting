@@ -9,6 +9,7 @@ from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_transfer_compatibility_payload
 from datetime import datetime, timedelta
+from helpers.datetime_helper import datetime_utc_now
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase,EventType
 
@@ -22,17 +23,17 @@ class TestSlaStatus(TestBase):
         index_name, index = self.create_index()       
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
             # reporting window
-            yesterday = datetime.today() - timedelta(hours=24)
-            tomorrow = datetime.today() + timedelta(hours=24)
+            yesterday = datetime_utc_now() - timedelta(hours=24)
+            tomorrow = datetime_utc_now() + timedelta(hours=24)
 
             # test requires a datetime less than 24hrs
-            now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_20_mins: {now_minus_23_hours}")
 
             # test - #1
@@ -204,7 +205,7 @@ class TestSlaStatus(TestBase):
         try:
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             # test - #1 - outside sla
@@ -491,7 +492,7 @@ class TestSlaStatus(TestBase):
             # test #1.b - Eligibile for transfer inside SLA
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
@@ -552,14 +553,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_inside_sla_test#2.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -635,14 +636,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#3.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -718,14 +719,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#4.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -790,14 +791,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#5.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
