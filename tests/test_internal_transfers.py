@@ -28,7 +28,7 @@ class TestInternalTransfers(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_internal_transfer_test#1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
@@ -42,7 +42,7 @@ class TestInternalTransfers(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_internal_transfer_test#2',
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
