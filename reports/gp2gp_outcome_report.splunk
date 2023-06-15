@@ -1,5 +1,5 @@
 index="$index$"
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S%z")
 | sort 0 _time
 
 {% from 'functions.splunk' import 

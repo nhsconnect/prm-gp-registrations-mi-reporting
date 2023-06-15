@@ -203,6 +203,7 @@ class TestOutcomeTable(TestBase):
             report_end = datetime_utc_now().date().replace(day=28)            
 
             # test requires a datetime less than 24hrs
+
             now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
@@ -215,7 +216,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id='outside_sla_24_hours',
                         registration_event_datetime=now_minus_25_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),  # needs to be outside 24 hours
+                            "%Y-%m-%dT%H:%M:%S%z"),  # needs to be outside 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -229,7 +230,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id='inside_sla_24_hours',
                         registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),  # needs to be within 24 hours
+                            "%Y-%m-%dT%H:%M:%S%z"),  # needs to be within 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
