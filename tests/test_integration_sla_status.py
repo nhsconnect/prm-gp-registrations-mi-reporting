@@ -40,7 +40,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=ehr_response_datetime.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=ehr_response_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -49,7 +49,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -62,7 +62,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -71,7 +71,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() + timedelta(days=9)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -117,17 +119,19 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
             
-            #registration_event_datetime must be over 8 days from EHR_RESPONSE event datetime.        
+            # registration_event_datetime must be over 8 days from EHR_RESPONSE event datetime.
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() + timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=(
+                                datetime_utc_now() + timedelta(days=9)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -140,7 +144,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -149,7 +153,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() + timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() + timedelta(days=7)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value                    
                     )),
                 sourcetype="myevent")
@@ -199,7 +205,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(days=9)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -208,7 +216,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent")  
@@ -222,7 +230,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(days=2)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -231,7 +241,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent")      
@@ -281,7 +291,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(days=2)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(days=2)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -290,7 +302,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S"), 
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent") 
@@ -307,7 +319,9 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(days=9)).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(days=9)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value                    
                     )),
                 sourcetype="myevent")
@@ -316,7 +330,7 @@ class TestIntegrationSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=(datetime_utc_now()).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                    
                     )),
                 sourcetype="myevent") 
