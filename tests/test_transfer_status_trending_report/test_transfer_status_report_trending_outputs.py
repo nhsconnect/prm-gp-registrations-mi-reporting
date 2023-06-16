@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase, EventType
 
 
-class TestTransferStatusTrendingReport(TestBase):
+class TestTransferStatusReportTrendingOutputs(TestBase):
 
     def test_user_filters(self):
         pass
