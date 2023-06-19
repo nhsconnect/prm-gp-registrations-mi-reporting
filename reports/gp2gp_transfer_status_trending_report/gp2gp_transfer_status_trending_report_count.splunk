@@ -53,7 +53,7 @@ calculate_outcome
 
 | eval time_period = case(
                           "$time_period$"=="month", strftime(_time,"%y-%m"), 
-                          "$time_period$"=="week", strftime(_time,"%y-%m-%w"), 
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
                           "$time_period$"=="day", strftime(_time,"%y-%m-%d")
                           )
 | chart count by time_period, outcome
