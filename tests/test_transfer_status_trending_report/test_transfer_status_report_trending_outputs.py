@@ -365,3 +365,207 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
         finally:
             self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_count_with_time_period_month(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+
+
+            # Act
+            test_query = self.get_search(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-04-30T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03",
+                                     "AWAITING_INTEGRATION": "1"},
+                               "1": {"time_period": "23-04",
+                                     "AWAITING_INTEGRATION": "1"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_count_with_time_period_week(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+
+
+            # Act
+            test_query = self.get_search(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "week"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03-10",
+                                     "AWAITING_INTEGRATION": "1"},
+                               "1": {"time_period": "23-03-11",
+                                     "AWAITING_INTEGRATION": "1"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+
