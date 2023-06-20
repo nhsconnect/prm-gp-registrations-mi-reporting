@@ -25,7 +25,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_1',
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -42,7 +42,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -59,7 +59,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_3',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -114,7 +114,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_1',
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -131,7 +131,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -148,7 +148,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_3',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -202,7 +202,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                     json.dumps(
                         create_sample_event(
                             'test_total_eligible_for_electronic_transfer_1',
-                            registration_event_datetime="2023-03-10T08:00:00",
+                            registration_event_datetime="2023-03-10T08:00:00+0000",
                             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                             sendingPracticeSupplierName="EMIS",
                             requestingPracticeSupplierName="TPP",
@@ -219,7 +219,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                     json.dumps(
                         create_sample_event(
                             'test_total_eligible_for_electronic_transfer_2',
-                            registration_event_datetime="2023-03-10T09:00:00",
+                            registration_event_datetime="2023-03-10T09:00:00+0000",
                             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                             sendingPracticeSupplierName="EMIS",
                             requestingPracticeSupplierName="TPP",
@@ -236,7 +236,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                     json.dumps(
                         create_sample_event(
                             'test_total_eligible_for_electronic_transfer_3',
-                            registration_event_datetime="2023-03-10T10:00:00",
+                            registration_event_datetime="2023-03-10T10:00:00+0000",
                             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                             sendingPracticeSupplierName="EMIS",
                             requestingPracticeSupplierName="TPP",

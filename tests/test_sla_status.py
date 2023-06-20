@@ -9,6 +9,7 @@ from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_transfer_compatibility_payload
 from datetime import datetime, timedelta
+from helpers.datetime_helper import datetime_utc_now
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase,EventType
 
@@ -22,17 +23,17 @@ class TestSlaStatus(TestBase):
         index_name, index = self.create_index()       
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
             # reporting window
-            yesterday = datetime.today() - timedelta(hours=24)
-            tomorrow = datetime.today() + timedelta(hours=24)
+            yesterday = datetime_utc_now() - timedelta(hours=24)
+            tomorrow = datetime_utc_now() + timedelta(hours=24)
 
             # test requires a datetime less than 24hrs
-            now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_20_mins: {now_minus_23_hours}")
 
             # test - #1
@@ -41,7 +42,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='outside_sla_24_hours_1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -53,7 +54,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id='inside_sla_24_hours_1',
                         registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),  # needs to be within 24 hours
+                            "%Y-%m-%dT%H:%M:%S%z"),  # needs to be within 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -66,7 +67,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_2_outside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -77,7 +78,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_2_outside_sla',
-                        registration_event_datetime="2023-03-15T09:00:00",
+                        registration_event_datetime="2023-03-15T09:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -88,7 +89,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_2_inside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -99,7 +100,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_2_inside_sla',
-                        registration_event_datetime="2023-03-10T11:00:00",
+                        registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -112,7 +113,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_outside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -123,7 +124,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_outside_sla',
-                        registration_event_datetime="2023-03-15T09:00:00",
+                        registration_event_datetime="2023-03-15T09:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -134,7 +135,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_outside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="REJECTED")
                     )),
@@ -144,7 +145,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_inside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -155,7 +156,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_inside_sla',
-                        registration_event_datetime="2023-03-10T11:00:00",
+                        registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -166,7 +167,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_3_inside_sla',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
@@ -204,7 +205,7 @@ class TestSlaStatus(TestBase):
         try:
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             # test - #1 - outside sla
@@ -213,7 +214,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -227,7 +228,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_2',
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -240,7 +241,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -251,7 +252,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -262,7 +263,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T11:00:00",
+                        registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -275,7 +276,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -286,7 +287,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T09:05:00",
+                        registration_event_datetime="2023-03-10T09:05:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -297,7 +298,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -310,7 +311,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_integrated',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -321,7 +322,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_integrated',
-                        registration_event_datetime="2023-03-10T09:05:00",
+                        registration_event_datetime="2023-03-10T09:05:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -332,7 +333,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_integrated',
-                        registration_event_datetime="2023-03-10T10:01:00",
+                        registration_event_datetime="2023-03-10T10:01:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -343,7 +344,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_integrated',
-                        registration_event_datetime="2023-03-10T10:30:00",
+                        registration_event_datetime="2023-03-10T10:30:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
@@ -355,7 +356,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_integrated',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -366,7 +367,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_integrated',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -377,7 +378,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_integrated',
-                        registration_event_datetime="2023-03-10T10:01:00",
+                        registration_event_datetime="2023-03-10T10:01:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -388,7 +389,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_integrated',
-                        registration_event_datetime="2023-03-10T10:30:00",
+                        registration_event_datetime="2023-03-10T10:30:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
@@ -400,7 +401,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_ehr_sent',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -411,7 +412,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_outside_sla_ehr_sent',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -424,7 +425,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_ehr_sent',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -435,7 +436,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_ehr_sending_inside_sla_ehr_sent',
-                        registration_event_datetime="2023-03-10T09:15:00",
+                        registration_event_datetime="2023-03-10T09:15:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -479,7 +480,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         "test_ehr_requesting_outside_sla_test#1.a",
-                        registration_event_datetime="2023-03-10T09:15:00",
+                        registration_event_datetime="2023-03-10T09:15:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -491,7 +492,7 @@ class TestSlaStatus(TestBase):
             # test #1.b - Eligibile for transfer inside SLA
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
@@ -499,7 +500,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         "test_ehr_requesting_outside_sla_test#1.b",
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -516,7 +517,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -529,7 +530,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -540,7 +541,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -552,14 +553,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_inside_sla_test#2.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -573,7 +574,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -584,7 +585,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -599,7 +600,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -612,7 +613,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -623,7 +624,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -635,14 +636,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#3.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -656,7 +657,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -667,7 +668,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -682,7 +683,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -695,7 +696,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -706,7 +707,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -718,14 +719,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#4.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -739,7 +740,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -750,7 +751,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -765,7 +766,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -778,7 +779,7 @@ class TestSlaStatus(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -790,14 +791,14 @@ class TestSlaStatus(TestBase):
             conversation_id = 'test_ehr_requesting_outside_sla_test#5.b'
 
             # test requires a datetime less than 20mins
-            now_minus_20_mins = datetime.today() - timedelta(hours=0, minutes=15)
+            now_minus_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
             self.LOG.info(f"now_minus_20_mins: {now_minus_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -811,7 +812,7 @@ class TestSlaStatus(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
