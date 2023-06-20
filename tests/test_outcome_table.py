@@ -10,8 +10,9 @@ from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload, create_registration_payload
 from datetime import datetime, timedelta, date
+from helpers.datetime_helper import datetime_utc_now
 from jinja2 import Environment, FileSystemLoader
-from helpers.date_helper import create_date_time
+from helpers.datetime_helper import create_date_time
 from tests.test_base import TestBase, EventType
 
 
@@ -34,7 +35,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
 
@@ -76,7 +77,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="REJECTED")
 
@@ -118,7 +119,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="FAILED_TO_INTEGRATE")
@@ -161,7 +162,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value)
                 ),
                 sourcetype="myevent")
@@ -198,14 +199,15 @@ class TestOutcomeTable(TestBase):
         try:
 
             # reporting window
-            report_start = datetime.today().date().replace(day=1)
-            report_end = datetime.today().date().replace(day=28)            
+            report_start = datetime_utc_now().date().replace(day=1)
+            report_end = datetime_utc_now().date().replace(day=28)            
 
             # test requires a datetime less than 24hrs
-            now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+
+            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
-            now_minus_25_hours = datetime.today() - timedelta(hours=25, minutes=0)
+            now_minus_25_hours = datetime_utc_now() - timedelta(hours=25, minutes=0)
             self.LOG.info(f"now_minus_25_hours: {now_minus_25_hours}")
 
             # Outside SLA
@@ -214,7 +216,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id='outside_sla_24_hours',
                         registration_event_datetime=now_minus_25_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),  # needs to be outside 24 hours
+                            "%Y-%m-%dT%H:%M:%S%z"),  # needs to be outside 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -228,7 +230,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id='inside_sla_24_hours',
                         registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),  # needs to be within 24 hours
+                            "%Y-%m-%dT%H:%M:%S%z"),  # needs to be within 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP"
@@ -269,8 +271,8 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
@@ -279,14 +281,14 @@ class TestOutcomeTable(TestBase):
             conversation_id = 'test_outcome_in_progress_inside_sla'
 
             # test requires a datetime less than 24hrs
-            now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-10T04:00:00",
+                        registration_event_datetime="2023-05-10T04:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -299,7 +301,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-10T05:00:00",
+                        registration_event_datetime="2023-05-10T05:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -309,7 +311,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value
                     )),
                 sourcetype="myevent")
@@ -322,7 +324,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-01T04:00:00",
+                        registration_event_datetime="2023-05-01T04:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -335,7 +337,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-01T05:00:00",
+                        registration_event_datetime="2023-05-01T05:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -344,7 +346,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-05T07:00:00",
+                        registration_event_datetime="2023-05-05T07:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value
                     )),
                 sourcetype="myevent")
@@ -383,8 +385,8 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
@@ -396,7 +398,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-02T10:00:00",
+                        registration_event_datetime="2023-05-02T10:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -412,7 +414,7 @@ class TestOutcomeTable(TestBase):
             conversation_id = 'test_outcome_technical_failure_3_inside_sla'
 
             # test requires a datetime less than 24hrs
-            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
             index.submit(
@@ -420,7 +422,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -459,8 +461,8 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
@@ -469,7 +471,7 @@ class TestOutcomeTable(TestBase):
             conversation_id = 'test_outcome_in_progress_2_inside_sla'
 
             # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
             index.submit(
@@ -477,7 +479,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -490,7 +492,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-01T05:00:00",
+                        registration_event_datetime="2023-05-01T05:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -529,8 +531,8 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
@@ -542,7 +544,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime="2023-05-01T04:00:00",
+                        registration_event_datetime="2023-05-01T04:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -554,7 +556,7 @@ class TestOutcomeTable(TestBase):
             # test 1.b - inside SLA
 
             # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
             conversation_id = 'test_technical_failure_4_inside_sla'
@@ -564,7 +566,7 @@ class TestOutcomeTable(TestBase):
                     create_sample_event(
                         conversation_id=conversation_id,
                         registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -607,15 +609,15 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
             # test 1.a - inside SLA
 
             # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")     
 
             conversation_id = 'test_outcome_in_progress_3_inside_sla'
@@ -624,7 +626,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime= now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime= now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -643,7 +645,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime = create_date_time(datetime.today(),"04:30:00"),
+                        registration_event_datetime=create_date_time(datetime_utc_now(), "04:30:00+0000"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -685,8 +687,8 @@ class TestOutcomeTable(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = datetime_utc_now().date().replace(day=1)
+        report_end = datetime_utc_now().date().replace(day=28)
 
         try:
 
@@ -698,7 +700,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime = create_date_time(datetime.today(),"07:00:00"),
+                        registration_event_datetime=create_date_time(datetime_utc_now(), "07:00:00+0000"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
@@ -717,7 +719,7 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id,
-                        registration_event_datetime = create_date_time(datetime.today(),"04:30:00"),
+                        registration_event_datetime=create_date_time(datetime_utc_now(), "04:30:00+0000"),
                         event_type=EventType.REGISTRATIONS.value,
                         payload=create_registration_payload(dtsMatched=False)
                     )),

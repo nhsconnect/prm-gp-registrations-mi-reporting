@@ -8,7 +8,8 @@ from helpers.splunk \
     import get_telemetry_from_splunk,  create_sample_event, set_variables_on_query, \
     create_integration_payload, create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
-from datetime import datetime, timedelta
+from datetime import timedelta
+from helpers.datetime_helper import datetime_utc_now
 
 
 class TestTransferStatusReportBase(TestBase):
@@ -24,7 +25,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_1',
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -41,7 +42,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -58,7 +59,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_total_eligible_for_electronic_transfer_3',
-                        registration_event_datetime="2023-03-10T10:00:00",
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -107,7 +108,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -124,7 +125,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_1',
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
@@ -136,7 +137,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -153,7 +154,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_2',
-                        registration_event_datetime="2023-03-10T08:10:00",
+                        registration_event_datetime="2023-03-10T08:10:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="INTEGRATED_AND_SUPPRESSED")
@@ -166,7 +167,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_3',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -183,7 +184,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_3',
-                        registration_event_datetime="2023-03-10T08:20:00",
+                        registration_event_datetime="2023-03-10T08:20:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="SUPPRESSED_AND_REACTIVATED")
@@ -196,7 +197,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_rejected',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -213,7 +214,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_rejected',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="REJECTED")
                     )),
@@ -225,7 +226,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_failed_to_integrate_#1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -242,7 +243,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_failed_to_integrate_#1',
-                        registration_event_datetime="2023-03-10T09:10:00",
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="FAILED_TO_INTEGRATE")
@@ -255,7 +256,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_failed_to_integrate_#2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -272,7 +273,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_successfully_integrated_failed_to_integrate_#2',
-                        registration_event_datetime="2023-03-10T09:10:00",
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="FAILED_TO_INTEGRATE")
@@ -318,7 +319,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -335,7 +336,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_1',
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
@@ -347,7 +348,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_2',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -364,7 +365,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_2',
-                        registration_event_datetime="2023-03-10T08:10:00",
+                        registration_event_datetime="2023-03-10T08:10:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="INTEGRATED_AND_SUPPRESSED")
@@ -377,7 +378,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_3',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -394,7 +395,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_3',
-                        registration_event_datetime="2023-03-10T08:20:00",
+                        registration_event_datetime="2023-03-10T08:20:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(
                             outcome="SUPPRESSED_AND_REACTIVATED")
@@ -407,7 +408,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_4',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -424,7 +425,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'test_rejected_4',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="REJECTED")
                     )),
@@ -469,7 +470,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_1',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -486,7 +487,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_1',
-                        registration_event_datetime="2023-03-10T09:10:00",
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
                 sourcetype="myevent")
@@ -497,7 +498,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_2',
-                        registration_event_datetime="2023-03-10T09:20:00",
+                        registration_event_datetime="2023-03-10T09:20:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -514,7 +515,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_2',
-                        registration_event_datetime="2023-03-10T09:30:00",
+                        registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
                 sourcetype="myevent")
@@ -525,7 +526,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_3',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -542,7 +543,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         'awaiting_integration_3',
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="REJECTED")
                     )),
@@ -583,7 +584,7 @@ class TestTransferStatusReportBase(TestBase):
 
         try:
             # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime.today() - timedelta(hours=0, minutes=18)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
             # test_#1 - compatible and within SLA
@@ -593,7 +594,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -611,7 +612,7 @@ class TestTransferStatusReportBase(TestBase):
                     create_sample_event(
                         conversation_id=conversationId,
                         registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -624,7 +625,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -641,7 +642,7 @@ class TestTransferStatusReportBase(TestBase):
                     create_sample_event(
                         conversation_id=conversationId,
                         registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S"),
+                            "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -655,7 +656,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -671,7 +672,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T09:00:00",
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -718,7 +719,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -734,7 +735,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:10:00",
+                        registration_event_datetime="2023-03-10T08:10:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
                     )),
@@ -743,7 +744,7 @@ class TestTransferStatusReportBase(TestBase):
             # test_#2 - compatible and TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = true
 
             # test requires a datetime greater than 24 hours
-            now_minus_25_hours = datetime.today() - timedelta(hours=25, minutes=0)
+            now_minus_25_hours = datetime_utc_now() - timedelta(hours=25, minutes=0)
             self.LOG.info(f"now_minus_25_mins: {now_minus_25_hours}")
 
             conversationId = 'test_technical_failure_TOTAL_TRANSFER_TIME_OUTSIDE_SLA_24_HOURS'
@@ -752,7 +753,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -768,7 +769,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=now_minus_25_hours.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=now_minus_25_hours.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value
                     )),
                 sourcetype="myevent")
@@ -778,14 +779,14 @@ class TestTransferStatusReportBase(TestBase):
             conversationId = 'test_technical_failure_EHR_SENDING_OUTSIDE_SLA'
 
              # test requires a datetime less than 20mins
-            now_over_20_mins = datetime.today() - timedelta(hours=0, minutes=21)
+            now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
             self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime="2023-03-10T08:00:00",
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -801,7 +802,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=now_over_20_mins.strftime("%Y-%m-%dT%H:%M:%S"),                        
+                        registration_event_datetime=now_over_20_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -811,14 +812,14 @@ class TestTransferStatusReportBase(TestBase):
             conversationId = 'test_technical_failure_EHR_REQUESTING_OUTSIDE_SLA'
 
              # test requires a datetime less than 20mins
-            now_over_20_mins = datetime.today() - timedelta(hours=0, minutes=21)
+            now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
             self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=now_over_20_mins.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=now_over_20_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -833,7 +834,7 @@ class TestTransferStatusReportBase(TestBase):
             # test_#5 - in-progress test to check technical failure count working correctly.
 
              # test requires a datetime greater than 24 hours
-            now_minus_23_hours = datetime.today() - timedelta(hours=23, minutes=0)
+            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
             self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
 
             conversationId = 'test_technical_failure_status_IN_PROGRESS'
@@ -842,7 +843,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=datetime.today().strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -858,7 +859,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S"),
+                        registration_event_datetime=now_minus_23_hours.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value
                     )),
                 sourcetype="myevent")            
