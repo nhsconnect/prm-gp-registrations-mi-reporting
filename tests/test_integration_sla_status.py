@@ -80,7 +80,7 @@ class TestIntegrationSlaStatus(TestBase):
         
             # Act
 
-            test_query = self.get_search('gp2gp_integration_sla_status')
+            test_query = self.generate_splunk_query_from_report('gp2gp_integration_sla_status')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -164,7 +164,7 @@ class TestIntegrationSlaStatus(TestBase):
         
             # Act
 
-            test_query = self.get_search('gp2gp_integration_sla_status')
+            test_query = self.generate_splunk_query_from_report('gp2gp_integration_sla_status')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -250,7 +250,7 @@ class TestIntegrationSlaStatus(TestBase):
         
             # Act
 
-            test_query = self.get_search('gp2gp_integration_sla_status')
+            test_query = self.generate_splunk_query_from_report('gp2gp_integration_sla_status')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -338,7 +338,7 @@ class TestIntegrationSlaStatus(TestBase):
         
             # Act
 
-            test_query = self.get_search('gp2gp_integration_sla_status')
+            test_query = self.generate_splunk_query_from_report('gp2gp_integration_sla_status')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
