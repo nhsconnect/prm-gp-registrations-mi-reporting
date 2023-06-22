@@ -1,5 +1,15 @@
 index="$index$"
 
+{% from 'functions.splunk' import
+set_time_to_registration_datetime,
+calculate_transfer_compatibility,
+calculate_internal_transfers,
+exclude_internal_transfers,
+calculate_registration_status,
+calculate_sla_status,
+calculate_outcome
+ %}
+
 {{ set_time_to_registration_datetime() }}
 
 | eval start_time = case(
@@ -43,7 +53,7 @@ index="$index$"
 
 | eval time_period = case(
                           "$time_period$"=="month", strftime(_time,"%y-%m"), 
-                          "$time_period$"=="week", strftime(_time,"%y-%m-%"), 
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
                           "$time_period$"=="day", strftime(_time,"%y-%m-%d")
                           )
 | chart count by time_period, outcome
