@@ -1,38 +1,7 @@
 index="$index$"
 
-<<<<<<< HEAD
 {% from 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_base.splunk' import
 gp2gp_transfer_status_trending_report_base %}
-=======
-{% from 'functions.splunk' import
-set_time_to_registration_datetime,
-calculate_transfer_compatibility,
-calculate_internal_transfers,
-exclude_internal_transfers,
-calculate_registration_status,
-calculate_sla_status,
-calculate_outcome
- %}
-
-{{ set_time_to_registration_datetime() }}
-
-| eval start_time = case(
-       "$start_time$"="0", 0,
-       like("$start_time$","%T%"), "$start_time$",
-       1=1, relative_time(now(),"$start_time$")
-       )
-| eval end_time = case(
-       "$end_time$"="now", relative_time(now(),"-0s"),
-       like("$end_time$","%T%"), "$end_time$",
-       1=1, relative_time(now(),"$end_time$")
-       )
-| eval start_time_epoch = if(isnum(start_time), start_time, strptime(start_time, "%Y-%m-%dT%H:%M:%S"))
-| eval end_time_epoch = if(isnum(end_time), end_time, strptime(end_time, "%Y-%m-%dT%H:%M:%S"))
-
-| streamstats earliest(_time) as conversationStart by conversationId
-| where conversationStart >= start_time_epoch AND conversationStart <= end_time_epoch
-| where _time >= start_time_epoch AND _time <= relative_time(end_time_epoch, "+$cutoff$d")
->>>>>>> 06fdc89 (Wrote tests for transfer_status_trending_report_percentage and fixed report)
 
 
 {{ gp2gp_transfer_status_trending_report_base() }}
