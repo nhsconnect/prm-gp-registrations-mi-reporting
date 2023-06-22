@@ -74,7 +74,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -282,7 +282,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -433,7 +433,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -551,7 +551,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -680,7 +680,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -867,7 +867,7 @@ class TestTransferStatusReportBase(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
+            test_query = self.generate_splunk_query_from_report('gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",

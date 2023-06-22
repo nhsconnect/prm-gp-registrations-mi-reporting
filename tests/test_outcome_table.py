@@ -43,7 +43,7 @@ class TestOutcomeTable(TestBase):
                 sourcetype="myevent")
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -85,7 +85,7 @@ class TestOutcomeTable(TestBase):
                 sourcetype="myevent")
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -128,7 +128,7 @@ class TestOutcomeTable(TestBase):
                 sourcetype="myevent")
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -168,7 +168,7 @@ class TestOutcomeTable(TestBase):
                 sourcetype="myevent")
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",
@@ -239,7 +239,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -353,7 +353,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -429,7 +429,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -499,7 +499,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -577,7 +577,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -657,7 +657,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
@@ -728,7 +728,7 @@ class TestOutcomeTable(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_outcome_report')
+            test_query = self.generate_splunk_query_from_report('gp2gp_outcome_report')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": report_start.strftime("%Y-%m-%d"),
