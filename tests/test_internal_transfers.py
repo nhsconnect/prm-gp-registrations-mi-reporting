@@ -53,7 +53,7 @@ class TestInternalTransfers(TestBase):
 
             # Act
 
-            test_query = self.get_search('gp2gp_test_internal_transfer')
+            test_query = self.generate_splunk_query_from_report('gp2gp_test_internal_transfer')
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
                 "$report_start$": "2023-03-01",

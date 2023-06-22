@@ -12,9 +12,10 @@ from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
     create_integration_payload,  create_error_payload, create_transfer_compatibility_payload
 from datetime import datetime, timezone, timedelta
-from jinja2 import Environment, FileSystemLoader
 from dotenv import load_dotenv
 from abc import ABC
+from jinja2 import Environment, FileSystemLoader
+from helpers.splunk import generate_splunk_query_from_report
 
 load_dotenv()
 
@@ -38,20 +39,7 @@ class TestBase(ABC):
     
     @property
     def LOG(self):
-        return self._log
-
-
-    def get_search(self, search_name):
-        path = os.path.join(os.path.dirname(__file__),
-                            '../reports')
-        env = Environment(loader=FileSystemLoader(path))
-        template = env.get_template(f'{search_name}.splunk')
-
-        # using with statement
-        with open('my_query', 'w') as file:
-            file.write(template.render())
-
-        return template.render()
+        return self._log    
 
 
     def savedsearch(self, test_query):
@@ -67,3 +55,7 @@ class TestBase(ABC):
     def delete_index(self, index_name: str):
         """Delete splunk index"""
         self.splunk_service.indexes.delete(index_name)
+
+    def generate_splunk_query_from_report(self, report_name):
+        return generate_splunk_query_from_report(self,report_name)
+
