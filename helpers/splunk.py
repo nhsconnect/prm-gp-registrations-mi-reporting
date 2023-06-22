@@ -127,3 +127,4 @@ def set_variables_on_query(search_query, variables):
     for key in variables:
         result = result.replace(key, variables[key])
     return result
+
