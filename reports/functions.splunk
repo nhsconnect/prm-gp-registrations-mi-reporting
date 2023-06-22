@@ -90,3 +90,28 @@
 | eval notIntegratedUnder8Days = if(registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d") ,1,0)    
    
 {% endmacro %}
+
+{% macro generate_report_start_and_end_time() %}
+
+| eval start_time = case(
+       "$start_time$"="0", 0,
+       like("$start_time$","%T%"), "$start_time$",
+       1=1, relative_time(now(),"$start_time$")
+       )
+| eval end_time = case(
+       "$end_time$"="now", relative_time(now(),"-0s"),
+       like("$end_time$","%T%"), "$end_time$",
+       1=1, relative_time(now(),"$end_time$")
+       )
+| eval start_time_epoch = if(isnum(start_time), start_time, strptime(start_time, "%Y-%m-%dT%H:%M:%S"))
+| eval end_time_epoch = if(isnum(end_time), end_time, strptime(end_time, "%Y-%m-%dT%H:%M:%S"))
+
+{% endmacro %}
+
+{% macro filter_conversations_by_start_and_end_times_and_cutoff() %}
+
+| streamstats earliest(_time) as conversationStart by conversationId
+| where conversationStart >= start_time_epoch AND conversationStart <= end_time_epoch
+| where _time >= start_time_epoch AND _time <= relative_time(end_time_epoch, "+$cutoff$d")
+
+{% endmacro %}
