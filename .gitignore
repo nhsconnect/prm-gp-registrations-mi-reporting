@@ -11,3 +11,4 @@ build/deployment.zip
 .venv/
 .env.development
 my_query
+splunk_query
