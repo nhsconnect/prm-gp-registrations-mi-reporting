@@ -33,7 +33,7 @@ splunk_host = os.environ.get('SPLUNK_HOST')
 service = client.connect(token=splunk_token)
 
 
-def get_search(search_name):
+def generate_splunk_query_from_report(search_name):
     path = os.path.join(os.path.dirname(__file__),
                         '../reports')
     env = Environment(loader=FileSystemLoader(path))
@@ -71,7 +71,7 @@ def test_reporting_window_then_return_event_within() -> None:
             )),
         sourcetype="myevent")
 
-    test_query = get_search('gp2gp_reporting_window')
+    test_query = generate_splunk_query_from_report('gp2gp_reporting_window')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "2",
@@ -93,7 +93,7 @@ def test_reporting_window_as_savedsearch():
     index = get_or_create_index("test_index", service)
 
     service.saved_searches.create(
-        'gp2gp_reporting_window', get_search('gp2gp_reporting_window'))
+        'gp2gp_reporting_window', generate_splunk_query_from_report('gp2gp_reporting_window'))
 
     index.submit(
         json.dumps(
@@ -112,7 +112,7 @@ def test_reporting_window_as_savedsearch():
             )),
         sourcetype="myevent")
 
-    test_query = get_search('gp2gp_reporting_proccess')
+    test_query = generate_splunk_query_from_report('gp2gp_reporting_proccess')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "2",
@@ -166,7 +166,7 @@ def test_business_process_report_integrated_within_8_days():
 
     # Act
 
-    test_query = get_search('gp2gp_business_process_report')
+    test_query = generate_splunk_query_from_report('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "10",
@@ -211,7 +211,7 @@ def test_business_process_report_not_integrated_within_8_days():
 
     # Act
 
-    test_query = get_search('gp2gp_business_process_report')
+    test_query = generate_splunk_query_from_report('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "7",
@@ -265,7 +265,7 @@ def test_business_process_report_integrated_over_8_days():
 
     # Act
 
-    test_query = get_search('gp2gp_business_process_report')
+    test_query = generate_splunk_query_from_report('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "15",
@@ -310,7 +310,7 @@ def test_business_process_report_not_integrated_over_8_days():
 
     # Act
 
-    test_query = get_search('gp2gp_business_process_report')
+    test_query = generate_splunk_query_from_report('gp2gp_business_process_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$cutoff$": "15",
@@ -366,7 +366,7 @@ def test_moa_outcome_SUCCESS_status_INTEGRATED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -423,7 +423,7 @@ def test_moa_outcome_REJECTED_status_INTEGRATED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -480,7 +480,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_INTEGRATED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -526,7 +526,7 @@ def test_moa_outcome_AWAITING_INTEGRATION_status_READY_TO_INTEGRATE():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -592,7 +592,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_SENT():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -659,7 +659,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_EHR_SENT():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -717,7 +717,7 @@ def test_moa_outcome_IN_PROGRESS_status_EHR_REQUESTED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -775,7 +775,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_SLOW_EHR_REQUESTED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -827,7 +827,7 @@ def test_moa_outcome_IN_PROGRESS_status_TRANSFER_NOT_STARTED():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -879,7 +879,7 @@ def test_moa_outcome_TECHNICAL_FAILURE_status_TRANSFER_NOT_STARTED_and_IS_SLOW()
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -927,7 +927,7 @@ def test_moa_outcome_IN_PROGRESS_status_INTERNAL_TRANSFER():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -975,7 +975,7 @@ def test_moa_outcome_NOT_COMPATIBLE_status_INTERNAL_TRANSFER():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -1023,7 +1023,7 @@ def test_moa_outcome_NOT_COMPATIBLE_status_ELECTRONIC_TRANSFER():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -1147,7 +1147,7 @@ def test_moa_percentage_of_all_transfers():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -1272,7 +1272,7 @@ def test_moa_percentage_of_technical_failures():
 
     # Act
 
-    test_query = get_search('gp2gp_moa_report')
+    test_query = generate_splunk_query_from_report('gp2gp_moa_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
