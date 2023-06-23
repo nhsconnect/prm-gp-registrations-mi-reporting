@@ -12,7 +12,7 @@ from helpers.splunk \
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase, EventType
-from helpers.date_helper import create_date_time
+from helpers.datetime_helper import create_date_time
 
 
 class TestMissingAttachments(TestBase):
