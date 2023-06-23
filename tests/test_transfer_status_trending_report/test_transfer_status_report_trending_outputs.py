@@ -77,7 +77,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -174,7 +174,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -252,7 +252,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -333,7 +333,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -432,7 +432,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -533,7 +533,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
@@ -627,7 +627,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
@@ -724,7 +724,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
@@ -802,7 +802,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
@@ -883,7 +883,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                 sourcetype="myevent")
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
@@ -982,7 +982,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
@@ -1083,7 +1083,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
 
             # Act
-            test_query = self.get_search(
+            test_query = self.generate_splunk_query_from_report(
                 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
