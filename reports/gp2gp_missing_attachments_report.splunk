@@ -35,9 +35,21 @@ calculate_sla_status %}
 {{ calculate_outcome() }}
 
 | eventstats count(eval(registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION")) as total_records_transfered
-| table placeholders
-```| eval transferred_with_no_missing_attachments = count(eval(registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION" AND len(placeholders)==0))
-| table  total_records_transfered, transferred_with_no_missing_attachments```
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders == 0)) as transfered_with_no_missing_attachments
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders > 0)) as transfered_with_missing_attachments
+
+| stats first(total_records_transfered) as total_records_transfered
+        first(transfered_with_no_missing_attachments) as transfered_with_no_missing_attachments
+        first(transfered_with_missing_attachments) as transfered_with_missing_attachments
+
+| eval label=mvappend("Total Records Transfered", "Records Transfered With No Missing Attachments", "Records Transfered With Missing Attachments")
+| eval count=mvappend(total_records_transfered, transfered_with_no_missing_attachments, transfered_with_missing_attachments)
+
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+
+| rex field=soft_zip "(?<label>.*),(?<count>.*)"
+| table label, count
 
  
        
