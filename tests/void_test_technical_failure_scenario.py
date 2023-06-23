@@ -33,7 +33,7 @@ splunk_host = os.environ.get('SPLUNK_HOST')
 service = client.connect(token=splunk_token)
 
 
-def get_search(search_name):
+def generate_splunk_query_from_report(search_name):
     path = os.path.join(os.path.dirname(__file__),
                         '../reports')
     env = Environment(loader=FileSystemLoader(path))
@@ -103,7 +103,7 @@ def test_metrics_by_reg_status():
         sourcetype="myevent")
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -173,7 +173,7 @@ def test_metrics_by_sending_supplier():
         sourcetype="myevent")
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -243,7 +243,7 @@ def test_metrics_by_receiving_supplier():
         sourcetype="myevent")
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -329,7 +329,7 @@ def test_metrics_by_single_error_code():
         sourcetype="myevent")
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -431,7 +431,7 @@ def test_metrics_by_multiple_error_codes():
         sourcetype="myevent")
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -615,7 +615,7 @@ def test_metrics_by_unordered_error_codes():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -782,7 +782,7 @@ def test_percentage_of_all_transfers():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -963,7 +963,7 @@ def test_multiple_transfer_compatibility_event():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-01",
@@ -1020,7 +1020,7 @@ def test_status_INTEGRATION():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
@@ -1079,7 +1079,7 @@ def test_status_EHR_SENT_sla_NOT_READY_TO_INTEGRATE_OUTSIDE_SLA():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": yesterday.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -1119,7 +1119,7 @@ def test_status_EHR_REQUESTED_sla_NO_EHR_RESPONSE_OUTSIDE_SLA():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": todayMinus24Hours.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -1167,7 +1167,7 @@ def test_status_ELIGIBLE_FOR_TRANSFER_sla_NOT_EHR_REQUESTED_OUTSIDE_SLA():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": yesterday.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -1203,7 +1203,7 @@ def test_status_INTEGRATION_outcome_SUCCESS_should_not_be_in_report():
 
     # Act
 
-    test_query = get_search('gp2gp_technical_failure_scenario_report')
+    test_query = generate_splunk_query_from_report('gp2gp_technical_failure_scenario_report')
     test_query = set_variables_on_query(test_query, {
         "$index$": "test_index",
         "$report_start$": "2023-03-09",
