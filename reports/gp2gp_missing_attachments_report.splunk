@@ -21,7 +21,6 @@ calculate_sla_status %}
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
-
 | eval numPlaceholders = if(isnull(mvcount(placeholders)), 0, mvcount(placeholders))
 
 {{ calculate_transfer_compatibility() }}
@@ -29,6 +28,8 @@ calculate_sla_status %}
 {{ exclude_internal_transfers() }}
 
 | transaction conversationId keeporphans=t
+
+| eventstats sum(numPlaceholders) as numPlaceholders by conversationId
 
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
@@ -54,5 +55,4 @@ calculate_sla_status %}
 | rex field=soft_zip "(?<label>.*),(?<count>.*)"
 | table label, count
 
- 
        
