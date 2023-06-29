@@ -1,0 +1,26 @@
+index="$index$"
+
+{% from 'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_base.splunk' import
+gp2gp_missing_attachments_report_snapshot_base %}
+
+
+{{ gp2gp_missing_attachments_report_snapshot_base() }}
+
+| eventstats count(eval(registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION")) as total_records_transferred
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders == 0)) as transferred_with_no_missing_attachments
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders > 0)) as transferred_with_missing_attachments
+
+| eval percentage_transferred_with_no_missing_attachments = round((transferred_with_no_missing_attachments/total_records_transferred) * 100,2)
+| eval percentage_transferred_with_missing_attachments = round((transferred_with_missing_attachments/total_records_transferred) * 100,2)
+
+| stats first(percentage_transferred_with_no_missing_attachments) as percentage_transferred_with_no_missing_attachments
+        first(percentage_transferred_with_missing_attachments) as percentage_transferred_with_missing_attachments
+
+| eval label=mvappend("Records Transferred With No Missing Attachments", "Records Transferred With Missing Attachments")
+| eval count=mvappend(percentage_transferred_with_no_missing_attachments, percentage_transferred_with_missing_attachments)
+
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+
+| rex field=soft_zip "(?<label>.*),(?<count>.*)"
+| table label, count
