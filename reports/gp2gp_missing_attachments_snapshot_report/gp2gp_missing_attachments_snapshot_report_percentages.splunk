@@ -16,7 +16,7 @@ gp2gp_missing_attachments_report_snapshot_base %}
 | stats first(percentage_transferred_with_no_missing_attachments) as percentage_transferred_with_no_missing_attachments
         first(percentage_transferred_with_missing_attachments) as percentage_transferred_with_missing_attachments
 
-| eval label=mvappend("Records Transferred With No Missing Attachments", "Records Transferred With Missing Attachments")
+| eval label=mvappend("No Missing Attachments", "Missing Attachments")
 | eval count=mvappend(percentage_transferred_with_no_missing_attachments, percentage_transferred_with_missing_attachments)
 
 | eval soft_zip = mvzip(label, count)
