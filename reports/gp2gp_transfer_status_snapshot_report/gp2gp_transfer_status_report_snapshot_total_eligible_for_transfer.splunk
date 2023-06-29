@@ -1,6 +1,6 @@
 index="$index$"
 
-{% from 'gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
+{% from 'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
 gp2gp_transfer_status_report_snapshot_base %}
 
 
