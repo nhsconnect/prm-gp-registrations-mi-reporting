@@ -1,0 +1,184 @@
+{
+  "visualizations": {
+    "viz_Yrz79jnn": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColorsByField": {
+          "count": "#005EB8"
+        },
+        "yAxisLabelVisibility": "show",
+        "xAxisLabelVisibility": "show",
+        "xAxisLineVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "xAxisMajorTickSize": 8,
+        "xAxisTitleVisibility": "hide"
+      },
+      "dataSources": {
+        "primary": "ds_Jf3MpK94"
+      },
+      "title": "Count of Missing Attachments",
+      "showProgressBar": false,
+      "showLastUpdated": false,
+      "description": ""
+    },
+    "viz_RYPhSk8c": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "# **Missing Attachments Snapshot Report**",
+        "fontSize": "extraLarge"
+      }
+    },
+    "viz_bIafIlVL": {
+      "type": "splunk.singlevalueicon",
+      "options": {
+        "showValue": false,
+        "icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg"
+      }
+    },
+    "viz_nrRMTa9E": {
+      "type": "splunk.bar",
+      "dataSources": {
+        "primary": "ds_aaQlk4oc"
+      },
+      "title": "Percentage of Missing Attachments",
+      "options": {
+        "seriesColors": [
+          "#41B6E6"
+        ],
+        "xAxisTitleVisibility": "hide",
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide"
+      }
+    },
+    "viz_ysvkHFbs": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "Graph showing the total number of records transferred along with the number of transfers which had no missing attachments and the number of transfers which had at least 1 missing attachment.",
+        "fontColor": "#FFFFFF",
+        "backgroundColor": "#005EB8",
+        "fontSize": "large"
+      }
+    },
+    "viz_VXusQloW": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "Graph showing the percentage of all transfers which had no missing attachments along with the percentage which had at least 1 missing attachment.\n",
+        "fontColor": "#FFFFFF",
+        "backgroundColor": "#005EB8",
+        "fontSize": "large"
+      }
+    }
+  },
+  "dataSources": {
+    "ds_Jf3MpK94": {
+      "type": "ds.search",
+      "options": {
+        "query": "| savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\""
+      },
+      "name": "gp2gp_missing_attachments_snapshot_report_count"
+    },
+    "ds_aaQlk4oc": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\""
+      },
+      "name": "gp2gp_missing_attachments_snapshot_report_percentages"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "latest": "$global_time.latest$",
+            "earliest": "$global_time.earliest$"
+          }
+        }
+      }
+    }
+  },
+  "inputs": {
+    "input_global_trp": {
+      "type": "input.timerange",
+      "options": {
+        "token": "global_time",
+        "defaultValue": "-24h@h,now"
+      },
+      "title": "Global Time Range"
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "display": "auto",
+      "backgroundColor": "#768692"
+    },
+    "structure": [
+      {
+        "item": "viz_Yrz79jnn",
+        "type": "block",
+        "position": {
+          "x": 10,
+          "y": 260,
+          "w": 580,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_RYPhSk8c",
+        "type": "block",
+        "position": {
+          "x": 10,
+          "y": 20,
+          "w": 1040,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_bIafIlVL",
+        "type": "block",
+        "position": {
+          "x": 940,
+          "y": -10,
+          "w": 250,
+          "h": 250
+        }
+      },
+      {
+        "item": "viz_nrRMTa9E",
+        "type": "block",
+        "position": {
+          "x": 610,
+          "y": 260,
+          "w": 580,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_ysvkHFbs",
+        "type": "block",
+        "position": {
+          "x": 40,
+          "y": 650,
+          "w": 520,
+          "h": 60
+        }
+      },
+      {
+        "item": "viz_VXusQloW",
+        "type": "block",
+        "position": {
+          "x": 640,
+          "y": 650,
+          "w": 520,
+          "h": 60
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_global_trp"
+    ]
+  },
+  "description": "",
+  "title": "Missing Attachments Report"
+}

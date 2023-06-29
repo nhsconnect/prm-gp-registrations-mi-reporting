@@ -88,7 +88,7 @@ class TestMissingAttachments(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Total Records Transferred": "2"}
+            expected_values = {"Records Transferred": "2"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -167,8 +167,8 @@ class TestMissingAttachments(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')         
             
              # Assert
-            expected_values = {"Total Records Transferred": "2",
-                               "Records Transferred With No Missing Attachments": "1"}
+            expected_values = {"Records Transferred": "2",
+                               "No Missing Attachments": "1"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -247,9 +247,9 @@ class TestMissingAttachments(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Total Records Transferred": "2",
-                               "Records Transferred With No Missing Attachments": "1",
-                               "Records Transferred With Missing Attachments": "1"}
+            expected_values = {"Records Transferred": "2",
+                               "No Missing Attachments": "1",
+                               "Missing Attachments": "1"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -329,7 +329,7 @@ class TestMissingAttachments(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred With No Missing Attachments": "50.00"}
+            expected_values = {"No Missing Attachments": "50.00"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -407,8 +407,8 @@ class TestMissingAttachments(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred With No Missing Attachments": "50.00",
-                               "Records Transferred With Missing Attachments": "50.00"}
+            expected_values = {"No Missing Attachments": "50.00",
+                               "Missing Attachments": "50.00"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
