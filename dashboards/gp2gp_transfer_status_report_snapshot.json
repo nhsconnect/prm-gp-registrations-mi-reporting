@@ -41,21 +41,27 @@
 				"primary": "ds_yg6oqZuY"
 			},
 			"options": {
-				"yAxisAbbreviation": "auto",
 				"y2AxisAbbreviation": "auto",
 				"showRoundedY2AxisLabels": false,
 				"legendTruncation": "ellipsisMiddle",
 				"showY2MajorGridLines": true,
-				"xAxisLabelRotation": 0,
-				"xAxisTitleVisibility": "hide",
 				"yAxisTitleVisibility": "show",
 				"y2AxisTitleVisibility": "show",
 				"yAxisScale": "linear",
 				"dataValuesDisplay": "all",
 				"stackMode": "auto",
 				"legendDisplay": "off",
-				"lineWidth": 2
-			}
+				"lineWidth": 2,
+				"backgroundColor": "#FFFFFF",
+				"seriesColors": [
+					"#41B6E6"
+				],
+				"xAxisLineVisibility": "show",
+				"yAxisTitleText": "Percentage",
+				"xAxisMajorTickSize": 8,
+				"xAxisTitleVisibility": "hide"
+			},
+			"title": "Percentage of Transfer Status"
 		},
 		"viz_chart_1": {
 			"type": "splunk.column",
@@ -67,7 +73,6 @@
 				"y2AxisAbbreviation": "auto",
 				"showRoundedY2AxisLabels": false,
 				"showY2MajorGridLines": true,
-				"xAxisLabelRotation": 0,
 				"xAxisTitleVisibility": "hide",
 				"yAxisTitleVisibility": "show",
 				"y2AxisTitleVisibility": "show",
@@ -75,7 +80,13 @@
 				"dataValuesDisplay": "all",
 				"stackMode": "auto",
 				"legendDisplay": "off",
-				"lineWidth": 2
+				"lineWidth": 2,
+				"backgroundColor": "#FFFFFF",
+				"seriesColorsByField": {},
+				"seriesColors": [
+					"#005EB8"
+				],
+				"xAxisMajorTickSize": 8
 			},
 			"title": "Count of Transfer Status"
 		},
@@ -86,47 +97,56 @@
 			},
 			"showProgressBar": false,
 			"showLastUpdated": false,
-			"title": "Total Eligible for Electronic Transfer"
-		},
-		"viz_R997Afdo": {
-			"type": "splunk.image",
+			"title": "Total Eligible for Electronic Transfer",
 			"options": {
-				"preserveAspectRatio": true,
-				"src": "splunk-enterprise-kvstore://64775ba9204a0d0ccf5e6811"
+				"backgroundColor": "#FFFFFF",
+				"majorColor": "#0072CE",
+				"trendColor": "#0072CE"
 			}
 		},
 		"viz_gcdloPCQ": {
 			"type": "splunk.singlevalueicon",
 			"options": {
 				"showValue": false,
-				"icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg"
+				"icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
+				"iconColor": "#FFFFFF"
+			}
+		},
+		"viz_2Atq7Q2K": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "# **Transfer Status Snapshot Report**",
+				"fontColor": "#231f20",
+				"fontSize": "extraLarge"
 			}
 		}
 	},
 	"inputs": {
 		"input_zyg3nAba": {
 			"options": {
-				"defaultValue": "1970-01-01T00:00:00.000Z,2023-06-06T12:37:04.894Z",
-				"token": "reportTimeframe"
+				"defaultValue": "0,",
+				"token": "reportTimeframe",
+				"backgroundColor": "#005EB8"
 			},
-			"title": "Report range",
+			"title": "Report Time Range",
 			"type": "input.timerange"
 		}
 	},
 	"layout": {
 		"type": "absolute",
 		"options": {
-			"display": "auto-scale"
+			"display": "auto-scale",
+			"backgroundColor": "#768692"
 		},
 		"structure": [
 			{
 				"item": "viz_table_1",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 20,
+					"x": 50,
+					"y": 90,
 					"w": 250,
-					"h": 220
+					"h": 190
 				}
 			},
 			{
@@ -134,9 +154,9 @@
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 260,
+					"y": 320,
 					"w": 580,
-					"h": 300
+					"h": 380
 				}
 			},
 			{
@@ -153,20 +173,20 @@
 				"item": "viz_chart_1_new",
 				"type": "block",
 				"position": {
-					"x": 610,
-					"y": 260,
-					"w": 580,
-					"h": 300
+					"x": 600,
+					"y": 320,
+					"w": 590,
+					"h": 380
 				}
 			},
 			{
-				"item": "viz_R997Afdo",
+				"item": "viz_2Atq7Q2K",
 				"type": "block",
 				"position": {
-					"x": 1020,
-					"y": 100,
-					"w": 90,
-					"h": 70
+					"x": 10,
+					"y": 20,
+					"w": 740,
+					"h": 90
 				}
 			}
 		],
