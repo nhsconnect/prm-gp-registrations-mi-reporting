@@ -15,7 +15,7 @@ from tests.test_base import TestBase, EventType
 from helpers.datetime_helper import create_date_time
 
 
-class TestMissingAttachments(TestBase):
+class TestMissingAttachmentsSnapshotReport(TestBase):
 
     def test_count_of_total_records_transferred(self):
         """a count where the status is READY_TO_INTEGRATE or INTEGRATION."""
@@ -23,6 +23,7 @@ class TestMissingAttachments(TestBase):
         # reporting window
         report_start = datetime.today().date().replace(day=1)
         report_end = datetime.today().date().replace(day=30)
+        cutoff = "0"
 
         try:
             # Arrange
@@ -72,19 +73,20 @@ class TestMissingAttachments(TestBase):
                 sourcetype="myevent")
 
             # Act
-
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count'
-            )
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$report_start$": report_start.strftime("%Y-%m-%d"),
-                "$report_end$": report_end.strftime("%Y-%m-%d")
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
             })
 
             sleep(2)
 
-            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
@@ -105,6 +107,7 @@ class TestMissingAttachments(TestBase):
         # reporting window
         report_start = datetime.today().date().replace(day=1)
         report_end = datetime.today().date().replace(day=30)
+        cutoff = "0"
 
         try:
             # Arrange
@@ -151,20 +154,21 @@ class TestMissingAttachments(TestBase):
             
 
             # Act
-
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count'
-            )
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$report_start$": report_start.strftime("%Y-%m-%d"),
-                "$report_end$": report_end.strftime("%Y-%m-%d")
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
             })
 
             sleep(2)
 
-            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
-            self.LOG.info(f'telemetry: {telemetry}')         
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
             
              # Assert
             expected_values = {"Records Transferred": "2",
@@ -185,6 +189,7 @@ class TestMissingAttachments(TestBase):
         # reporting window
         report_start = datetime.today().date().replace(day=1)
         report_end = datetime.today().date().replace(day=30)
+        cutoff = "0"
 
         try:
             # Arrange
@@ -231,19 +236,20 @@ class TestMissingAttachments(TestBase):
 
 
             # Act
-
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count'
-            )
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$report_start$": report_start.strftime("%Y-%m-%d"),
-                "$report_end$": report_end.strftime("%Y-%m-%d")
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
             })
 
             sleep(2)
 
-            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
@@ -267,6 +273,7 @@ class TestMissingAttachments(TestBase):
         # reporting window
         report_start = datetime.today().date().replace(day=1)
         report_end = datetime.today().date().replace(day=30)
+        cutoff = "0"
 
         try:
             # Arrange
@@ -319,13 +326,15 @@ class TestMissingAttachments(TestBase):
             )
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$report_start$": report_start.strftime("%Y-%m-%d"),
-                "$report_end$": report_end.strftime("%Y-%m-%d")
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
             })
 
             sleep(2)
 
-            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
@@ -345,6 +354,7 @@ class TestMissingAttachments(TestBase):
         # reporting window
         report_start = datetime.today().date().replace(day=1)
         report_end = datetime.today().date().replace(day=30)
+        cutoff = "0"
 
         try:
             # Arrange
@@ -397,13 +407,15 @@ class TestMissingAttachments(TestBase):
             )
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$report_start$": report_start.strftime("%Y-%m-%d"),
-                "$report_end$": report_end.strftime("%Y-%m-%d")
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
             })
 
             sleep(2)
 
-            telemetry = get_telemetry_from_splunk(self.savedsearch(test_query), self.splunk_service)
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
@@ -418,6 +430,325 @@ class TestMissingAttachments(TestBase):
         finally:
             self.delete_index(index_name)
 
+    def test_gp2gp_missing_attachments_report_snapshot_count_with_cutoff_1_day_fail(self):
+        """This test ensures that new conversations are not included in the report when
+        the registation_event_datetime is outside the reporting window, but inside the cutoff
+        window."""
 
+        # Arrange
+        index_name, index = self.create_index()
+        report_start = "2023-03-01T00:00:00.000+0000"
+        report_end = "2023-03-02T00:00:00.000+0000"
+        cutoff = "0"
 
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=2)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start,
+                "$end_time$": report_end,
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"Records Transferred": "1",
+                               "No Missing Attachments": "1",
+                               "Missing Attachments": "0"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_missing_attachments_report_snapshot_count_with_cutoff_1_day_pass(self):
+        """This test ensures that new conversations are not included in the report when
+        the registration_event_datetime is outside the reporting window, but inside the cutoff
+        window."""
+
+        # Arrange
+        index_name, index = self.create_index()
+        report_start = "2023-03-01T00:00:00.000+0000"
+        report_end = "2023-03-02T00:00:00.000+0000"
+        cutoff = "1"
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=2)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start,
+                "$end_time$": report_end,
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"Records Transferred": "2",
+                               "No Missing Attachments": "1",
+                               "Missing Attachments": "1"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_missing_attachments_report_snapshot_percentage_with_cutoff_1_day_fail(self):
+        """This test ensures that new conversations are not included in the report when
+        the registation_event_datetime is outside the reporting window, but inside the cutoff
+        window."""
+
+        # Arrange
+        index_name, index = self.create_index()
+        report_start = "2023-03-01T00:00:00.000+0000"
+        report_end = "2023-03-02T00:00:00.000+0000"
+        cutoff = "0"
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=2)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start,
+                "$end_time$": report_end,
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"No Missing Attachments": "100.00",
+                               "Missing Attachments": "0.00"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_missing_attachments_report_snapshot_percentage_with_cutoff_1_day_pass(self):
+        """This test ensures that new conversations are not included in the report when
+        the registration_event_datetime is outside the reporting window, but inside the cutoff
+        window."""
+
+        # Arrange
+        index_name, index = self.create_index()
+        report_start = "2023-03-01T00:00:00.000+0000"
+        report_end = "2023-03-02T00:00:00.000+0000"
+        cutoff = "1"
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(number_of_placeholders=2)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start,
+                "$end_time$": report_end,
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"No Missing Attachments": "50.00",
+                               "Missing Attachments": "50.00"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
 

@@ -9,9 +9,15 @@ set_time_to_registration_datetime,
 filter_reporting_window,
 calculate_outcome,
 calculate_registration_status,
-calculate_sla_status %}
+calculate_sla_status,
+generate_report_start_and_end_time,
+filter_conversations_by_start_and_end_times_and_cutoff
+%}
 
 {{ set_time_to_registration_datetime() }}
+
+{{ generate_report_start_and_end_time() }}
+{{ filter_conversations_by_start_and_end_times_and_cutoff() }}
 
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome
