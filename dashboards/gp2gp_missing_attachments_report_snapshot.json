@@ -14,7 +14,7 @@
         "xAxisTitleVisibility": "hide"
       },
       "dataSources": {
-        "primary": "ds_Jf3MpK94"
+        "primary": "ds_qBafRzi3"
       },
       "title": "Count of Missing Attachments",
       "showProgressBar": false,
@@ -38,7 +38,7 @@
     "viz_nrRMTa9E": {
       "type": "splunk.bar",
       "dataSources": {
-        "primary": "ds_aaQlk4oc"
+        "primary": "ds_wBXZ14Ef"
       },
       "title": "Percentage of Missing Attachments",
       "options": {
@@ -70,17 +70,25 @@
     }
   },
   "dataSources": {
-    "ds_Jf3MpK94": {
+    "ds_qBafRzi3": {
       "type": "ds.search",
       "options": {
-        "query": "| savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\""
+        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
       },
       "name": "gp2gp_missing_attachments_snapshot_report_count"
     },
-    "ds_aaQlk4oc": {
+    "ds_wBXZ14Ef": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\""
+        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
       },
       "name": "gp2gp_missing_attachments_snapshot_report_percentages"
     }
@@ -98,14 +106,6 @@
     }
   },
   "inputs": {
-    "input_global_trp": {
-      "type": "input.timerange",
-      "options": {
-        "token": "time_range",
-        "defaultValue": "0,"
-      },
-      "title": "Time Range"
-    },
     "input_x1LK7THX": {
       "options": {
         "defaultValue": 0,
@@ -115,6 +115,14 @@
       },
       "title": "Cutoff (days)",
       "type": "input.number"
+    },
+    "input_udP1B2BG": {
+      "options": {
+        "defaultValue": "0,",
+        "token": "time_range"
+      },
+      "title": "Time Range",
+      "type": "input.timerange"
     }
   },
   "layout": {
@@ -186,7 +194,7 @@
       }
     ],
     "globalInputs": [
-      "input_global_trp",
+      "input_udP1B2BG",
       "input_x1LK7THX"
     ]
   },
