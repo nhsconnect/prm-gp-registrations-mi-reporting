@@ -73,14 +73,14 @@
     "ds_Jf3MpK94": {
       "type": "ds.search",
       "options": {
-        "query": "| savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\""
+        "query": "| savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\""
       },
       "name": "gp2gp_missing_attachments_snapshot_report_count"
     },
     "ds_aaQlk4oc": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\""
+        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\""
       },
       "name": "gp2gp_missing_attachments_snapshot_report_percentages"
     }
@@ -101,10 +101,20 @@
     "input_global_trp": {
       "type": "input.timerange",
       "options": {
-        "token": "global_time",
-        "defaultValue": "-24h@h,now"
+        "token": "time_range",
+        "defaultValue": "0,"
       },
-      "title": "Global Time Range"
+      "title": "Time Range"
+    },
+    "input_x1LK7THX": {
+      "options": {
+        "defaultValue": 0,
+        "token": "cutoff",
+        "min": 0,
+        "max": 14
+      },
+      "title": "Cutoff (days)",
+      "type": "input.number"
     }
   },
   "layout": {
@@ -176,7 +186,8 @@
       }
     ],
     "globalInputs": [
-      "input_global_trp"
+      "input_global_trp",
+      "input_x1LK7THX"
     ]
   },
   "description": "",
