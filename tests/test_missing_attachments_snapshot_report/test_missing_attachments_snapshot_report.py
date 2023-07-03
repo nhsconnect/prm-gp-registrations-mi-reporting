@@ -17,8 +17,7 @@ from helpers.datetime_helper import create_date_time
 
 class TestMissingAttachmentsSnapshotReport(TestBase):
 
-    def test_count_of_total_records_transferred(self):
-        """a count where the status is READY_TO_INTEGRATE or INTEGRATION."""
+    def test_total_records_transferred_report(self):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
@@ -27,7 +26,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         try:
             # Arrange
-            index_name, index = self.create_index()            
+            index_name, index = self.create_index()
 
             index.submit(
                 json.dumps(
@@ -38,16 +37,16 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                         payload=create_integration_payload(outcome="INTEGRATED")
                     )),
                 sourcetype="myevent")
-           
+
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_total_records_transferred_#2',
                         registration_event_datetime=create_date_time(date=report_start, time="10:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
                 sourcetype="myevent")
-            
+
             index.submit(
                 json.dumps(
                     create_sample_event(
@@ -59,22 +58,23 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                             errorDescription="Error with EHR Response",
                             failurePoint=EventType.EHR_RESPONSES.value
                         )
-                        
+
                     )),
                 sourcetype="myevent")
-            
+
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_total_records_transferred_#4',
                         registration_event_datetime=create_date_time(date=report_start, time="12:00:00"),
-                        event_type=EventType.EHR_REQUESTS.value                        
+                        event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+                'gp2gp_missing_attachments_snapshot_report/'
+                'gp2gp_missing_attachments_snapshot_report_total_records_transferred')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -90,13 +90,13 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred": "2"}
+            expected_values = {"total_records_transferred": "2"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
-            
+                    f'.[{idx}] | select( .{key}=="{value}")', telemetry)
+
         finally:
             self.delete_index(index_name)
 
@@ -171,8 +171,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
             
              # Assert
-            expected_values = {"Records Transferred": "2",
-                               "No Missing Attachments": "1"}
+            expected_values = {"No Missing Attachments": "1"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -253,8 +252,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred": "2",
-                               "No Missing Attachments": "1",
+            expected_values = {"No Missing Attachments": "1",
                                "Missing Attachments": "1"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
@@ -499,8 +497,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred": "1",
-                               "No Missing Attachments": "1",
+            expected_values = {"No Missing Attachments": "1",
                                "Missing Attachments": "0"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
@@ -580,8 +577,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Records Transferred": "2",
-                               "No Missing Attachments": "1",
+            expected_values = {"No Missing Attachments": "1",
                                "Missing Attachments": "1"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
