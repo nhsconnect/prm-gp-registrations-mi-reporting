@@ -1,13 +1,13 @@
 index="$index$"
 
-{% from 'gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
+{% from 'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
 gp2gp_transfer_status_report_snapshot_base %}
 
 
 {{ gp2gp_transfer_status_report_snapshot_base() }}
 
 | eval label=mvappend("Successfully Integrated", "Rejected", "Awaiting Integration", "In-Progress", "Technical Failure")
-| eval count=mvappend(percentage_successfully_integrated, percentage_rejected, percentage_awaiting_integration, percentage_in_progress, percentage_technical_failure)
+| eval count=mvappend(count_successfully_integrated,count_rejected,count_awaiting_integration,count_in_progress,count_technical_failure)
 
 | eval soft_zip = mvzip(label, count)
 | mvexpand soft_zip
