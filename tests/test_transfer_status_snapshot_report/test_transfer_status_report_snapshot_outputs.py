@@ -74,7 +74,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_counts')
+                'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_counts')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -163,7 +163,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_percentages')
+                'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_percentages')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -251,7 +251,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
 
                 # Act
                 test_query = self.generate_splunk_query_from_report(
-                    'gp2gp_transfer_status_report/gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer')
+                    'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer')
 
                 test_query = set_variables_on_query(test_query, {
                     "$index$": index_name,

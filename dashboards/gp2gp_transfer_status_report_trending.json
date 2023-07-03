@@ -9,8 +9,18 @@
       "showLastUpdated": false,
       "options": {
         "dataValuesDisplay": "all",
-        "yAxisTitleText": "Count"
-      }
+        "yAxisTitleText": "Count",
+        "backgroundColor": "#FFFFFF",
+        "seriesColors": [
+          "#003087",
+          "#005EB8",
+          "#0072CE",
+          "#41B6E6",
+          "#00A9CE",
+          "#768692"
+        ]
+      },
+      "title": "Count of Transfer Status per Time Period"
     },
     "viz_YuNkyEC4": {
       "type": "splunk.column",
@@ -19,13 +29,32 @@
       },
       "options": {
         "yAxisTitleText": "Percentage",
-        "dataValuesDisplay": "all"
-      }
+        "dataValuesDisplay": "all",
+        "seriesColors": [
+          "#003087",
+          "#005EB8",
+          "#0072CE",
+          "#41B6E6",
+          "#00A9CE",
+          "#768692"
+        ]
+      },
+      "title": "Percentage of Transfer Status per Time Period"
     },
     "viz_TsaIC6Wx": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "# **Transfer Status Trending Report**"
+        "markdown": "# **Transfer Status Trending Report**",
+        "fontColor": "#231f20",
+        "fontSize": "extraLarge"
+      }
+    },
+    "viz_ZQzjIVkR": {
+      "type": "splunk.singlevalueicon",
+      "options": {
+        "showValue": false,
+        "icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
+        "iconColor": "#FFFFFF"
       }
     }
   },
@@ -132,7 +161,8 @@
   "layout": {
     "type": "absolute",
     "options": {
-      "display": "auto-scale"
+      "display": "auto-scale",
+      "backgroundColor": "#768692"
     },
     "structure": [
       {
@@ -140,7 +170,7 @@
         "type": "block",
         "position": {
           "x": 10,
-          "y": 80,
+          "y": 250,
           "w": 1180,
           "h": 300
         }
@@ -150,8 +180,18 @@
         "type": "block",
         "position": {
           "x": 10,
-          "y": 390,
+          "y": 600,
           "w": 1180,
+          "h": 250
+        }
+      },
+      {
+        "item": "viz_ZQzjIVkR",
+        "type": "block",
+        "position": {
+          "x": 940,
+          "y": -10,
+          "w": 250,
           "h": 250
         }
       },
@@ -159,10 +199,10 @@
         "item": "viz_TsaIC6Wx",
         "type": "block",
         "position": {
-          "x": 10,
-          "y": 10,
-          "w": 670,
-          "h": 100
+          "x": 0,
+          "y": 0,
+          "w": 710,
+          "h": 90
         }
       }
     ],
