@@ -584,10 +584,10 @@ class TestTransferStatusReportBase(TestBase):
 
         try:
             # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=15)
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
             self.LOG.info(f"now_minus_18_mins: {now_minus_18_mins}")
 
-            now_minus_25_mins = datetime_utc_now() - timedelta(hours=1, minutes=1)
+            now_minus_25_mins = datetime_utc_now() - timedelta(hours=0, minutes=25)
             self.LOG.info(f"now_minus_25_mins: {now_minus_25_mins}")
 
             # test_#1 - compatible and within SLA
@@ -598,7 +598,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -617,71 +617,71 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        #registration_event_datetime="2023-07-04 08:10:59.913178",                        
-                        registration_event_datetime=now_minus_25_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
             
-            # # test_#2 - compatible and within SLA
+            # test_#2 - compatible and within SLA
 
-            # conversationId = 'test_in_progress_within_sla_2'
+            conversationId = 'test_in_progress_within_sla_2'
 
-            # index.submit(
-            #     json.dumps(
-            #         create_sample_event(
-            #             conversation_id=conversationId,
-            #             registration_event_datetime="2023-03-10T08:00:00+0000",
-            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-            #             sendingPracticeSupplierName="EMIS",
-            #             requestingPracticeSupplierName="TPP",
-            #             payload=create_transfer_compatibility_payload(
-            #                 internalTransfer=False,
-            #                 transferCompatible=True,
-            #                 reason="test1"
-            #             )
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_25_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-            #         )),
-            #     sourcetype="myevent")
-            # index.submit(
-            #     json.dumps(
-            #         create_sample_event(
-            #             conversation_id=conversationId,
-            #             registration_event_datetime=now_minus_18_mins.strftime(
-            #                 "%Y-%m-%dT%H:%M:%S%z"),
-            #             event_type=EventType.EHR_REQUESTS.value
-            #         )),
-            #     sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_18_mins.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
             
-            # # test_#3 - compatible but outside SLA
+            # test_#3 - compatible but outside SLA
            
 
-            # conversationId = 'test_in_progress_outside_sla'
+            conversationId = 'test_in_progress_outside_sla'
 
-            # index.submit(
-            #     json.dumps(
-            #         create_sample_event(
-            #             conversation_id=conversationId,
-            #             registration_event_datetime="2023-03-10T08:00:00+0000",
-            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-            #             sendingPracticeSupplierName="EMIS",
-            #             requestingPracticeSupplierName="TPP",
-            #             payload=create_transfer_compatibility_payload(
-            #                 internalTransfer=False,
-            #                 transferCompatible=True,
-            #                 reason="test1"
-            #             )
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
 
-            #         )),
-            #     sourcetype="myevent")
-            # index.submit(
-            #     json.dumps(
-            #         create_sample_event(
-            #             conversation_id=conversationId,
-            #             registration_event_datetime="2023-03-10T09:00:00+0000",
-            #             event_type=EventType.EHR_REQUESTS.value
-            #         )),
-            #     sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversationId,
+                        registration_event_datetime=now_minus_25_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
 
 
             # Act
@@ -699,19 +699,13 @@ class TestTransferStatusReportBase(TestBase):
                 self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
+
             # Assert
             assert jq.first(
                 '.[] ' +
-                '| select( .total_eligible_for_electronic_transfer=="1" )' +
-                '| select( .count_in_progress == "1")' +
-                '| select( .percentage_in_progress == "100.00")', telemetry)
-
-            # # Assert
-            # assert jq.first(
-            #     '.[] ' +
-            #     '| select( .total_eligible_for_electronic_transfer=="3" )' +
-            #     '| select( .count_in_progress == "2")' +
-            #     '| select( .percentage_in_progress == "66.67")', telemetry)
+                '| select( .total_eligible_for_electronic_transfer=="3" )' +
+                '| select( .count_in_progress == "2")' +
+                '| select( .percentage_in_progress == "66.67")', telemetry)
 
         finally:
             self.delete_index(index_name)
