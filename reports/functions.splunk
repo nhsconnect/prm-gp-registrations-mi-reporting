@@ -47,7 +47,7 @@
 {% endmacro %}
 
 {% macro calculate_sla_status() %}
-| eval twentyMinsAgo = relative_time(_time, "-20m")
+| eval twentyMinsAgo = relative_time(now(), "-20m")
 | eval twentyFourHoursAgo = relative_time(now(), "-24h")
 | eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime) 
     OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h"))
