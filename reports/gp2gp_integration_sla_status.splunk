@@ -1,5 +1,5 @@
 index="$index$"
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S%z")
+
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
 filter_non_transfers,
@@ -10,6 +10,8 @@ filter_reporting_window,
 calculate_outcome,
 calculate_registration_status,
 calculate_integration_sla_status %}
+
+{{ set_time_to_registration_datetime() }}
 
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome
