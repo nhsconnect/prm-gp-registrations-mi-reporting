@@ -19,7 +19,9 @@
 {% endmacro %}
 
 {% macro set_time_to_registration_datetime() %}
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S%z")
+| eval tz_hours = substr(strftime(now(), "%z") , 1 ,3)
+| eval registrationEventDateTimeEpoch = relative_time(strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
+| eval _time=registrationEventDateTimeEpoch
 | sort 0 _time
 {% endmacro %}
 
