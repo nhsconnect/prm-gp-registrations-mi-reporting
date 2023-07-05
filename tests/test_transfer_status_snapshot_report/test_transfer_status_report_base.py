@@ -644,12 +644,16 @@ class TestTransferStatusReportBase(TestBase):
         cutoff = "0"
 
         try:
-            # test requires a datetime less than 20mins
-            now = datetime_utc_now()
+            # test requires a datetime less than 20mins          
 
-            now_minus_18_mins = now - timedelta(hours=0, minutes=18)
+            now = datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z")
+
+            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
 
             now_minus_25_mins = datetime_utc_now() - timedelta(hours=0, minutes=25)
+           
+
+            self.LOG.info(f"now_18: {now_minus_18_mins.strftime('%Y-%m-%dT%H:%M:%S%z')}, now_25: {now_minus_25_mins.strftime('%Y-%m-%dT%H:%M:%S%z')}, now: {now}")
 
             # test_#1 - compatible and within SLA
             conversationId = 'test_in_progress_within_sla'
@@ -659,7 +663,7 @@ class TestTransferStatusReportBase(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversationId,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
                         requestingPracticeSupplierName="TPP",
@@ -677,9 +681,8 @@ class TestTransferStatusReportBase(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
+                        conversation_id=conversationId,                       
+                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
@@ -753,8 +756,8 @@ class TestTransferStatusReportBase(TestBase):
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S"),
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "$cutoff$": cutoff
             })
 
@@ -769,7 +772,8 @@ class TestTransferStatusReportBase(TestBase):
                 '.[] ' +
                 '| select( .total_eligible_for_electronic_transfer=="3" )' +
                 '| select( .count_in_progress == "2")' +
-                '| select( .percentage_in_progress == "66.67")', telemetry)
+                '| select( .percentage_in_progress == "66.67")', telemetry)           
+
 
         finally:
             self.delete_index(index_name)
