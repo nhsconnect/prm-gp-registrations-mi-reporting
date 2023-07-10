@@ -6,57 +6,99 @@ import json
 from time import sleep
 from splunklib import client
 import jq
+from helpers.datetime_helper import datetime_utc_now, create_date_time
 from helpers.splunk \
     import get_telemetry_from_splunk, get_or_create_index, create_sample_event, set_variables_on_query, \
-    create_integration_payload,  create_error_payload, create_transfer_compatibility_payload,create_ehr_response_payload
+    create_integration_payload,  create_error_payload, create_transfer_compatibility_payload, create_ehr_response_payload
 from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader
 from tests.test_base import TestBase, EventType
-from helpers.datetime_helper import create_date_time
 
 
 class TestMissingAttachmentsTrendingOutputs(TestBase):
 
-    def test_total_records_transferred(self):
+    def test_missing_attachments_report_trending_count_with_start_end_times_as_datetimes(self):
+
+        # Arrange
+        index_name, index = self.create_index()
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
-            # Arrange
-            index_name, index = self.create_index()
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.EHR_INTEGRATIONS.value,
-                        payload=create_integration_payload(outcome="INTEGRATED")
+                        conversation_id='test_#1',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="08:00:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(
+                            number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+            
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="09:00:00"),
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                      
                     )),
                 sourcetype="myevent")
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_total_records_transferred_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="10:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff,
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            assert jq.first(
+                '.[] | select( ."Transfered with no missing attachments" == "1" ) ', telemetry)
+
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_count_with_start_end_times_as_relative_times(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        now_minus_2_days = datetime_utc_now() - timedelta(days=2)
+
+        try:
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#3',
-                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
-                        event_type=EventType.ERRORS.value,
-                        payload=create_error_payload(
-                            errorCode="99",
-                            errorDescription="Error with EHR Response",
-                            failurePoint=EventType.EHR_RESPONSES.value
+                        'test_total_eligible_for_electronic_transfer_1',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
                         )
 
                     )),
@@ -65,22 +107,49 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#4',
-                        registration_event_datetime=create_date_time(date=report_start, time="12:00:00"),
-                        event_type=EventType.EHR_REQUESTS.value
+                        'test_total_eligible_for_electronic_transfer_2',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test2"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_3',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=True,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/'
-                'gp2gp_missing_attachments_snapshot_report_total_records_transferred')
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$cutoff$": cutoff
+                "$start_time$": "-3d@d",
+                "$end_time$": "now",
+                "$cutoff$": "0",
+                "$time_period$": "month"
             })
 
             sleep(2)
@@ -90,404 +159,76 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"total_records_transferred": "2"}
+            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
+                                     "TECHNICAL_FAILURE": "2"}
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .{key}=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
 
-    def test_count_of_transferred_with_no_missing_attachments(self):
-        """a count where the outcome is READY_TO_INTEGRATE (or later event) and there are no placeholders (EHR Response)
-        and no document migration failures (document-responses)."""
-
-        # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
-        cutoff = "0"
-
-        try:
-            # Arrange
-            index_name, index = self.create_index()     
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:30:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)               
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
-                    )),
-                sourcetype="myevent")  
-            
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=4)               
-                    )),
-                sourcetype="myevent")       
-            
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:10:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
-                    )),
-                sourcetype="myevent")             
-            
-
-            # Act
-            test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
-
-            test_query = set_variables_on_query(test_query, {
-                "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$cutoff$": cutoff
-            })
-
-            sleep(2)
-
-            telemetry = get_telemetry_from_splunk(
-                self.savedsearch(test_query), self.splunk_service)
-            self.LOG.info(f'telemetry: {telemetry}')
-            
-             # Assert
-            expected_values = {"No Missing Attachments": "1"}
-
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
-                assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
-            
-        finally:
-            self.delete_index(index_name)
-
-    def test_count_of_transferred_with_missing_attachments(self):
-        """a count where the outcome is READY_TO_INTEGRATE (or later event) and placeholders exist (EHR Response)
-        or there is document migration failures (document-responses)."""
-
-        # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
-        cutoff = "0"
-
-        try:
-            # Arrange
-            index_name, index = self.create_index()
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:30:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=4)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:10:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            # Act
-            test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
-
-            test_query = set_variables_on_query(test_query, {
-                "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$cutoff$": cutoff
-            })
-
-            sleep(2)
-
-            telemetry = get_telemetry_from_splunk(
-                self.savedsearch(test_query), self.splunk_service)
-            self.LOG.info(f'telemetry: {telemetry}')
-
-            # Assert
-            expected_values = {"No Missing Attachments": "1",
-                               "Missing Attachments": "1"}
-
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
-                assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
-
-        finally:
-            self.delete_index(index_name)
-
-    def test_percentage_of_transferred_with_no_missing_attachments(self):
-        """The percentage of records transferred where the outcome is READY_TO_INTEGRATE (or later event) and there
-        are no placeholders (EHR Response) and no document migration failures (document-responses).
-        % - count/ number of transfers * 100 to 2 decimal places."""
-
-        # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
-        cutoff = "0"
-
-        try:
-            # Arrange
-            index_name, index = self.create_index()
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:30:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=4)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:10:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            # Act
-
-            test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages'
-            )
-            test_query = set_variables_on_query(test_query, {
-                "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$cutoff$": cutoff
-            })
-
-            sleep(2)
-
-            telemetry = get_telemetry_from_splunk(
-                self.savedsearch(test_query), self.splunk_service)
-            self.LOG.info(f'telemetry: {telemetry}')
-
-            # Assert
-            expected_values = {"No Missing Attachments": "50.00"}
-
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
-                assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
-
-        finally:
-            self.delete_index(index_name)
-
-
-    def test_percentage_of_transferred_with_missing_attachments(self):
-
-        # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
-        cutoff = "0"
-
-        try:
-            # Arrange
-            index_name, index = self.create_index()
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:30:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=4)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime=create_date_time(date=report_start, time="09:10:00"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
-                    )),
-                sourcetype="myevent")
-
-
-            # Act
-
-            test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages'
-            )
-            test_query = set_variables_on_query(test_query, {
-                "$index$": index_name,
-                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
-                "$cutoff$": cutoff
-            })
-
-            sleep(2)
-
-            telemetry = get_telemetry_from_splunk(
-                self.savedsearch(test_query), self.splunk_service)
-            self.LOG.info(f'telemetry: {telemetry}')
-
-            # Assert
-            expected_values = {"No Missing Attachments": "50.00",
-                               "Missing Attachments": "50.00"}
-
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
-                assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
-
-        finally:
-            self.delete_index(index_name)
-
-    def test_gp2gp_missing_attachments_report_snapshot_count_with_cutoff_1_day_fail(self):
+    def test_gp2gp_transfer_status_report_trending_count_with_cutoff_1_day_fail(self):
         """This test ensures that new conversations are not included in the report when
         the registation_event_datetime is outside the reporting window, but inside the cutoff
         window."""
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
-        cutoff = "0"
 
         try:
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                        'test_total_eligible_for_electronic_transfer_1',
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                    )),
-                sourcetype="myevent")
+                        'test_total_eligible_for_electronic_transfer_2',
+                        registration_event_datetime="2023-03-31T15:00:00.000+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test2"
+                        )
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=2)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
-                "$cutoff$": cutoff
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
             })
 
             sleep(2)
@@ -497,77 +238,79 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"No Missing Attachments": "1",
-                               "Missing Attachments": "0"}
+            expected_values = {"0": {"time_period": "23-03",
+                                     "TECHNICAL_FAILURE": "1"}
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_missing_attachments_report_snapshot_count_with_cutoff_1_day_pass(self):
-        """This test ensures that new conversations are not included in the report when
-        the registration_event_datetime is outside the reporting window, but inside the cutoff
-        window."""
+    def test_gp2gp_transfer_status_report_trending_count_with_cutoff_1_day_pass(self):
+        """This test ensures that events that lie inside the cutoff window and belong to
+        a conversation_id that started inside the reporting window are included in the report."""
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
-        cutoff = "1"
+        conversation_id = 'test_total_eligible_for_electronic_transfer_1'
 
         try:
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=2)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-12T08:10:00+0000",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="INTEGRATED_AND_SUPPRESSED")
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_count')
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
-                "$cutoff$": cutoff
+                "$start_time$": "2023-03-10T00:00:00.000+0000",
+                "$end_time$": "2023-03-11T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
             })
 
             sleep(2)
@@ -577,77 +320,465 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"No Missing Attachments": "1",
-                               "Missing Attachments": "1"}
+            expected_values = {"0": {"time_period": "23-03",
+                                     "AWAITING_INTEGRATION": "1"}
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_missing_attachments_report_snapshot_percentage_with_cutoff_1_day_fail(self):
+    def test_gp2gp_transfer_status_report_trending_count_with_time_period_month(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-04-30T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03",
+                                     "AWAITING_INTEGRATION": "1"},
+                               "1": {"time_period": "23-04",
+                                     "AWAITING_INTEGRATION": "1"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_count_with_time_period_week(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "week"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03-10",
+                                     "AWAITING_INTEGRATION": "1"},
+                               "1": {"time_period": "23-03-11",
+                                     "AWAITING_INTEGRATION": "1"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_percentage_with_start_end_times_as_datetimes(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_1',
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_2',
+                        registration_event_datetime="2023-03-10T09:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test2"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_3',
+                        registration_event_datetime="2023-03-10T10:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=True,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "0",
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03",
+                                     "TECHNICAL_FAILURE": "100.00"}
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_percentage_with_start_end_times_as_relative_times(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        now_minus_2_days = datetime_utc_now() - timedelta(days=2)
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_1',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_2',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test2"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        'test_total_eligible_for_electronic_transfer_3',
+                        registration_event_datetime=now_minus_2_days.strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=True,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "-3d@d",
+                "$end_time$": "now",
+                "$cutoff$": "0",
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
+                                     "TECHNICAL_FAILURE": "100.00"}
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_percentage_with_cutoff_1_day_fail(self):
         """This test ensures that new conversations are not included in the report when
         the registation_event_datetime is outside the reporting window, but inside the cutoff
         window."""
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
-        cutoff = "0"
 
         try:
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                        'test_total_eligible_for_electronic_transfer_1',
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                    )),
-                sourcetype="myevent")
+                        'test_total_eligible_for_electronic_transfer_2',
+                        registration_event_datetime="2023-03-31T15:00:00.000+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test2"
+                        )
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=2)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages')
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
-                "$cutoff$": cutoff
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
             })
 
             sleep(2)
@@ -657,77 +788,79 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"No Missing Attachments": "100.00",
-                               "Missing Attachments": "0.00"}
+            expected_values = {"0": {"time_period": "23-03",
+                                     "TECHNICAL_FAILURE": "100.00"}
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_missing_attachments_report_snapshot_percentage_with_cutoff_1_day_pass(self):
-        """This test ensures that new conversations are not included in the report when
-        the registration_event_datetime is outside the reporting window, but inside the cutoff
-        window."""
+    def test_gp2gp_transfer_status_report_trending_percentage_with_cutoff_1_day_pass(self):
+        """This test ensures that events that lie inside the cutoff window and belong to
+        a conversation_id that started inside the reporting window are included in the report."""
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
-        cutoff = "1"
+        conversation_id = 'test_total_eligible_for_electronic_transfer_1'
 
         try:
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=0)
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
                 sourcetype="myevent")
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
-                        event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=2)
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        conversation_id=conversation_id,
+                        registration_event_datetime="2023-03-12T08:10:00+0000",
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(
+                            outcome="INTEGRATED_AND_SUPPRESSED")
                     )),
                 sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_snapshot_report/gp2gp_missing_attachments_snapshot_report_percentages')
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
-                "$cutoff$": cutoff
+                "$start_time$": "2023-03-10T00:00:00.000+0000",
+                "$end_time$": "2023-03-11T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
             })
 
             sleep(2)
@@ -737,14 +870,216 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"No Missing Attachments": "50.00",
-                               "Missing Attachments": "50.00"}
+            expected_values = {"0": {"time_period": "23-03",
+                                     "AWAITING_INTEGRATION": "100.00"}
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                # self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
 
+    def test_gp2gp_transfer_status_report_trending_percentage_with_time_period_month(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-04-11T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-04-30T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "month"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03",
+                                     "AWAITING_INTEGRATION": "100.00"},
+                               "1": {"time_period": "23-04",
+                                     "AWAITING_INTEGRATION": "100.00"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_transfer_status_report_trending_percentage_with_time_period_week(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        conversation_id_1 = 'test_total_eligible_for_electronic_transfer_1'
+        conversation_id_2 = 'test_total_eligible_for_electronic_transfer_2'
+
+        try:
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_1,
+                        registration_event_datetime="2023-03-10T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T08:00:00+0000",
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingPracticeSupplierName="EMIS",
+                        requestingPracticeSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test1"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime="2023-03-17T09:10:00+0000",
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_percentage')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": "2023-03-01T00:00:00.000+0000",
+                "$end_time$": "2023-03-31T00:00:00.000+0000",
+                "$cutoff$": "1",
+                "$time_period$": "week"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"0": {"time_period": "23-03-10",
+                                     "AWAITING_INTEGRATION": "100.00"},
+                               "1": {"time_period": "23-03-11",
+                                     "AWAITING_INTEGRATION": "100.00"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.{key}==\"{value}\") " for key,
+                     value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
