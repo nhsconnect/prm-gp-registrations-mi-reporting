@@ -3,10 +3,10 @@
 		"ds_LJnvHy0y": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_counts index=\"logs_itoc_gp2gp_prod\" ",
+				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_counts index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
 				"queryParameters": {
-					"earliest": "$reportTimeframe.earliest$",
-					"latest": "$reportTimeframe.latest$"
+					"earliest": "0",
+					"latest": ""
 				}
 			},
 			"name": "gp2gp_transfer_status_report_snapshot_counts"
@@ -14,10 +14,10 @@
 		"ds_30YiHQq9": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer index=\"logs_itoc_gp2gp_prod\"",
+				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
 				"queryParameters": {
-					"earliest": "$reportTimeframe.earliest$",
-					"latest": "$reportTimeframe.latest$"
+					"earliest": "0",
+					"latest": ""
 				}
 			},
 			"name": "gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer"
@@ -25,10 +25,10 @@
 		"ds_yg6oqZuY": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_percentages index=\"logs_itoc_gp2gp_prod\" ",
+				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
 				"queryParameters": {
-					"earliest": "$reportTimeframe.earliest$",
-					"latest": "$reportTimeframe.latest$"
+					"earliest": "0",
+					"latest": ""
 				}
 			},
 			"name": "gp2gp_transfer_status_report_snapshot_percentages"
@@ -122,14 +122,23 @@
 		}
 	},
 	"inputs": {
-		"input_zyg3nAba": {
+		"input_N4dUT4Cz": {
 			"options": {
 				"defaultValue": "0,",
-				"token": "reportTimeframe",
-				"backgroundColor": "#005EB8"
+				"token": "time_range"
 			},
-			"title": "Report Time Range",
+			"title": "Time Range",
 			"type": "input.timerange"
+		},
+		"input_2puDOPI6": {
+			"options": {
+				"defaultValue": 0,
+				"token": "cutoff",
+				"min": 0,
+				"max": 14
+			},
+			"title": "Cutoff (days)",
+			"type": "input.number"
 		}
 	},
 	"layout": {
@@ -191,10 +200,11 @@
 			}
 		],
 		"globalInputs": [
-			"input_zyg3nAba"
+			"input_N4dUT4Cz",
+			"input_2puDOPI6"
 		]
 	},
-	"title": "gp2gp_transfer_status_report_ABSOLUTE_LAYOUT",
+	"title": "gp2gp_transfer_status_report_snapshot",
 	"description": "",
 	"defaults": {
 		"dataSources": {

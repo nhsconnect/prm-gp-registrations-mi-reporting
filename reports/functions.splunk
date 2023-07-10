@@ -19,7 +19,9 @@
 {% endmacro %}
 
 {% macro set_time_to_registration_datetime() %}
-| eval _time=strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S")
+| eval tz_hours = substr(strftime(now(), "%z") , 1 ,3)
+| eval registrationEventDateTimeEpoch = relative_time(strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
+| eval _time=registrationEventDateTimeEpoch
 | sort 0 _time
 {% endmacro %}
 
@@ -31,7 +33,7 @@
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
 | eval ehrResponseEvent = if(eventType=="EHR_RESPONSES", 1, 0)
-| eval ehrRequestEvent = if (eventType=="EHR_REQUESTS", 1, 0)
+| eval ehrRequestEvent = if(eventType=="EHR_REQUESTS", 1, 0)
 | eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
 | eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
 | eval isRegistration = if(eventType="REGISTRATIONS", 1, 0)

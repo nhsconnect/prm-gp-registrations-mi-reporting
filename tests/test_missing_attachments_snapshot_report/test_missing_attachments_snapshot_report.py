@@ -21,7 +21,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
@@ -106,7 +106,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
@@ -187,7 +187,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
@@ -270,7 +270,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
@@ -351,7 +351,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=30)
+        report_end = datetime.today().date().replace(day=28)
         cutoff = "0"
 
         try:
@@ -435,8 +435,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=2)
         cutoff = "0"
 
         try:
@@ -445,7 +445,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=0)
                     )),
@@ -455,7 +455,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -464,7 +464,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=2)
                     )),
@@ -474,7 +474,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_end, time="03:00:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -485,8 +485,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                 "$cutoff$": cutoff
             })
 
@@ -515,8 +515,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=2)
         cutoff = "1"
 
         try:
@@ -525,7 +525,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=0)
                     )),
@@ -535,7 +535,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -544,7 +544,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=2)
                     )),
@@ -554,7 +554,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_end, time="03:00:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -565,8 +565,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                 "$cutoff$": cutoff
             })
 
@@ -595,8 +595,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=2)
         cutoff = "0"
 
         try:
@@ -605,7 +605,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=0)
                     )),
@@ -615,7 +615,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -624,7 +624,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=2)
                     )),
@@ -634,7 +634,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_end, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -645,8 +645,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                 "$cutoff$": cutoff
             })
 
@@ -675,8 +675,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
         # Arrange
         index_name, index = self.create_index()
-        report_start = "2023-03-01T00:00:00.000+0000"
-        report_end = "2023-03-02T00:00:00.000+0000"
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=2)
         cutoff = "1"
 
         try:
@@ -685,7 +685,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=0)
                     )),
@@ -695,7 +695,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#1',
-                        registration_event_datetime="2023-03-01T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -704,7 +704,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-01T05:00:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_start, time="05:00:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=create_ehr_response_payload(number_of_placeholders=2)
                     )),
@@ -714,7 +714,7 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id='test_#2',
-                        registration_event_datetime="2023-03-02T05:03:00.000+0000",
+                        registration_event_datetime=create_date_time(date=report_end, time="05:03:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                     )),
                 sourcetype="myevent")
@@ -725,8 +725,8 @@ class TestMissingAttachmentsSnapshotReport(TestBase):
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
-                "$start_time$": report_start,
-                "$end_time$": report_end,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                 "$cutoff$": cutoff
             })
 
