@@ -1,18 +1,15 @@
-import logging
-import os
-from enum import Enum
-import pytest
 import json
+from datetime import datetime
 from time import sleep
-from splunklib import client
+
 import jq
-from helpers.datetime_helper import datetime_utc_now, create_date_time
-from helpers.splunk \
-    import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
-    create_registration_payload, create_ehr_response_payload
-from datetime import datetime, timedelta
-from jinja2 import Environment, FileSystemLoader
-from tests.test_base import TestBase, EventType
+import pytest
+
+from helpers.datetime_helper import create_date_time
+from helpers.splunk import (create_ehr_response_payload,
+                            create_registration_payload, create_sample_event,
+                            get_telemetry_from_splunk, set_variables_on_query)
+from tests.test_base import EventType, TestBase
 
 
 class TestMissingAttachmentsTrendingOutputs(TestBase):
@@ -214,6 +211,130 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
                 
                 assert jq.first(
                 f'.[] | select( .registrationStatus=="{registrationStatus}")', telemetry)
+
+            finally:
+                self.delete_index(index_name)
+
+
+    @pytest.mark.parametrize("report_type, time_period, output",
+                             [("count", "day", {"0": {"time_period": "23-07-01", 
+                                                      "Transfered with missing attachments": "0",
+                                                      "Transfered with no missing attachments": "0"}}),
+                              ("count", "week", {"0": {"time_period": "23-07-01", 
+                                                      "Transfered with missing attachments": "0",
+                                                      "Transfered with no missing attachments": "0"}}),
+                              ("count", "month", {"0": {"time_period": "23-07", 
+                                                      "Transfered with missing attachments": "2",
+                                                      "Transfered with no missing attachments": "1"}}),
+                              ("percentages", "day", {"0": {"time_period": "23-07-01", 
+                                                      "Transfered with missing attachments": "0",
+                                                      "Transfered with no missing attachments": "0"}}),
+                              ("percentages", "week", {"0": {"time_period": "23-07-01", 
+                                                      "Transfered with missing attachments": "0",
+                                                      "Transfered with no missing attachments": "0"}}),
+                              ("percentages", "month", {"0": {"time_period": "23-07", 
+                                                      "Transfered with missing attachments": "66.67",
+                                                      "Transfered with no missing attachments": "33.33"}}),
+                              ])
+    def test_missing_attachments_report_time_period(self, report_type, time_period, output):
+            """This test ensures that new conversations are at a different stage based on cutoff."""
+
+            # Arrange
+            index_name, index = self.create_index()
+
+            report_start = "2023-07-01T00:00:00"
+            report_end = "2023-07-28T00:00:00"
+
+            try:
+
+                
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_1",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,1), time="08:00:00"),
+                            event_type=EventType.EHR_RESPONSES.value,
+                            payload=create_ehr_response_payload(number_of_placeholders=0)
+                        )),
+                    sourcetype="myevent")
+                
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_1",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,1), time="08:05:00"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        )),
+                    sourcetype="myevent")
+
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_2",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,2), time="05:03:00"),
+                            event_type=EventType.EHR_RESPONSES.value,
+                            payload=create_ehr_response_payload(number_of_placeholders=2)
+                        )),
+                    sourcetype="myevent")
+                
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_2",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,2), time="08:05:00"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        )),
+                    sourcetype="myevent")
+
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_3",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,8), time="05:00:00"),
+                            event_type=EventType.EHR_RESPONSES.value,
+                            payload=create_ehr_response_payload(number_of_placeholders=2)
+                        )),
+                    sourcetype="myevent")
+                
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id="test_3",
+                            registration_event_datetime=create_date_time(date=datetime(2023,7,8), time="08:05:00"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        )),
+                    sourcetype="myevent")
+
+
+                # Act
+                test_query = self.generate_splunk_query_from_report(
+                    f'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_{report_type}')
+
+                test_query = set_variables_on_query(test_query, {
+                    "$index$": index_name,    
+                    "$start_time$": report_start,
+                    "$end_time$": report_end,          
+                    "$cutoff$": "0",
+                    "$time_period$": time_period
+                })
+
+                sleep(2)
+
+                telemetry = get_telemetry_from_splunk(
+                    self.savedsearch(test_query), self.splunk_service)
+                self.LOG.info(f'telemetry: {telemetry}')
+
+                # Assert
+                
+                expected_values = output
+
+                for row, row_values in expected_values.items():
+                    row_values_as_jq_str = ' '.join(
+                        [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
+                    )
+
+                    assert jq.first(
+                        f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
             finally:
                 self.delete_index(index_name)
