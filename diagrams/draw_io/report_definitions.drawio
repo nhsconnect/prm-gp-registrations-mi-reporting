@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="PCsMXgakjSR2rSUJ4HeJ" name="transfer_status_report">
-        <mxGraphModel dx="1252" dy="3493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+        <mxGraphModel dx="1699" dy="3493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -64,7 +64,7 @@
                         <mxPoint x="-9431" y="510" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="1550" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Inside/Outside 8 days report (&lt;b&gt;Defined&lt;/b&gt;)&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Should really just show top-level &quot;Inside/Outside report&quot;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" parent="2" vertex="1">
+                <mxCell id="1550" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Inside/Outside 8 days report (&lt;b&gt;Defined&lt;/b&gt;) A.K.A awaiting integration report&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Should really just show top-level &quot;Inside/Outside report&quot;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" parent="2" vertex="1">
                     <mxGeometry x="820" y="221.5" width="360" height="235.5" as="geometry"/>
                 </mxCell>
                 <mxCell id="1551" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="2" source="21" target="1550" edge="1">
@@ -142,6 +142,9 @@
                 </mxCell>
                 <mxCell id="1586" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" parent="2" vertex="1">
                     <mxGeometry x="1860" y="50" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="qyGlYtTaXLXJG0iLf7Jm-1589" value="If inside/outside 8 days report, contains records that are in flight then this links directly to that report. That report needs adjusting to include in-flight in breach of SLA and iin&lt;br&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="2">
+                    <mxGeometry x="820" y="530" width="380" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="1575" value="Table" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#d5e8d4;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=#d5e8d4;shadow=1;size=20;pointerEvents=1;" parent="1" vertex="1">
                     <mxGeometry x="740" y="15" width="140" height="90" as="geometry"/>
@@ -232,6 +235,79 @@
                     <mxGeometry x="920" width="100" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="kaJEOg8FucwNSPNFQz28-36" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" parent="kaJEOg8FucwNSPNFQz28-1" vertex="1">
+                    <mxGeometry x="1280.8900000000003" y="10" width="100" height="100" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="integrated_inside_outside_8_days" id="GOKoaKevFLlHfAiIR9wu">
+        <mxGraphModel dx="1252" dy="3493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+            <root>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-0"/>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-1" parent="4vzFN2vd1rSk1QzOAn5a-0"/>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-2" value="Snapshot: Missing attachments report V2 - drill-down reports and links" style="swimlane;startSize=20;horizontal=1;childLayout=treeLayout;horizontalTree=0;resizable=1;containerType=tree;fontSize=12;resizeWidth=1;resizeHeight=1;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="140" y="180" width="787" height="1023" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-3" value="Snapshot: Missing attachment report" style="whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="259.36805000000004" y="40" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-4" value="Column: Total records transferred" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="20" y="133" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-5" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="4vzFN2vd1rSk1QzOAn5a-2" source="4vzFN2vd1rSk1QzOAn5a-3" target="4vzFN2vd1rSk1QzOAn5a-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-6" value="Column: Transferred not integrated within 8 days" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="160" y="131.5" width="128.2" height="58.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-7" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="4vzFN2vd1rSk1QzOAn5a-2" source="4vzFN2vd1rSk1QzOAn5a-3" target="4vzFN2vd1rSk1QzOAn5a-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-8" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="4vzFN2vd1rSk1QzOAn5a-2" source="4vzFN2vd1rSk1QzOAn5a-3" target="4vzFN2vd1rSk1QzOAn5a-9">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-18246.1116" y="130" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-9" value="Column: Transferred integrated within 8 days" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="459.6261" y="131.5" width="139.11" height="59.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-10" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Missing attachments graph 1&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;font-size: 1em; letter-spacing: -0.005em; background-color: initial;&quot;&gt;# of placeholders that would have to be printed &amp;amp; sent as paper (&lt;b&gt;single-valued field at top)&lt;/b&gt;&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li style=&quot;margin-top: var(--ds-space-050, 4px); box-sizing: border-box;&quot;&gt;&lt;p style=&quot;margin: 0px; padding: 0px; font-size: 1em; line-height: 1.714; letter-spacing: -0.005em; box-sizing: border-box;&quot; data-renderer-start-pos=&quot;639&quot;&gt;# of records that have 1-5 placeholders inclusive&lt;/p&gt;&lt;/li&gt;&lt;li style=&quot;margin-top: var(--ds-space-050, 4px); box-sizing: border-box;&quot;&gt;&lt;p style=&quot;margin: 0px; padding: 0px; font-size: 1em; line-height: 1.714; letter-spacing: -0.005em; box-sizing: border-box;&quot; data-renderer-start-pos=&quot;692&quot;&gt;# of records that have 6-10 placeholders inclusive&lt;/p&gt;&lt;/li&gt;&lt;li style=&quot;margin-top: var(--ds-space-050, 4px); box-sizing: border-box;&quot;&gt;&lt;p style=&quot;margin: 0px; padding: 0px; font-size: 1em; line-height: 1.714; letter-spacing: -0.005em; box-sizing: border-box;&quot; data-renderer-start-pos=&quot;746&quot;&gt;# of records that have 11-15 placeholders inclusive&lt;/p&gt;&lt;/li&gt;&lt;li style=&quot;margin-top: var(--ds-space-050, 4px); box-sizing: border-box;&quot;&gt;&lt;p style=&quot;margin: 0px; padding: 0px; font-size: 1em; line-height: 1.714; letter-spacing: -0.005em; box-sizing: border-box;&quot; data-renderer-start-pos=&quot;801&quot;&gt;# of records that have 16-20 placeholders inclusive&lt;/p&gt;&lt;/li&gt;&lt;li style=&quot;margin-top: var(--ds-space-050, 4px); box-sizing: border-box;&quot;&gt;&lt;p style=&quot;margin: 0px; padding: 0px; font-size: 1em; line-height: 1.714; letter-spacing: -0.005em; box-sizing: border-box;&quot; data-renderer-start-pos=&quot;856&quot;&gt;# of records that have 21+ placeholders inclusive&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="291.1311" y="241" width="476.1" height="429" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-11" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="4vzFN2vd1rSk1QzOAn5a-2" source="4vzFN2vd1rSk1QzOAn5a-9" target="4vzFN2vd1rSk1QzOAn5a-10">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2390.2980999999995" y="190" as="sourcePoint"/>
+                        <mxPoint x="-2390.2980999999995" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-12" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;placeholders&lt;/li&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;orignalMimeType&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reason&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;generatedBy&lt;/li&gt;&lt;/ul&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-2">
+                    <mxGeometry x="340.38610000000006" y="722.5" width="377.59" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-13" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="4vzFN2vd1rSk1QzOAn5a-2" source="4vzFN2vd1rSk1QzOAn5a-10" target="4vzFN2vd1rSk1QzOAn5a-12">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="509.6475999999998" y="371" as="sourcePoint"/>
+                        <mxPoint x="-2390.2980999999995" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-14" value="Table" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#d5e8d4;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=#d5e8d4;shadow=1;size=20;pointerEvents=1;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="740" y="15" width="140" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-15" value="Top-level report (Own Dashboard)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad7ac;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="360" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-16" value="Column within top-level report" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#b1ddf0;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="440" y="70" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-17" value="Graph" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad9d5;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="590" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-18" value="Redirect to new dashboard" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#FFFFFF;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=none;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="910" y="10" width="210" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-19" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
+                    <mxGeometry x="920" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="4vzFN2vd1rSk1QzOAn5a-20" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="4vzFN2vd1rSk1QzOAn5a-1">
                     <mxGeometry x="1280.8900000000003" y="10" width="100" height="100" as="geometry"/>
                 </mxCell>
             </root>
