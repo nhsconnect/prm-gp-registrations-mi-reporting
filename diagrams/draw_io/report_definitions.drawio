@@ -1,0 +1,332 @@
+<mxfile host="65bd71144e">
+    <diagram id="PCsMXgakjSR2rSUJ4HeJ" name="transfer_status_report">
+        <mxGraphModel dx="1967" dy="3493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Snapshot: Transfer status report - drill-down reports and links" style="swimlane;startSize=20;horizontal=1;childLayout=treeLayout;horizontalTree=0;resizable=1;containerType=tree;fontSize=12;resizeWidth=1;resizeHeight=1;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="180" width="2009" height="1070" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Snapshot: Transfer status report" style="whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="2">
+                    <mxGeometry x="957" y="40" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Column: Successfully Integrated" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="2">
+                    <mxGeometry x="150" y="133" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="2" source="3" target="4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Column: Rejected" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="2">
+                    <mxGeometry x="550" y="131.5" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="2" source="3" target="6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="2" source="4" target="10">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-15275.7" y="110" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Successfully Integrated Graph (PIE)&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. Successfully Integrated&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. &lt;b&gt;Not&lt;/b&gt;&amp;nbsp;&lt;/span&gt;Successfully Integrated&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="2">
+                    <mxGeometry x="20" y="224.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="2" source="3" target="21">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-14240.7" y="130" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="21" value="Column: Awaiting Integration" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="2">
+                    <mxGeometry x="950" y="131.5" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="2" source="10" target="35">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-11450.7" y="223" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="35" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+                    <mxGeometry x="20" y="510" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1546" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Rejected (PIE)&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. Rejected&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. &lt;b&gt;Not&lt;/b&gt;&amp;nbsp;Rejected&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="2">
+                    <mxGeometry x="420" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1547" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="6" target="1546">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-10341.2" y="173" as="sourcePoint"/>
+                        <mxPoint x="-10341.2" y="224.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1548" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+                    <mxGeometry x="420" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1549" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="1546" target="1548">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-9431" y="460" as="sourcePoint"/>
+                        <mxPoint x="-9431" y="510" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1550" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Inside/Outside 8 days report (&lt;b&gt;Defined&lt;/b&gt;)&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Should really just show top-level &quot;Inside/Outside report&quot;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="2">
+                    <mxGeometry x="820" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1551" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="21" target="1550">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-8305" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-8305" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1556" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" target="1557" source="3" parent="2">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-7041" y="200" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1557" value="Column: In-Progress" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="2">
+                    <mxGeometry x="1340" y="131.5" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="1560" value="&lt;b&gt;Priority&lt;/b&gt;: High?&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical outcome &quot;IN_PROGRESS&quot; report (Timely transfers?).&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: May require changes to &quot;building blocks&quot; based off service management request that breaches in 24hour and 20mins SLA's not counted as technical failure.&lt;br&gt;This would then allow this report to show the fields below.&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;No. IN_PROGRESS (not in breach of any SLA's)&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS outside SLA 24 hours&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS EHR Sending outside SLA&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS EHR Requesting outside SLA&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="2">
+                    <mxGeometry x="1220" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1561" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="1557" target="1560">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-6291" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-6291" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1562" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" target="1563" source="3" parent="2">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-4827" y="200" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1563" value="Column: Technical failure" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="2">
+                    <mxGeometry x="1744" y="131.5" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="1564" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+                    <mxGeometry x="1220" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1565" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="1560" target="1564">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2134.27783203125" y="570" as="sourcePoint"/>
+                        <mxPoint x="-4477" y="507" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1566" value="&lt;b&gt;Priority&lt;/b&gt;: Medium?&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical Failures&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;:&amp;nbsp;&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;Number of eligible transfers (single-valued field)&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Number of technical failures (from top level report) (also a single-valued field) (&lt;/span&gt;No. Payload = Failed to Integrate (OUTCOME = TechnicalFailure(1)))&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="2">
+                    <mxGeometry x="1624" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1567" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="1563" target="1566">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2634" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-2634" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1568" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" target="1569" source="1566" parent="2">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-148" y="291.5" as="sourcePoint"/>
+                        <mxPoint x="-2634" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1569" value="&lt;b&gt;Priority&lt;/b&gt;: Medium&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical Failures&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Graph, possibly show error description when error code hovered over.&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No of Error code (grouped)&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="2">
+                    <mxGeometry x="1624" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1572" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;errorCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;errorDescription&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="2">
+                    <mxGeometry x="1619" y="792.5" width="370" height="257.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="1573" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="2" source="1569" target="1572">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-728" y="457" as="sourcePoint"/>
+                        <mxPoint x="-728" y="507" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="1584" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="2">
+                    <mxGeometry x="1080" y="160" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="1585" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="2">
+                    <mxGeometry x="1470" y="150" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="1586" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="2">
+                    <mxGeometry x="1889" y="140" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="1575" value="Table" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#d5e8d4;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=#d5e8d4;shadow=1;size=20;pointerEvents=1;" vertex="1" parent="1">
+                    <mxGeometry x="740" y="15" width="140" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="1580" value="Top-level report (Own Dashboard)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad7ac;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="1581" value="Column within top-level report" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#b1ddf0;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="70" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="1582" value="Graph" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad9d5;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="1587" value="Redirect to new dashboard" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#FFFFFF;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=none;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="1">
+                    <mxGeometry x="910" y="10" width="210" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="1589" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="920" width="100" height="100" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="missing_attachments_report" id="9XIPuapDgL6MMjZxb4GP">
+        <mxGraphModel dx="1967" dy="3493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+            <root>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-0"/>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-1" parent="kaJEOg8FucwNSPNFQz28-0"/>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-2" value="Snapshot: Transfer status report - drill-down reports and links" style="swimlane;startSize=20;horizontal=1;childLayout=treeLayout;horizontalTree=0;resizable=1;containerType=tree;fontSize=12;resizeWidth=1;resizeHeight=1;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="140" y="180" width="2009" height="1070" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-3" value="Snapshot: Missing attachment report" style="whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="957" y="40" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-4" value="Column: Successfully Integrated" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="150" y="133" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-5" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-3" target="kaJEOg8FucwNSPNFQz28-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-6" value="Column: Rejected" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="550" y="131.5" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-7" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-3" target="kaJEOg8FucwNSPNFQz28-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-8" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-4" target="kaJEOg8FucwNSPNFQz28-9">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-15275.7" y="110" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-9" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Successfully Integrated Graph (PIE)&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. Successfully Integrated&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. &lt;b&gt;Not&lt;/b&gt;&amp;nbsp;&lt;/span&gt;Successfully Integrated&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="20" y="224.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-10" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-3" target="kaJEOg8FucwNSPNFQz28-11">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-14240.7" y="130" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-11" value="Column: Awaiting Integration" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="950" y="131.5" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-12" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-9" target="kaJEOg8FucwNSPNFQz28-13">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-11450.7" y="223" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-13" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="20" y="510" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-14" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Rejected (PIE)&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. Rejected&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No. &lt;b&gt;Not&lt;/b&gt;&amp;nbsp;Rejected&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="420" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-15" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-6" target="kaJEOg8FucwNSPNFQz28-14">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-10341.2" y="173" as="sourcePoint"/>
+                        <mxPoint x="-10341.2" y="224.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-16" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="420" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-17" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-14" target="kaJEOg8FucwNSPNFQz28-16">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-9431" y="460" as="sourcePoint"/>
+                        <mxPoint x="-9431" y="510" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-18" value="&lt;b&gt;Priority&lt;/b&gt;: Low &lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Inside/Outside 8 days report (&lt;b&gt;Defined&lt;/b&gt;)&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Should really just show top-level &quot;Inside/Outside report&quot;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="820" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-19" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-11" target="kaJEOg8FucwNSPNFQz28-18">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-8305" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-8305" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-20" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-3" target="kaJEOg8FucwNSPNFQz28-21">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-7041" y="200" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-21" value="Column: In-Progress" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1340" y="131.5" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-22" value="&lt;b&gt;Priority&lt;/b&gt;: High?&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical outcome &quot;IN_PROGRESS&quot; report (Timely transfers?).&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: May require changes to &quot;building blocks&quot; based off service management request that breaches in 24hour and 20mins SLA's not counted as technical failure.&lt;br&gt;This would then allow this report to show the fields below.&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;No. IN_PROGRESS (not in breach of any SLA's)&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS outside SLA 24 hours&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS EHR Sending outside SLA&lt;/li&gt;&lt;li&gt;No. IN_PROGRESS EHR Requesting outside SLA&amp;nbsp;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1220" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-23" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-21" target="kaJEOg8FucwNSPNFQz28-22">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-6291" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-6291" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-24" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-3" target="kaJEOg8FucwNSPNFQz28-25">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-4827" y="200" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-25" value="Column: Technical failure" style="whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1744" y="131.5" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-26" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1220" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-27" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-22" target="kaJEOg8FucwNSPNFQz28-26">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2134.27783203125" y="570" as="sourcePoint"/>
+                        <mxPoint x="-4477" y="507" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-28" value="&lt;b&gt;Priority&lt;/b&gt;: Medium?&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical Failures&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;:&amp;nbsp;&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;Number of eligible transfers (single-valued field)&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Number of technical failures (from top level report) (also a single-valued field) (&lt;/span&gt;No. Payload = Failed to Integrate (OUTCOME = TechnicalFailure(1)))&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1624" y="221.5" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-29" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-25" target="kaJEOg8FucwNSPNFQz28-28">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-2634" y="171.5" as="sourcePoint"/>
+                        <mxPoint x="-2634" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-30" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-28" target="kaJEOg8FucwNSPNFQz28-31">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-148" y="291.5" as="sourcePoint"/>
+                        <mxPoint x="-2634" y="221.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-31" value="&lt;b&gt;Priority&lt;/b&gt;: Medium&lt;br&gt;&lt;b&gt;Name&lt;/b&gt;: Technical Failures&lt;br&gt;&lt;b&gt;Notes&lt;/b&gt;: Graph, possibly show error description when error code hovered over.&lt;br&gt;&lt;b&gt;Fields&lt;/b&gt;:-&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;No of Error code (grouped)&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1624" y="507" width="360" height="235.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-32" value="Drilldown:&amp;nbsp; Raw&lt;br&gt;Priority: Low &lt;br&gt;Name: {generic}_Raw&lt;br&gt;Fields: -&lt;br&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;reportingSystemSupplier&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;requestingSystemSupplier (blocked: SDS FHIR API)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;reportingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;requestingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;sendingPracticeOdsCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;conversationId&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;errorCode&lt;/li&gt;&lt;li style=&quot;border-color: var(--border-color);&quot;&gt;errorDescription&lt;/li&gt;&lt;/ul&gt;" style="whiteSpace=wrap;html=1;align=left;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1619" y="792.5" width="370" height="257.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-33" value="" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;rounded=1;curved=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;startSize=6;endSize=6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="kaJEOg8FucwNSPNFQz28-2" source="kaJEOg8FucwNSPNFQz28-31" target="kaJEOg8FucwNSPNFQz28-32">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-728" y="457" as="sourcePoint"/>
+                        <mxPoint x="-728" y="507" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-34" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1080" y="160" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-35" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1470" y="150" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-36" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-2">
+                    <mxGeometry x="1889" y="140" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-37" value="Table" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#d5e8d4;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=#d5e8d4;shadow=1;size=20;pointerEvents=1;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="740" y="15" width="140" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-38" value="Top-level report (Own Dashboard)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad7ac;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="360" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-39" value="Column within top-level report" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#b1ddf0;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="440" y="70" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-40" value="Graph" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fad9d5;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="590" y="15" width="120" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-41" value="Redirect to new dashboard" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fontColor=#000000;darkOpacity=0.05;fillColor=#FFFFFF;strokeColor=none;fillStyle=solid;direction=west;gradientDirection=north;gradientColor=none;shadow=1;size=20;pointerEvents=1;strokeWidth=3;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="910" y="10" width="210" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="kaJEOg8FucwNSPNFQz28-42" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.jumpInArrow;dy=15;dx=38;arrowHead=55;strokeColor=none;strokeWidth=3;fillColor=#3399FF;gradientColor=none;" vertex="1" parent="kaJEOg8FucwNSPNFQz28-1">
+                    <mxGeometry x="920" width="100" height="100" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
