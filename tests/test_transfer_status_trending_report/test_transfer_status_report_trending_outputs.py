@@ -96,7 +96,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "TECHNICAL_FAILURE": "2"}
+                                     "IN_PROGRESS": "2"}
                                }
 
             for row, row_values in expected_values.items():
@@ -193,7 +193,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
-                                     "TECHNICAL_FAILURE": "2"}
+                                     "IN_PROGRESS": "2"}
                                }
 
             for row, row_values in expected_values.items():
@@ -271,7 +271,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "TECHNICAL_FAILURE": "1"}
+                                     "IN_PROGRESS": "1"}
                                }
 
             for row, row_values in expected_values.items():
@@ -646,7 +646,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "TECHNICAL_FAILURE": "100.00"}
+                                     "IN_PROGRESS": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
@@ -743,7 +743,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
-                                     "TECHNICAL_FAILURE": "100.00"}
+                                     "IN_PROGRESS": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
@@ -821,7 +821,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "TECHNICAL_FAILURE": "100.00"}
+                                     "IN_PROGRESS": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
