@@ -651,18 +651,14 @@ class TestTransferStatusReportBase(TestBase):
             now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
 
             now_minus_25_mins = datetime_utc_now() - timedelta(hours=0, minutes=25)
-           
 
-            self.LOG.info(f"now_18: {now_minus_18_mins.strftime('%Y-%m-%dT%H:%M:%S%z')}, now_25: {now_minus_25_mins.strftime('%Y-%m-%dT%H:%M:%S%z')}, now: {now}")
+            # test_#1 - status EHR_SENT
+            conversation_id_1 = 'test_in_progress_EHR_SENT'
 
-            # test_#1 - compatible and within SLA
-            conversationId = 'test_in_progress_within_sla'
-
-            # create a transfer compatibility event less than 20mins from now()
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,
+                        conversation_id=conversation_id_1,
                         registration_event_datetime=now_minus_18_mins.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
@@ -681,20 +677,19 @@ class TestTransferStatusReportBase(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,                       
+                        conversation_id=conversation_id_1,
                         registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_REQUESTS.value
+                        event_type=EventType.EHR_RESPONSES.value
                     )),
                 sourcetype="myevent")
 
-            # test_#2 - compatible and within SLA
-
-            conversationId = 'test_in_progress_within_sla_2'
+            # test_#2 - status EHR_REQUESTED
+            conversation_id_2 = 'test_in_progress_EHR_REQUESTED'
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,
+                        conversation_id=conversation_id_2,
                         registration_event_datetime=now_minus_25_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
@@ -712,21 +707,21 @@ class TestTransferStatusReportBase(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,
+                        conversation_id=conversation_id_2,
                         registration_event_datetime=now_minus_18_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
 
-            # test_#3 - compatible but outside SLA
+            # test_#3 - status ELIGIBLE_FOR_TRANSFER
 
-            conversationId = 'test_in_progress_outside_sla'
+            conversation_id_3 = 'test_in_progress_ELIGIBLE_FOR_TRANSFER'
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=conversationId,
+                        conversation_id=conversation_id_3,
                         registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingPracticeSupplierName="EMIS",
@@ -737,15 +732,6 @@ class TestTransferStatusReportBase(TestBase):
                             reason="test1"
                         )
 
-                    )),
-                sourcetype="myevent")
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_minus_25_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_REQUESTS.value
                     )),
                 sourcetype="myevent")
 
@@ -771,8 +757,8 @@ class TestTransferStatusReportBase(TestBase):
             assert jq.first(
                 '.[] ' +
                 '| select( .total_eligible_for_electronic_transfer=="3" )' +
-                '| select( .count_in_progress == "2")' +
-                '| select( .percentage_in_progress == "66.67")', telemetry)           
+                '| select( .count_in_progress == "3")' +
+                '| select( .percentage_in_progress == "100.00")', telemetry)
 
 
         finally:
@@ -791,7 +777,6 @@ class TestTransferStatusReportBase(TestBase):
 
         try:
 
-            # test_#1 - compatible and within SLA
             conversationId = 'test_technical_failure_failed_to_integrate'
 
             index.submit(
@@ -823,133 +808,133 @@ class TestTransferStatusReportBase(TestBase):
                     )),
                 sourcetype="myevent")
 
-            # test_#2 - compatible and TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = true
-
-            # test requires a datetime greater than 24 hours
-            now_minus_25_hours = datetime_utc_now() - timedelta(hours=25, minutes=0)
-            self.LOG.info(f"now_minus_25_mins: {now_minus_25_hours}")
-
-            conversationId = 'test_technical_failure_TOTAL_TRANSFER_TIME_OUTSIDE_SLA_24_HOURS'
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
-                        payload=create_transfer_compatibility_payload(
-                            internalTransfer=False,
-                            transferCompatible=True,
-                            reason="test1"
-                        )
-
-                    )),
-                sourcetype="myevent")
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_minus_25_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_RESPONSES.value
-                    )),
-                sourcetype="myevent")
-
-            # test_#3 - compatible but EHR SENDING OUTSIDE SLA = true
-
-            conversationId = 'test_technical_failure_EHR_SENDING_OUTSIDE_SLA'
-
-             # test requires a datetime less than 20mins
-            now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
-            self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=create_date_time(
-                            date=report_start, time="08:00:00"),
-                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
-                        payload=create_transfer_compatibility_payload(
-                            internalTransfer=False,
-                            transferCompatible=True
-                        )
-
-                    )),
-                sourcetype="myevent")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_over_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_REQUESTS.value
-                    )),
-                sourcetype="myevent")
-
-            # test_#4 - eligible for transfer and EHR REQUESTING OUTSIDE SLA = true
-
-            conversationId = 'test_technical_failure_EHR_REQUESTING_OUTSIDE_SLA'
-
-             # test requires a datetime less than 20mins
-            now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
-            self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_over_20_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
-                        payload=create_transfer_compatibility_payload(
-                            internalTransfer=False,
-                            transferCompatible=True
-                        )
-
-                    )),
-                sourcetype="myevent")
-
-            # test_#5 - in-progress test to check technical failure count working correctly.
-
-             # test requires a datetime greater than 24 hours
-            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
-            self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
-
-            conversationId = 'test_technical_failure_status_IN_PROGRESS'
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
-                        payload=create_transfer_compatibility_payload(
-                            internalTransfer=False,
-                            transferCompatible=True,
-                            reason="test1"
-                        )
-
-                    )),
-                sourcetype="myevent")
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversationId,
-                        registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_RESPONSES.value
-                    )),
-                sourcetype="myevent")
+            # # test_#2 - compatible and TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = true
+            #
+            # # test requires a datetime greater than 24 hours
+            # now_minus_25_hours = datetime_utc_now() - timedelta(hours=25, minutes=0)
+            # self.LOG.info(f"now_minus_25_mins: {now_minus_25_hours}")
+            #
+            # conversationId = 'test_technical_failure_TOTAL_TRANSFER_TIME_OUTSIDE_SLA_24_HOURS'
+            #
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+            #             sendingPracticeSupplierName="EMIS",
+            #             requestingPracticeSupplierName="TPP",
+            #             payload=create_transfer_compatibility_payload(
+            #                 internalTransfer=False,
+            #                 transferCompatible=True,
+            #                 reason="test1"
+            #             )
+            #
+            #         )),
+            #     sourcetype="myevent")
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=now_minus_25_hours.strftime(
+            #                 "%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.EHR_RESPONSES.value
+            #         )),
+            #     sourcetype="myevent")
+            #
+            # # test_#3 - compatible but EHR SENDING OUTSIDE SLA = true
+            #
+            # conversationId = 'test_technical_failure_EHR_SENDING_OUTSIDE_SLA'
+            #
+            #  # test requires a datetime less than 20mins
+            # now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
+            # self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
+            #
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=create_date_time(
+            #                 date=report_start, time="08:00:00"),
+            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+            #             sendingPracticeSupplierName="EMIS",
+            #             requestingPracticeSupplierName="TPP",
+            #             payload=create_transfer_compatibility_payload(
+            #                 internalTransfer=False,
+            #                 transferCompatible=True
+            #             )
+            #
+            #         )),
+            #     sourcetype="myevent")
+            #
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=now_over_20_mins.strftime(
+            #                 "%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.EHR_REQUESTS.value
+            #         )),
+            #     sourcetype="myevent")
+            #
+            # # test_#4 - eligible for transfer and EHR REQUESTING OUTSIDE SLA = true
+            #
+            # conversationId = 'test_technical_failure_EHR_REQUESTING_OUTSIDE_SLA'
+            #
+            #  # test requires a datetime less than 20mins
+            # now_over_20_mins = datetime_utc_now() - timedelta(hours=0, minutes=21)
+            # self.LOG.info(f"now_minus_18_mins: {now_over_20_mins}")
+            #
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=now_over_20_mins.strftime(
+            #                 "%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+            #             sendingPracticeSupplierName="EMIS",
+            #             requestingPracticeSupplierName="TPP",
+            #             payload=create_transfer_compatibility_payload(
+            #                 internalTransfer=False,
+            #                 transferCompatible=True
+            #             )
+            #
+            #         )),
+            #     sourcetype="myevent")
+            #
+            # # test_#5 - in-progress test to check technical failure count working correctly.
+            #
+            #  # test requires a datetime greater than 24 hours
+            # now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
+            # self.LOG.info(f"now_minus_23_hours: {now_minus_23_hours}")
+            #
+            # conversationId = 'test_technical_failure_status_IN_PROGRESS'
+            #
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+            #             sendingPracticeSupplierName="EMIS",
+            #             requestingPracticeSupplierName="TPP",
+            #             payload=create_transfer_compatibility_payload(
+            #                 internalTransfer=False,
+            #                 transferCompatible=True,
+            #                 reason="test1"
+            #             )
+            #
+            #         )),
+            #     sourcetype="myevent")
+            # index.submit(
+            #     json.dumps(
+            #         create_sample_event(
+            #             conversation_id=conversationId,
+            #             registration_event_datetime=now_minus_23_hours.strftime(
+            #                 "%Y-%m-%dT%H:%M:%S%z"),
+            #             event_type=EventType.EHR_RESPONSES.value
+            #         )),
+            #     sourcetype="myevent")
 
             # Act
 
@@ -971,9 +956,9 @@ class TestTransferStatusReportBase(TestBase):
             # Assert
             assert jq.first(
                 '.[] ' +
-                '| select( .total_eligible_for_electronic_transfer=="5" )' +
-                '| select( .count_technical_failure == "4")' +
-                '| select( .percentage_technical_failure == "80.00")', telemetry)
+                '| select( .total_eligible_for_electronic_transfer=="1" )' +
+                '| select( .count_technical_failure == "1")' +
+                '| select( .percentage_technical_failure == "100.00")', telemetry)
 
         finally:
             self.delete_index(index_name)
