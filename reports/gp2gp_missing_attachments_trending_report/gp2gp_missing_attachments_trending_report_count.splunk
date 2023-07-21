@@ -1,0 +1,15 @@
+index="$index$"
+
+{% from 'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_base.splunk' import
+gp2gp_missing_attachments_report_trending_base %}
+
+{{ gp2gp_missing_attachments_report_trending_base() }}
+
+| where (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION")
+| eval missingAttachmentStatus = if(numPlaceholders > 0, "Transferred with missing attachments", "Transferred with no missing attachments")
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%y-%m"), 
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
+                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          )
+| chart count by time_period, missingAttachmentStatus
