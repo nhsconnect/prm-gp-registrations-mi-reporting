@@ -99,8 +99,8 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             expected_values = {"Successfully Integrated": "0",
                                "Rejected": "0",
                                "Awaiting Integration": "0", 
-                               "In-Progress": "0", 
-                               "Technical Failure": "2"}
+                               "In-Progress": "2",
+                               "Technical Failure": "0"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 assert jq.first(
@@ -194,8 +194,8 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             expected_values = {"Successfully Integrated": "0.00",
                                "Rejected": "0.00",
                                "Awaiting Integration": "0.00", 
-                               "In-Progress": "0.00", 
-                               "Technical Failure": "100.00"}
+                               "In-Progress": "100.00",
+                               "Technical Failure": "0.00"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 assert jq.first(
