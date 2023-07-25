@@ -14,6 +14,94 @@ from tests.test_base import EventType, TestBase
 
 class TestMissingAttachmentsTrendingOutputs(TestBase):
 
+    def test_total_num_missing_attachments_report(self):
+
+        # reporting window
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=28)
+        cutoff = "0"
+
+        try:
+            # Arrange
+            index_name, index = self.create_index()
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#1',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="08:00:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(
+                            number_of_placeholders=5)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#2',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="08:05:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(
+                            number_of_placeholders=2)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#3',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="08:10:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(
+                            number_of_placeholders=3)
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_#3',
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="08:15:00"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        payload=create_ehr_response_payload(
+                            number_of_placeholders=0)
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_missing_attachments_trending_report/'
+                'gp2gp_missing_attachments_trending_report_num_missing_attachments')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"total_num_missing_attachments": "10"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .{key}=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
     def test_missing_attachments_report_trending_count_with_start_end_times_as_datetimes(self):
 
         # Arrange

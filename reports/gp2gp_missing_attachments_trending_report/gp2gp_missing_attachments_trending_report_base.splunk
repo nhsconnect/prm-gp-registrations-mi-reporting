@@ -34,7 +34,7 @@ filter_conversations_by_start_and_end_times_and_cutoff
 {{ exclude_internal_transfers() }}
 
 | transaction conversationId keeporphans=t
-
+| eventstats sum(numPlaceholders) as totalNumPlaceholders
 | eventstats sum(numPlaceholders) as numPlaceholders by conversationId
 
 {{ calculate_registration_status() }}
