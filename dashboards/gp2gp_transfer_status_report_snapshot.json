@@ -52,16 +52,16 @@
 				"stackMode": "auto",
 				"legendDisplay": "off",
 				"lineWidth": 2,
-				"backgroundColor": "#FFFFFF",
+				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
-					"#41B6E6"
+					"#005EB8"
 				],
 				"xAxisLineVisibility": "show",
 				"yAxisTitleText": "Percentage",
 				"xAxisMajorTickSize": 8,
 				"xAxisTitleVisibility": "hide"
 			},
-			"title": "Percentage of Transfer Status"
+			"title": ""
 		},
 		"viz_chart_1": {
 			"type": "splunk.column",
@@ -81,14 +81,14 @@
 				"stackMode": "auto",
 				"legendDisplay": "off",
 				"lineWidth": 2,
-				"backgroundColor": "#FFFFFF",
+				"backgroundColor": "#ECF1F2",
 				"seriesColorsByField": {},
 				"seriesColors": [
 					"#005EB8"
 				],
 				"xAxisMajorTickSize": 8
 			},
-			"title": "Count of Transfer Status"
+			"title": ""
 		},
 		"viz_table_1": {
 			"type": "splunk.singlevalue",
@@ -100,24 +100,34 @@
 			"title": "Total Eligible for Electronic Transfer",
 			"options": {
 				"backgroundColor": "#FFFFFF",
-				"majorColor": "#0072CE",
-				"trendColor": "#0072CE"
-			}
-		},
-		"viz_gcdloPCQ": {
-			"type": "splunk.singlevalueicon",
-			"options": {
-				"showValue": false,
-				"icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
-				"iconColor": "#FFFFFF"
+				"majorColor": "#000000",
+				"trendColor": "#0072CE",
+				"trendDisplay": "off",
+				"majorFontSize": 50
 			}
 		},
 		"viz_2Atq7Q2K": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "# **Transfer Status Snapshot Report**",
+				"markdown": "# Transfer Status Snapshot Report  \n## Counts",
 				"fontColor": "#231f20",
 				"fontSize": "extraLarge"
+			}
+		},
+		"viz_SIwQjjf1": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Count of transfer statuses\nGraph showing the number of transfers at each stage based on the reporting window",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
+			}
+		},
+		"viz_pIixC4Pe": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Percentage of transfer statuses\nGraph showing the percentage of transfers at each stage based on the reporting window",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
 			}
 		}
 	},
@@ -145,17 +155,17 @@
 		"type": "absolute",
 		"options": {
 			"display": "auto-scale",
-			"backgroundColor": "#768692"
+			"backgroundColor": "#ffffff"
 		},
 		"structure": [
 			{
 				"item": "viz_table_1",
 				"type": "block",
 				"position": {
-					"x": 50,
-					"y": 90,
-					"w": 250,
-					"h": 190
+					"x": 20,
+					"y": 120,
+					"w": 270,
+					"h": 80
 				}
 			},
 			{
@@ -163,19 +173,9 @@
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 320,
+					"y": 340,
 					"w": 580,
 					"h": 380
-				}
-			},
-			{
-				"item": "viz_gcdloPCQ",
-				"type": "block",
-				"position": {
-					"x": 940,
-					"y": -10,
-					"w": 250,
-					"h": 250
 				}
 			},
 			{
@@ -183,7 +183,7 @@
 				"type": "block",
 				"position": {
 					"x": 600,
-					"y": 320,
+					"y": 340,
 					"w": 590,
 					"h": 380
 				}
@@ -196,6 +196,26 @@
 					"y": 20,
 					"w": 740,
 					"h": 90
+				}
+			},
+			{
+				"item": "viz_SIwQjjf1",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 230,
+					"w": 580,
+					"h": 110
+				}
+			},
+			{
+				"item": "viz_pIixC4Pe",
+				"type": "block",
+				"position": {
+					"x": 600,
+					"y": 230,
+					"w": 590,
+					"h": 110
 				}
 			}
 		],
