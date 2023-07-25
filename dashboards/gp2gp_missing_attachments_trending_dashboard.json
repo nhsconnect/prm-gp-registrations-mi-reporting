@@ -1,0 +1,215 @@
+{
+	"visualizations": {
+		"viz_wjCvnsg0": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_uGaAnEM4"
+			},
+			"showProgressBar": false,
+			"showLastUpdated": false,
+			"options": {
+				"dataValuesDisplay": "all",
+				"yAxisTitleText": "Count",
+				"backgroundColor": "#FFFFFF",
+				"seriesColors": [
+					"#003087",
+					"#41B6E6"
+				],
+				"showYMinorGridLines": true,
+				"xAxisMajorTickSize": 10,
+				"seriesSpacing": 3,
+				"columnSpacing": 0
+			},
+			"title": "Count of Missing Attachments per Time Period"
+		},
+		"viz_YuNkyEC4": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_RN4dPMq2"
+			},
+			"options": {
+				"yAxisTitleText": "Percentage",
+				"dataValuesDisplay": "all",
+				"seriesColors": [
+					"#003087",
+					"#41B6E6"
+				],
+				"seriesSpacing": 3,
+				"columnSpacing": 0
+			},
+			"title": "Percentage of Missing Attachments per Time Period"
+		},
+		"viz_TsaIC6Wx": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "# **Missing Attachments Trending Report**",
+				"fontColor": "#231f20",
+				"fontSize": "extraLarge"
+			}
+		},
+		"viz_ZQzjIVkR": {
+			"type": "splunk.singlevalueicon",
+			"options": {
+				"showValue": false,
+				"icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
+				"iconColor": "#FFFFFF"
+			}
+		}
+	},
+	"dataSources": {
+		"ds_e6qeFGcz": {
+			"type": "ds.search",
+			"options": {
+				"query": "| savedsearch gp2gp_transfer_status_report_trending_count index=\"ptl_index\" global_time_earliest=$global_time.earliest$ global_time_latest=$global_time.latest$ cutoff=\"2\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "Search_1"
+		},
+		"ds_uGaAnEM4": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_missing_attachments_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_missing_attachments_trending_report_count"
+		},
+		"ds_cq5eeIP7": {
+			"type": "ds.search",
+			"options": {
+				"query": "| savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "Search_3"
+		},
+		"ds_RN4dPMq2": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_missing_attachments_trending_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_missing_attachments_trending_report_percentages"
+		}
+	},
+	"defaults": {
+		"dataSources": {
+			"ds.search": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			}
+		}
+	},
+	"inputs": {
+		"input_uKjxpglv": {
+			"options": {
+				"defaultValue": "-1mon@mon,@mon",
+				"token": "time_range"
+			},
+			"title": "Time Range",
+			"type": "input.timerange"
+		},
+		"input_s1JNn01c": {
+			"options": {
+				"defaultValue": 0,
+				"token": "cutoff",
+				"min": 0,
+				"max": 14
+			},
+			"title": "Cutoff (days)",
+			"type": "input.number"
+		},
+		"input_hKwKMe7q": {
+			"options": {
+				"items": [
+					{
+						"label": "Day",
+						"value": "day"
+					},
+					{
+						"label": "Week",
+						"value": "week"
+					},
+					{
+						"label": "Month",
+						"value": "month"
+					}
+				],
+				"defaultValue": "month",
+				"token": "time_period"
+			},
+			"title": "Time Period",
+			"type": "input.dropdown"
+		}
+	},
+	"layout": {
+		"type": "absolute",
+		"options": {
+			"display": "auto-scale",
+			"backgroundColor": "#768692"
+		},
+		"structure": [
+			{
+				"item": "viz_wjCvnsg0",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 250,
+					"w": 1180,
+					"h": 300
+				}
+			},
+			{
+				"item": "viz_YuNkyEC4",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 600,
+					"w": 1180,
+					"h": 250
+				}
+			},
+			{
+				"item": "viz_ZQzjIVkR",
+				"type": "block",
+				"position": {
+					"x": 940,
+					"y": -10,
+					"w": 250,
+					"h": 250
+				}
+			},
+			{
+				"item": "viz_TsaIC6Wx",
+				"type": "block",
+				"position": {
+					"x": 0,
+					"y": 0,
+					"w": 860,
+					"h": 90
+				}
+			}
+		],
+		"globalInputs": [
+			"input_uKjxpglv",
+			"input_s1JNn01c",
+			"input_hKwKMe7q"
+		]
+	},
+	"description": "",
+	"title": "gp2gp_missing_attachments_trending_dashboard"
+}
