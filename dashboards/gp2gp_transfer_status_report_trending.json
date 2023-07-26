@@ -1,217 +1,247 @@
 {
-  "visualizations": {
-    "viz_wjCvnsg0": {
-      "type": "splunk.column",
-      "dataSources": {
-        "primary": "ds_uGaAnEM4"
-      },
-      "showProgressBar": false,
-      "showLastUpdated": false,
-      "options": {
-        "dataValuesDisplay": "all",
-        "yAxisTitleText": "Count",
-        "backgroundColor": "#FFFFFF",
-        "seriesColors": [
-          "#003087",
-          "#005EB8",
-          "#0072CE",
-          "#41B6E6",
-          "#00A9CE",
-          "#768692"
-        ]
-      },
-      "title": "Count of Transfer Status per Time Period"
-    },
-    "viz_YuNkyEC4": {
-      "type": "splunk.column",
-      "dataSources": {
-        "primary": "ds_RN4dPMq2"
-      },
-      "options": {
-        "yAxisTitleText": "Percentage",
-        "dataValuesDisplay": "all",
-        "seriesColors": [
-          "#003087",
-          "#005EB8",
-          "#0072CE",
-          "#41B6E6",
-          "#00A9CE",
-          "#768692"
-        ]
-      },
-      "title": "Percentage of Transfer Status per Time Period"
-    },
-    "viz_TsaIC6Wx": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "# **Transfer Status Trending Report**",
-        "fontColor": "#231f20",
-        "fontSize": "extraLarge"
-      }
-    },
-    "viz_ZQzjIVkR": {
-      "type": "splunk.singlevalueicon",
-      "options": {
-        "showValue": false,
-        "icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
-        "iconColor": "#FFFFFF"
-      }
-    }
-  },
-  "dataSources": {
-    "ds_e6qeFGcz": {
-      "type": "ds.search",
-      "options": {
-        "query": "| savedsearch gp2gp_transfer_status_report_trending_count index=\"ptl_index\" global_time_earliest=$global_time.earliest$ global_time_latest=$global_time.latest$ cutoff=\"2\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "Search_1"
-    },
-    "ds_uGaAnEM4": {
-      "type": "ds.search",
-      "options": {
-        "query": "|  savedsearch gp2gp_transfer_status_report_trending_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "gp2gp_transfer_status_report_trending_count"
-    },
-    "ds_cq5eeIP7": {
-      "type": "ds.search",
-      "options": {
-        "query": "| savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "Search_3"
-    },
-    "ds_RN4dPMq2": {
-      "type": "ds.search",
-      "options": {
-        "query": "|  savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "gp2gp_transfer_status_trending_report_percentage"
-    }
-  },
-  "defaults": {
-    "dataSources": {
-      "ds.search": {
-        "options": {
-          "queryParameters": {
-            "latest": "$global_time.latest$",
-            "earliest": "$global_time.earliest$"
-          }
-        }
-      }
-    }
-  },
-  "inputs": {
-    "input_uKjxpglv": {
-      "options": {
-        "defaultValue": "-1mon@mon,@mon",
-        "token": "time_range"
-      },
-      "title": "Time Range",
-      "type": "input.timerange"
-    },
-    "input_s1JNn01c": {
-      "options": {
-        "defaultValue": 0,
-        "token": "cutoff",
-        "min": 0,
-        "max": 14
-      },
-      "title": "Cutoff (days)",
-      "type": "input.number"
-    },
-    "input_hKwKMe7q": {
-      "options": {
-        "items": [
-          {
-            "label": "Day",
-            "value": "day"
-          },
-          {
-            "label": "Week",
-            "value": "week"
-          },
-          {
-            "label": "Month",
-            "value": "month"
-          }
-        ],
-        "defaultValue": "month",
-        "token": "time_period"
-      },
-      "title": "Time Period",
-      "type": "input.dropdown"
-    }
-  },
-  "layout": {
-    "type": "absolute",
-    "options": {
-      "display": "auto-scale",
-      "backgroundColor": "#768692"
-    },
-    "structure": [
-      {
-        "item": "viz_wjCvnsg0",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 250,
-          "w": 1180,
-          "h": 300
-        }
-      },
-      {
-        "item": "viz_YuNkyEC4",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 600,
-          "w": 1180,
-          "h": 250
-        }
-      },
-      {
-        "item": "viz_ZQzjIVkR",
-        "type": "block",
-        "position": {
-          "x": 940,
-          "y": -10,
-          "w": 250,
-          "h": 250
-        }
-      },
-      {
-        "item": "viz_TsaIC6Wx",
-        "type": "block",
-        "position": {
-          "x": 0,
-          "y": 0,
-          "w": 710,
-          "h": 90
-        }
-      }
-    ],
-    "globalInputs": [
-      "input_uKjxpglv",
-      "input_s1JNn01c",
-      "input_hKwKMe7q"
-    ]
-  },
-  "description": "",
-  "title": "gp2gp_transfer_status_trending_dashboard"
+	"dataSources": {
+		"ds_uGaAnEM4": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_transfer_status_report_trending_count"
+		},
+		"ds_RN4dPMq2": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_transfer_status_trending_report_percentage"
+		},
+		"ds_M5PzE81U": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=$time_period$",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_transfer_status_trending_report_total_eligible_for_transfer"
+		}
+	},
+	"visualizations": {
+		"viz_wjCvnsg0": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_uGaAnEM4"
+			},
+			"showProgressBar": false,
+			"showLastUpdated": false,
+			"options": {
+				"dataValuesDisplay": "all",
+				"yAxisTitleText": "Count",
+				"backgroundColor": "#ECF1F2",
+				"seriesColors": [
+					"#003087",
+					"#005EB8",
+					"#0072CE",
+					"#41B6E6",
+					"#00A9CE",
+					"#768692"
+				],
+				"legendDisplay": "bottom",
+				"legendTruncation": "ellipsisOff"
+			},
+			"title": "Count of Transfer Status per Time Period"
+		},
+		"viz_YuNkyEC4": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_RN4dPMq2"
+			},
+			"options": {
+				"yAxisTitleText": "Percentage",
+				"dataValuesDisplay": "all",
+				"seriesColors": [
+					"#003087",
+					"#005EB8",
+					"#0072CE",
+					"#41B6E6",
+					"#00A9CE",
+					"#768692"
+				],
+				"backgroundColor": "#ECF1F2",
+				"legendDisplay": "bottom",
+				"legendTruncation": "ellipsisOff"
+			},
+			"title": "Percentage of Transfer Status per Time Period"
+		},
+		"viz_TsaIC6Wx": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "# Transfer Status Trending Report\n## Counts",
+				"fontColor": "#000000",
+				"fontSize": "extraLarge"
+			}
+		},
+		"viz_qZdZJD2c": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Count of transfer statuses\nGraph showing the number of transfers at each stage based on the reporting window",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
+			}
+		},
+		"viz_T9Gc4FkE": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Percentage of transfer statuses\nGraph showing the percentage of transfers at each stage based on the reporting window",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
+			}
+		},
+		"viz_MzUrGP16": {
+			"type": "splunk.singlevalue",
+			"dataSources": {
+				"primary": "ds_M5PzE81U"
+			},
+			"title": "Total eligible for transfer"
+		}
+	},
+	"inputs": {
+		"input_uKjxpglv": {
+			"options": {
+				"defaultValue": "-1mon@mon,@mon",
+				"token": "time_range"
+			},
+			"title": "Time Range",
+			"type": "input.timerange"
+		},
+		"input_s1JNn01c": {
+			"options": {
+				"defaultValue": 0,
+				"token": "cutoff",
+				"min": 0,
+				"max": 14
+			},
+			"title": "Cutoff (days)",
+			"type": "input.number"
+		},
+		"input_hKwKMe7q": {
+			"options": {
+				"items": [
+					{
+						"label": "Day",
+						"value": "day"
+					},
+					{
+						"label": "Week",
+						"value": "week"
+					},
+					{
+						"label": "Month",
+						"value": "month"
+					}
+				],
+				"defaultValue": "month",
+				"token": "time_period"
+			},
+			"title": "Time Period",
+			"type": "input.dropdown"
+		}
+	},
+	"layout": {
+		"type": "absolute",
+		"options": {
+			"display": "auto-scale",
+			"backgroundColor": "#ffffff",
+			"height": 1200
+		},
+		"structure": [
+			{
+				"item": "viz_wjCvnsg0",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 250,
+					"w": 1180,
+					"h": 300
+				}
+			},
+			{
+				"item": "viz_YuNkyEC4",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 640,
+					"w": 1180,
+					"h": 250
+				}
+			},
+			{
+				"item": "viz_TsaIC6Wx",
+				"type": "block",
+				"position": {
+					"x": 0,
+					"y": 0,
+					"w": 710,
+					"h": 90
+				}
+			},
+			{
+				"item": "viz_qZdZJD2c",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 180,
+					"w": 1180,
+					"h": 70
+				}
+			},
+			{
+				"item": "viz_T9Gc4FkE",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 570,
+					"w": 1180,
+					"h": 70
+				}
+			},
+			{
+				"item": "viz_MzUrGP16",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 90,
+					"w": 200,
+					"h": 90
+				}
+			}
+		],
+		"globalInputs": [
+			"input_uKjxpglv",
+			"input_s1JNn01c",
+			"input_hKwKMe7q"
+		]
+	},
+	"title": "gp2gp_transfer_status_trending_dashboard",
+	"description": "",
+	"defaults": {
+		"dataSources": {
+			"ds.search": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			}
+		}
+	}
 }
