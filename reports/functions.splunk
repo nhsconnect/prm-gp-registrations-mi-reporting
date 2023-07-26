@@ -69,16 +69,16 @@
 {% macro calculate_outcome() %}
 
 | eval outcome = case(    
-    registrationStatus == "INTEGRATION" AND ((integration_outcome =="INTEGRATED") OR (integration_outcome=="INTEGRATED_AND_SUPPRESSED") OR (integration_outcome=="SUPPRESSED_AND_REACTIVATED") OR (integration_outcome=="FILED_AS_ATTACHMENT") OR (integration_outcome=="INTERNAL_TRANSFER")),"SUCCESSFUL_INTEGRATION",
-    registrationStatus == "INTEGRATION" AND integration_outcome =="REJECTED", "REJECTED",
-    registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "TECHNICAL_FAILURE",
-    registrationStatus == "READY_TO_INTEGRATE","AWAITING_INTEGRATION",
-    registrationStatus == "EHR_SENT", "IN_PROGRESS",
-    registrationStatus == "EHR_REQUESTED", "IN_PROGRESS",
-    registrationStatus == "ELIGIBLE_FOR_TRANSFER", "IN_PROGRESS",
-    registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
-    registrationStatus == "REGISTRATION" AND is_dts_matched==0, "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",    
-    1=1, "UNKNOWN")
+    registrationStatus == "INTEGRATION" AND ((integration_outcome =="INTEGRATED") OR (integration_outcome=="INTEGRATED_AND_SUPPRESSED") OR (integration_outcome=="SUPPRESSED_AND_REACTIVATED") OR (integration_outcome=="FILED_AS_ATTACHMENT") OR (integration_outcome=="INTERNAL_TRANSFER")),"Successful integration",
+    registrationStatus == "INTEGRATION" AND integration_outcome =="REJECTED", "Rejected",
+    registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "Technical failure",
+    registrationStatus == "READY_TO_INTEGRATE","Awaiting integration",
+    registrationStatus == "EHR_SENT", "In progress",
+    registrationStatus == "EHR_REQUESTED", "In progress",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER", "In progress",
+    registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "Not eligible for electronic transfer",
+    registrationStatus == "REGISTRATION" AND is_dts_matched==0, "Not eligible for electronic transfer",
+    1=1, "Unknown")
 {% endmacro %}
 
 {% macro calculate_integration_sla_status() %}
