@@ -48,10 +48,10 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
-					"#005EB8",
-					"#0072CE",
-					"#41B6E6",
-					"#00A9CE",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
 					"#768692"
 				],
 				"legendDisplay": "bottom",
@@ -69,10 +69,10 @@
 				"dataValuesDisplay": "all",
 				"seriesColors": [
 					"#003087",
-					"#005EB8",
-					"#0072CE",
-					"#41B6E6",
-					"#00A9CE",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
 					"#768692"
 				],
 				"backgroundColor": "#ECF1F2",
