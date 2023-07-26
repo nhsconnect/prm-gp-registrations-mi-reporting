@@ -96,12 +96,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "IN_PROGRESS": "2"}
+                                     "In progress": "2"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -193,12 +193,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
-                                     "IN_PROGRESS": "2"}
+                                     "In progress": "2"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -271,12 +271,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "IN_PROGRESS": "1"}
+                                     "In progress": "1"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -352,12 +352,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "AWAITING_INTEGRATION": "1"}
+                                     "Awaiting integration": "1"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -448,14 +448,14 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "AWAITING_INTEGRATION": "1"},
+                                     "Awaiting integration": "1"},
                                "1": {"time_period": "23-04",
-                                     "AWAITING_INTEGRATION": "1"},
+                                     "Awaiting integration": "1"},
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -546,14 +546,14 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03-10",
-                                     "AWAITING_INTEGRATION": "1"},
+                                     "Awaiting integration": "1"},
                                "1": {"time_period": "23-03-11",
-                                     "AWAITING_INTEGRATION": "1"},
+                                     "Awaiting integration": "1"},
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -640,12 +640,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "IN_PROGRESS": "100.00"}
+                                     "In progress": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -737,12 +737,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
-                                     "IN_PROGRESS": "100.00"}
+                                     "In progress": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -815,12 +815,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "IN_PROGRESS": "100.00"}
+                                     "In progress": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -896,12 +896,12 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "AWAITING_INTEGRATION": "100.00"}
+                                     "Awaiting integration": "100.00"}
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -992,14 +992,14 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03",
-                                     "AWAITING_INTEGRATION": "100.00"},
+                                     "Awaiting integration": "100.00"},
                                "1": {"time_period": "23-04",
-                                     "AWAITING_INTEGRATION": "100.00"},
+                                     "Awaiting integration": "100.00"},
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
@@ -1090,14 +1090,14 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"time_period": "23-03-10",
-                                     "AWAITING_INTEGRATION": "100.00"},
+                                     "Awaiting integration": "100.00"},
                                "1": {"time_period": "23-03-11",
-                                     "AWAITING_INTEGRATION": "100.00"},
+                                     "Awaiting integration": "100.00"},
                                }
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
-                    [f"| select(.{key}==\"{value}\") " for key, value in row_values.items()]
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
                 )
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(

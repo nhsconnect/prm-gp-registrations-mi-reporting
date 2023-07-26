@@ -44,22 +44,21 @@ filter_conversations_by_start_and_end_times_and_cutoff %}
 {{ calculate_outcome() }}
 
 
-```|table registrationStatus, outcome, totalTransferTimeOutsideAla24Hours, twentyFourHoursAgo, ehrResponseEventDateTime```
-
-
 | eventstats count as total_eligible_for_electronic_transfer
 
-| eventstats count(eval(outcome=="SUCCESSFUL_INTEGRATION")) as count_successfully_integrated
-| eventstats count(eval(outcome=="REJECTED")) as count_rejected
-| eventstats count(eval(outcome=="AWAITING_INTEGRATION")) as count_awaiting_integration
-| eventstats count(eval(outcome=="IN_PROGRESS")) as count_in_progress
-| eventstats count(eval(outcome=="TECHNICAL_FAILURE")) as count_technical_failure
+| eventstats count(eval(outcome=="Successful integration")) as count_successfully_integrated
+| eventstats count(eval(outcome=="Rejected")) as count_rejected
+| eventstats count(eval(outcome=="Awaiting integration")) as count_awaiting_integration
+| eventstats count(eval(outcome=="In progress")) as count_in_progress
+| eventstats count(eval(outcome=="Technical failure")) as count_technical_failure
+| eventstats count(eval(outcome=="Unknown")) as count_unknown
 
 | eval percentage_successfully_integrated=round((count_successfully_integrated/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_rejected=round((count_rejected/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_awaiting_integration=round((count_awaiting_integration/total_eligible_for_electronic_transfer) * 100,2)
 | eval percentage_in_progress=round((count_in_progress/total_eligible_for_electronic_transfer) *100,2)
 | eval percentage_technical_failure=round((count_technical_failure/total_eligible_for_electronic_transfer) *100,2)
+| eval percentage_unknown=round((count_unknown/total_eligible_for_electronic_transfer) *100,2)
 
 | stats 
     first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
@@ -73,6 +72,8 @@ filter_conversations_by_start_and_end_times_and_cutoff %}
     first(percentage_in_progress) as percentage_in_progress
     first(count_technical_failure) as count_technical_failure
     first(percentage_technical_failure) as percentage_technical_failure
+    first(count_unknown) as count_unknown
+    first(percentage_unknown) as percentage_unknown
 
 
     first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
