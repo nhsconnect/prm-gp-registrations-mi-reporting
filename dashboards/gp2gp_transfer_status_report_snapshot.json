@@ -43,7 +43,6 @@
 			"options": {
 				"y2AxisAbbreviation": "auto",
 				"showRoundedY2AxisLabels": false,
-				"legendTruncation": "ellipsisMiddle",
 				"showY2MajorGridLines": true,
 				"yAxisTitleVisibility": "show",
 				"y2AxisTitleVisibility": "show",
@@ -54,7 +53,12 @@
 				"lineWidth": 2,
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
-					"#005EB8"
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
 				],
 				"xAxisLineVisibility": "show",
 				"yAxisTitleText": "Percentage",
@@ -84,7 +88,12 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColorsByField": {},
 				"seriesColors": [
-					"#005EB8"
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
 				],
 				"xAxisMajorTickSize": 8
 			},
@@ -142,7 +151,7 @@
 		},
 		"input_2puDOPI6": {
 			"options": {
-				"defaultValue": 0,
+				"defaultValue": 1,
 				"token": "cutoff",
 				"min": 0,
 				"max": 14
