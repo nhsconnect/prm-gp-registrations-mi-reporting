@@ -1,4 +1,4 @@
-{% macro gp2gp_missing_attachments_report_snapshot_base () %}
+{% macro gp2gp_placeholder_report_snapshot_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -47,4 +47,4 @@ filter_conversations_by_start_and_end_times_and_cutoff
 {% endmacro %}
 
 index="$index$"
-{{ gp2gp_missing_attachments_report_snapshot_base() }}
+{{ gp2gp_placeholder_report_snapshot_base() }}

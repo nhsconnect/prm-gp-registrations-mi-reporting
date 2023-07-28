@@ -12,9 +12,9 @@ from helpers.splunk import (create_ehr_response_payload,
 from tests.test_base import EventType, TestBase
 
 
-class TestMissingAttachmentsTrendingOutputs(TestBase):
+class TestPlaceholderTrendingOutputs(TestBase):
 
-    def test_total_num_missing_attachments_report(self):
+    def test_total_num_placeholders_report(self):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
@@ -75,8 +75,8 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_trending_report/'
-                'gp2gp_missing_attachments_trending_report_num_missing_attachments')
+                'gp2gp_placeholder_trending_report/'
+                'gp2gp_placeholder_trending_report_num_placeholders')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -92,7 +92,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"total_num_missing_attachments": "10"}
+            expected_values = {"total_num_placeholders": "10"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
@@ -102,7 +102,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_missing_attachments_report_trending_count_with_start_end_times_as_datetimes(self):
+    def test_placeholder_report_trending_count_with_start_end_times_as_datetimes(self):
 
         # Arrange
         index_name, index = self.create_index()
@@ -138,7 +138,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_count')
+                'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -156,13 +156,13 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Assert
             assert jq.first(
-                '.[] | select( ."Transferred with no missing attachments" == "1" ) ', telemetry)
+                '.[] | select( ."Transferred with no placeholders" == "1" ) ', telemetry)
 
 
         finally:
             self.delete_index(index_name)
 
-    def test_missing_attachments_report_trending_percentages_with_start_end_times_as_datetimes(self):
+    def test_placeholder_report_trending_percentages_with_start_end_times_as_datetimes(self):
 
         # Arrange
         index_name, index = self.create_index()
@@ -174,7 +174,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
         try:
 
-            conversationId = 'transfered_with_no_missing_attachments'
+            conversationId = 'transfered_with_no_placeholders'
 
             index.submit(
                 json.dumps(
@@ -200,7 +200,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_percentages')
+                'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_percentages')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -218,7 +218,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Assert
             assert jq.first(
-                '.[] | select( ."Transferred with no missing attachments" == "100.00" ) ', telemetry)
+                '.[] | select( ."Transferred with no placeholders" == "100.00" ) ', telemetry)
 
 
         finally:
@@ -226,7 +226,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
     @pytest.mark.parametrize("cutoff, registrationStatus",
                              [(1, "REGISTRATION"), (7, "EHR_REQUESTED"), (11, "EHR_SENT"), (19, "READY_TO_INTEGRATE")])
-    def test_missing_attachments_report_cutoffs(self, cutoff, registrationStatus):
+    def test_placeholder_report_cutoffs(self, cutoff, registrationStatus):
         """This test ensures that new conversations are at a different stage based on cutoff."""
 
         self.LOG.info(f"cutoff:{cutoff}, regstat:{registrationStatus}")
@@ -283,7 +283,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_base')
+                'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_base')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -309,55 +309,55 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
     @pytest.mark.parametrize("report_type, time_period, output",
                              [
                                  ("count", "day", {"0": {"time_period": "23-07-01",
-                                                         "Transferred with missing attachments": "0",
-                                                         "Transferred with no missing attachments": "1"},
+                                                         "Transferred with placeholders": "0",
+                                                         "Transferred with no placeholders": "1"},
                                                    "1": {"time_period": "23-07-02",
-                                                         "Transferred with missing attachments": "1",
-                                                         "Transferred with no missing attachments": "0"},
+                                                         "Transferred with placeholders": "1",
+                                                         "Transferred with no placeholders": "0"},
                                                    "2": {"time_period": "23-07-08",
-                                                         "Transferred with missing attachments": "1",
-                                                         "Transferred with no missing attachments": "0"}
+                                                         "Transferred with placeholders": "1",
+                                                         "Transferred with no placeholders": "0"}
                                                    }
                                   ),
                                  ("count", "week", {"0": {"time_period": "23-07-26",
-                                                          "Transferred with missing attachments": "1",
-                                                          "Transferred with no missing attachments": "1"},
+                                                          "Transferred with placeholders": "1",
+                                                          "Transferred with no placeholders": "1"},
                                                     "1": {"time_period": "23-07-27",
-                                                          "Transferred with missing attachments": "1",
-                                                          "Transferred with no missing attachments": "0"}
+                                                          "Transferred with placeholders": "1",
+                                                          "Transferred with no placeholders": "0"}
                                                     }
                                   ),
                                  ("count", "month", {"0": {"time_period": "23-07",
-                                                           "Transferred with missing attachments": "2",
-                                                           "Transferred with no missing attachments": "1"}
+                                                           "Transferred with placeholders": "2",
+                                                           "Transferred with no placeholders": "1"}
                                                      }
                                   ),
                                  ("percentages", "day", {"0": {"time_period": "23-07-01",
-                                                               "Transferred with missing attachments": "0.00",
-                                                               "Transferred with no missing attachments": "100.00"},
+                                                               "Transferred with placeholders": "0.00",
+                                                               "Transferred with no placeholders": "100.00"},
                                                          "1": {"time_period": "23-07-02",
-                                                               "Transferred with missing attachments": "100.00",
-                                                               "Transferred with no missing attachments": "0.00"},
+                                                               "Transferred with placeholders": "100.00",
+                                                               "Transferred with no placeholders": "0.00"},
                                                          "2": {"time_period": "23-07-08",
-                                                               "Transferred with missing attachments": "100.00",
-                                                               "Transferred with no missing attachments": "0.00"}
+                                                               "Transferred with placeholders": "100.00",
+                                                               "Transferred with no placeholders": "0.00"}
                                                          }
                                   ),
                                  ("percentages", "week", {"0": {"time_period": "23-07-26",
-                                                                "Transferred with missing attachments": "50.00",
-                                                                "Transferred with no missing attachments": "50.00"},
+                                                                "Transferred with placeholders": "50.00",
+                                                                "Transferred with no placeholders": "50.00"},
                                                           "1": {"time_period": "23-07-27",
-                                                                "Transferred with missing attachments": "100.00",
-                                                                "Transferred with no missing attachments": "0.00"}
+                                                                "Transferred with placeholders": "100.00",
+                                                                "Transferred with no placeholders": "0.00"}
                                                           }
                                   ),
                                  ("percentages", "month", {"0": {"time_period": "23-07",
-                                                                 "Transferred with missing attachments": "66.67",
-                                                                 "Transferred with no missing attachments": "33.33"}
+                                                                 "Transferred with placeholders": "66.67",
+                                                                 "Transferred with no placeholders": "33.33"}
                                                            }
                                   ),
                              ])
-    def test_missing_attachments_report_time_period(self, report_type, time_period, output):
+    def test_placeholder_report_time_period(self, report_type, time_period, output):
         """This test ensures that new conversations are at a different stage based on cutoff."""
 
         # Arrange
@@ -427,7 +427,7 @@ class TestMissingAttachmentsTrendingOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                f'gp2gp_missing_attachments_trending_report/gp2gp_missing_attachments_trending_report_{report_type}')
+                f'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_{report_type}')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
