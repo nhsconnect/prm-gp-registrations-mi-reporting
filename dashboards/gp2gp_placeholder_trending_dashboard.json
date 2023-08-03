@@ -10,17 +10,20 @@
 			"options": {
 				"dataValuesDisplay": "all",
 				"yAxisTitleText": "Count",
-				"backgroundColor": "#FFFFFF",
+				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
 					"#41B6E6"
 				],
-				"showYMinorGridLines": true,
+				"showYMinorGridLines": false,
 				"xAxisMajorTickSize": 10,
 				"seriesSpacing": 3,
-				"columnSpacing": 0
+				"columnSpacing": 0,
+				"legendDisplay": "bottom",
+				"showXMinorGridLines": false,
+				"showYMajorGridLines": true
 			},
-			"title": "Count of Missing Attachments per Time Period"
+			"title": ""
 		},
 		"viz_YuNkyEC4": {
 			"type": "splunk.column",
@@ -35,71 +38,77 @@
 					"#41B6E6"
 				],
 				"seriesSpacing": 3,
-				"columnSpacing": 0
+				"columnSpacing": 0,
+				"backgroundColor": "#ECF1F2",
+				"legendDisplay": "bottom"
 			},
-			"title": "Percentage of Missing Attachments per Time Period"
+			"title": ""
 		},
 		"viz_TsaIC6Wx": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "# **Missing Attachments Trending Report**",
-				"fontColor": "#231f20",
+				"markdown": "## Placeholder trending report  \n**Counts**\n",
+				"fontColor": "#000000",
 				"fontSize": "extraLarge"
 			}
 		},
-		"viz_ZQzjIVkR": {
-			"type": "splunk.singlevalueicon",
+		"viz_aTPox228": {
+			"type": "splunk.markdown",
 			"options": {
-				"showValue": false,
-				"icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg",
-				"iconColor": "#FFFFFF"
+				"markdown": "#### Count of placeholders per time period\nGraph showing the total number of records transferred over time, with the number of transfers which had no placeholders and the number of transfers which had at least 1 placeholder.",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
 			}
+		},
+		"viz_EDmOTwmV": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Percentage of placeholders per time period\nGraph showing the percentage of records transferred over time which had no missing attachments and the percentage which had at least 1 missing attachment.",
+				"backgroundColor": "#ECF1F2",
+				"fontColor": "#000000"
+			}
+		},
+		"viz_jHcx0g7D": {
+			"type": "splunk.singlevalue",
+			"dataSources": {
+				"primary": "ds_GF10eB9q"
+			},
+			"title": "Total placeholders"
 		}
 	},
 	"dataSources": {
-		"ds_e6qeFGcz": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_trending_count index=\"ptl_index\" global_time_earliest=$global_time.earliest$ global_time_latest=$global_time.latest$ cutoff=\"2\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "Search_1"
-		},
 		"ds_uGaAnEM4": {
 			"type": "ds.search",
 			"options": {
-				"query": "|  savedsearch gp2gp_missing_attachments_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"query": "|  savedsearch gp2gp_placeholder_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_missing_attachments_trending_report_count"
-		},
-		"ds_cq5eeIP7": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "Search_3"
+			"name": "gp2gp_placeholder_trending_report_count"
 		},
 		"ds_RN4dPMq2": {
 			"type": "ds.search",
 			"options": {
-				"query": "|  savedsearch gp2gp_missing_attachments_trending_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+				"query": "|  savedsearch gp2gp_placeholder_trending_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_missing_attachments_trending_report_percentages"
+			"name": "gp2gp_placeholder_trending_report_percentages"
+		},
+		"ds_GF10eB9q": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_placeholder_trending_report_num_placeholders index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_placeholder_trending_report_num_placeholderss"
 		}
 	},
 	"defaults": {
@@ -160,7 +169,8 @@
 		"type": "absolute",
 		"options": {
 			"display": "auto-scale",
-			"backgroundColor": "#768692"
+			"backgroundColor": "#ffffff",
+			"height": 1000
 		},
 		"structure": [
 			{
@@ -168,7 +178,7 @@
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 250,
+					"y": 290,
 					"w": 1180,
 					"h": 300
 				}
@@ -178,18 +188,8 @@
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 600,
+					"y": 720,
 					"w": 1180,
-					"h": 250
-				}
-			},
-			{
-				"item": "viz_ZQzjIVkR",
-				"type": "block",
-				"position": {
-					"x": 940,
-					"y": -10,
-					"w": 250,
 					"h": 250
 				}
 			},
@@ -202,6 +202,36 @@
 					"w": 860,
 					"h": 90
 				}
+			},
+			{
+				"item": "viz_aTPox228",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 220,
+					"w": 1180,
+					"h": 70
+				}
+			},
+			{
+				"item": "viz_EDmOTwmV",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 630,
+					"w": 1180,
+					"h": 90
+				}
+			},
+			{
+				"item": "viz_jHcx0g7D",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 80,
+					"w": 190,
+					"h": 120
+				}
 			}
 		],
 		"globalInputs": [
@@ -211,5 +241,5 @@
 		]
 	},
 	"description": "",
-	"title": "gp2gp_missing_attachments_trending_dashboard"
+	"title": "gp2gp_placeholder_trending_dashboard"
 }

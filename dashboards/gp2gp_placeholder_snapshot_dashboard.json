@@ -12,12 +12,14 @@
         "xAxisMajorTickVisibility": "hide",
         "xAxisMajorTickSize": 8,
         "xAxisTitleVisibility": "hide",
-        "legendDisplay": "off"
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2",
+        "xAxisTitleText": ""
       },
       "dataSources": {
         "primary": "ds_qBafRzi3"
       },
-      "title": "Count of Missing Attachments",
+      "title": "",
       "showProgressBar": false,
       "showLastUpdated": false,
       "description": ""
@@ -25,15 +27,8 @@
     "viz_RYPhSk8c": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "# **Missing Attachments Snapshot Report**",
+        "markdown": "## Placeholder snapshot report\n### Counts",
         "fontSize": "extraLarge"
-      }
-    },
-    "viz_bIafIlVL": {
-      "type": "splunk.singlevalueicon",
-      "options": {
-        "showValue": false,
-        "icon": "splunk-enterprise-kvstore://icon-cloud__b26f30f1-329e-4739-89ab-0a8a8bd24e7d.svg"
       }
     },
     "viz_nrRMTa9E": {
@@ -41,7 +36,7 @@
       "dataSources": {
         "primary": "ds_wBXZ14Ef"
       },
-      "title": "Percentage of Missing Attachments",
+      "title": "",
       "options": {
         "seriesColors": [
           "#41B6E6"
@@ -49,44 +44,49 @@
         "xAxisTitleVisibility": "hide",
         "yAxisLabelVisibility": "show",
         "xAxisMajorTickVisibility": "hide",
-        "legendDisplay": "off"
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2"
       }
     },
     "viz_ysvkHFbs": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "Graph showing the total number of records transferred along with the number of transfers which had no missing attachments and the number of transfers which had at least 1 missing attachment.",
-        "fontColor": "#FFFFFF",
-        "backgroundColor": "#005EB8",
+        "markdown": "#### Count of placeholders\nGraph showing the total number of records transferred along with the number of transfers which had no placeholders and the number of transfers which had at least 1 placeholder.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
         "fontSize": "large"
       }
     },
     "viz_VXusQloW": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "Graph showing the percentage of all transfers which had no missing attachments along with the percentage which had at least 1 missing attachment.\n",
-        "fontColor": "#FFFFFF",
-        "backgroundColor": "#005EB8",
+        "markdown": "#### Percentage of placeholders\nGraph showing the percentage of all transfers which had no placeholders along with the percentage which had at least 1 placeholder.\n",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
         "fontSize": "large"
       }
     },
     "viz_KKkIX6xn": {
       "type": "splunk.singlevalue",
       "options": {
-        "majorColor": "#005EB8",
-        "trendColor": "#005EB8"
+        "majorColor": "#000000",
+        "trendColor": "#000000",
+        "sparklineDisplay": "off",
+        "majorFontSize": 50,
+        "unit": "",
+        "trendDisplay": "off"
       },
       "dataSources": {
         "primary": "ds_bA8S89J3"
       },
-      "title": "Total Records Transferred"
+      "title": "Total records transferred"
     }
   },
   "dataSources": {
     "ds_qBafRzi3": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_placeholder_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
@@ -97,7 +97,7 @@
     "ds_wBXZ14Ef": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_placeholder_snapshot_report_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
@@ -108,13 +108,13 @@
     "ds_bA8S89J3": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_missing_attachments_snapshot_report_total_records_transferred index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_placeholder_snapshot_report_total_records_transferred index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
         }
       },
-      "name": "gp2gp_missing_attachments_snapshot_report_total_records_transferred"
+      "name": "gp2gp_placeholder_snapshot_report_total_records_transferred"
     }
   },
   "defaults": {
@@ -153,7 +153,7 @@
     "type": "absolute",
     "options": {
       "display": "auto",
-      "backgroundColor": "#768692"
+      "backgroundColor": "#ffffff"
     },
     "structure": [
       {
@@ -171,19 +171,9 @@
         "type": "block",
         "position": {
           "x": 10,
-          "y": 20,
-          "w": 1040,
-          "h": 110
-        }
-      },
-      {
-        "item": "viz_bIafIlVL",
-        "type": "block",
-        "position": {
-          "x": 940,
-          "y": -10,
-          "w": 250,
-          "h": 250
+          "y": 10,
+          "w": 920,
+          "h": 100
         }
       },
       {
@@ -200,30 +190,30 @@
         "item": "viz_ysvkHFbs",
         "type": "block",
         "position": {
-          "x": 40,
-          "y": 720,
-          "w": 520,
-          "h": 60
+          "x": 5,
+          "y": 220,
+          "w": 590,
+          "h": 110
         }
       },
       {
         "item": "viz_VXusQloW",
         "type": "block",
         "position": {
-          "x": 640,
-          "y": 720,
-          "w": 520,
-          "h": 60
+          "x": 605,
+          "y": 220,
+          "w": 590,
+          "h": 110
         }
       },
       {
         "item": "viz_KKkIX6xn",
         "type": "block",
         "position": {
-          "x": 60,
-          "y": 100,
-          "w": 220,
-          "h": 200
+          "x": 20,
+          "y": 110,
+          "w": 190,
+          "h": 90
         }
       }
     ],
@@ -233,5 +223,5 @@
     ]
   },
   "description": "",
-  "title": "gp2gp_missing_attachments_snapshot_dashboard"
+  "title": "gp2gp_placeholder_snapshot_dashboard"
 }
