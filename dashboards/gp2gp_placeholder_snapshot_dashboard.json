@@ -2,10 +2,7 @@
   "visualizations": {
     "viz_Yrz79jnn": {
       "type": "splunk.bar",
-      "options": {
-        "seriesColorsByField": {
-          "count": "#005EB8"
-        },
+      "options": {        
         "yAxisLabelVisibility": "show",
         "xAxisLabelVisibility": "show",
         "xAxisLineVisibility": "show",
@@ -14,7 +11,15 @@
         "xAxisTitleVisibility": "hide",
         "legendDisplay": "off",
         "backgroundColor": "#ECF1F2",
-        "xAxisTitleText": ""
+        "xAxisTitleText": "",
+        "seriesColors": [
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
+				]
       },
       "dataSources": {
         "primary": "ds_qBafRzi3"
