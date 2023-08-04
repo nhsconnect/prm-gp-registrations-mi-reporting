@@ -96,11 +96,12 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Successfully Integrated": "0",
+            expected_values = {"Successfully integrated": "0",
                                "Rejected": "0",
-                               "Awaiting Integration": "0", 
-                               "In-Progress": "2",
-                               "Technical Failure": "0"}
+                               "Awaiting integration": "0",
+                               "In progress": "2",
+                               "Technical failure": "0",
+                               "Unknown": "0"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 assert jq.first(
@@ -191,11 +192,12 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Successfully Integrated": "0.00",
+            expected_values = {"Successfully integrated": "0.00",
                                "Rejected": "0.00",
-                               "Awaiting Integration": "0.00", 
-                               "In-Progress": "100.00",
-                               "Technical Failure": "0.00"}
+                               "Awaiting integration": "0.00",
+                               "In progress": "100.00",
+                               "Technical failure": "0.00",
+                               "Unknown": "0.00"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 assert jq.first(

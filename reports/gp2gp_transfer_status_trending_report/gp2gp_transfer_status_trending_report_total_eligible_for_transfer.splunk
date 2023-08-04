@@ -1,0 +1,10 @@
+index="$index$"
+
+
+{% from 'gp2gp_transfer_status_trending_report/gp2gp_transfer_status_trending_report_base.splunk' import
+gp2gp_transfer_status_trending_report_base %}
+
+
+{{ gp2gp_transfer_status_trending_report_base() }}
+| stats sum(isTransferCompatible) as total_eligible_for_electronic_transfer
+| table total_eligible_for_electronic_transfer

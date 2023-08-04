@@ -1,0 +1,21 @@
+index="$index$"
+
+{% from 'gp2gp_placeholder_snapshot_report/gp2gp_placeholder_snapshot_report_base.splunk' import
+gp2gp_placeholder_report_snapshot_base %}
+
+{{ gp2gp_placeholder_report_snapshot_base() }}
+
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders == 0)) as transferred_with_no_placeholders
+| eventstats count(eval( (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION") AND numPlaceholders > 0)) as transferred_with_placeholders
+
+| stats first(transferred_with_no_placeholders) as transferred_with_no_placeholders
+        first(transferred_with_placeholders) as transferred_with_placeholders
+
+| eval label=mvappend("No placeholders", "Placeholders")
+| eval count=mvappend(transferred_with_no_placeholders, transferred_with_placeholders)
+
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+
+| rex field=soft_zip "(?<label>.*),(?<count>.*)"
+| table label, count

@@ -57,7 +57,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
             assert jq.first(
-                '.[] | select( .outcome == "SUCCESSFUL_INTEGRATION" ) | select( .count == "1" )', telemetry)
+                '.[] | select( .outcome == "Successful integration" ) | select( .count == "1" )', telemetry)
 
         finally:
             self.delete_index(index_name)        
@@ -99,7 +99,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
             assert jq.first(
-                '.[] | select( .outcome == "REJECTED" ) | select( .count == "1" )', telemetry)
+                '.[] | select( .outcome == "Rejected" ) | select( .count == "1" )', telemetry)
 
         finally:
             self.delete_index(index_name)
@@ -142,7 +142,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
             assert jq.first(
-                '.[] | select( .outcome == "TECHNICAL_FAILURE" ) | select( .count == "1" )', telemetry)
+                '.[] | select( .outcome == "Technical failure" ) | select( .count == "1" )', telemetry)
 
         finally:
             self.delete_index(index_name)
@@ -182,7 +182,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
             assert jq.first(
-                '.[] | select( .outcome == "AWAITING_INTEGRATION" ) | select( .count == "1" )', telemetry)
+                '.[] | select( .outcome == "Awaiting integration" ) | select( .count == "1" )', telemetry)
 
         finally:
             self.delete_index(index_name)            
@@ -285,7 +285,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert
             assert jq.first(
-                '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "2" )', telemetry)
+                '.[] | select( .outcome == "In progress" ) | select( .count == "2" )', telemetry)
 
         finally:
             self.delete_index(index_name)
@@ -345,7 +345,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert -
             assert jq.first(
-                '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "2" )', telemetry)
+                '.[] | select( .outcome == "In progress" ) | select( .count == "2" )', telemetry)
 
         finally:
             self.delete_index(index_name)            
@@ -412,7 +412,7 @@ class TestOutcomeTable(TestBase):
 
             # Assert -
             assert jq.first(
-                '.[] | select( .outcome == "IN_PROGRESS" ) | select( .count == "2" )', telemetry)
+                '.[] | select( .outcome == "In progress" ) | select( .count == "2" )', telemetry)
 
         finally:
            self.delete_index(index_name)
@@ -483,7 +483,8 @@ class TestOutcomeTable(TestBase):
 
             # Assert -
             assert jq.first(
-                '.[] | select( .outcome == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER" ) | select( .count == "2" )', telemetry)
+                '.[] | select( .outcome == "Not eligible for electronic transfer" ) | select( .count == "2" )',
+                telemetry)
 
         finally:
             self.delete_index(index_name)

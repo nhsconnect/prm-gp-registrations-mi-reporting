@@ -6,8 +6,8 @@ gp2gp_transfer_status_report_snapshot_base %}
 
 {{ gp2gp_transfer_status_report_snapshot_base() }}
 
-| eval label=mvappend("Successfully Integrated", "Rejected", "Awaiting Integration", "In-Progress", "Technical Failure")
-| eval count=mvappend(count_successfully_integrated,count_rejected,count_awaiting_integration,count_in_progress,count_technical_failure)
+| eval label=mvappend("Successfully integrated", "Rejected", "Awaiting integration", "In progress", "Technical failure", "Unknown")
+| eval count=mvappend(count_successfully_integrated, count_rejected, count_awaiting_integration, count_in_progress, count_technical_failure, count_unknown)
 
 | eval soft_zip = mvzip(label, count)
 | mvexpand soft_zip

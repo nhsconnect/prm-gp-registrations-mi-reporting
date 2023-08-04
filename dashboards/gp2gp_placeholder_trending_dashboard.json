@@ -13,7 +13,11 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
-					"#41B6E6"
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
 				],
 				"showYMinorGridLines": false,
 				"xAxisMajorTickSize": 10,
@@ -21,7 +25,8 @@
 				"columnSpacing": 0,
 				"legendDisplay": "bottom",
 				"showXMinorGridLines": false,
-				"showYMajorGridLines": true
+				"showYMajorGridLines": true,
+				"legendTruncation": "ellipsisOff"
 			},
 			"title": ""
 		},
@@ -35,12 +40,17 @@
 				"dataValuesDisplay": "all",
 				"seriesColors": [
 					"#003087",
-					"#41B6E6"
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
 				],
 				"seriesSpacing": 3,
 				"columnSpacing": 0,
 				"backgroundColor": "#ECF1F2",
-				"legendDisplay": "bottom"
+				"legendDisplay": "bottom",
+				"legendTruncation": "ellipsisOff"
 			},
 			"title": ""
 		},
