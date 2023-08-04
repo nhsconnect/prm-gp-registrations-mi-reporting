@@ -153,13 +153,13 @@ def set_variables_on_query(search_query, variables):
     return result
 
 def generate_splunk_query_from_report(self, report_name):
-        path = os.path.join(os.path.dirname(__file__),
-                            '../reports')
-        env = Environment(loader=FileSystemLoader(path))
-        template = env.get_template(f'{report_name}.splunk')
+    path = os.path.join(os.path.dirname(__file__),
+                        '../reports')
+    env = Environment(loader=FileSystemLoader(path))
+    template = env.get_template(f'{report_name}.splunk')
 
-        # using with statement
-        with open('splunk_query', 'w') as file:
-            file.write(template.render())
+    # using with statement
+    with open('splunk_query', 'w') as file:
+        file.write(template.render())
 
-        return template.render()
+    return template.render()

@@ -1,0 +1,10 @@
+index="$index$"
+
+{% from 'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_base.splunk' import
+gp2gp_placeholder_report_trending_base %}
+
+{{ gp2gp_placeholder_report_trending_base() }}
+
+| stats first(totalNumPlaceholders) as total_num_placeholders
+
+| table total_num_placeholders

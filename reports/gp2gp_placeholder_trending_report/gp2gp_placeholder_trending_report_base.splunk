@@ -1,4 +1,4 @@
-{% macro gp2gp_missing_attachments_report_trending_base () %}
+{% macro gp2gp_placeholder_report_trending_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -34,7 +34,7 @@ filter_conversations_by_start_and_end_times_and_cutoff
 {{ exclude_internal_transfers() }}
 
 | transaction conversationId keeporphans=t
-
+| eventstats sum(numPlaceholders) as totalNumPlaceholders
 | eventstats sum(numPlaceholders) as numPlaceholders by conversationId
 
 {{ calculate_registration_status() }}
@@ -44,4 +44,4 @@ filter_conversations_by_start_and_end_times_and_cutoff
 {% endmacro %}
 
 index="$index$"
-{{ gp2gp_missing_attachments_report_trending_base() }}
+{{ gp2gp_placeholder_report_trending_base() }}
