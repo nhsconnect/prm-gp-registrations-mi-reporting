@@ -23,12 +23,22 @@ gp2gp_placeholder_report_snapshot_base %}
 | eval 21_plus_placeholders = round((twenty_one_plus_placeholders / total_records_transferred ) * 100,2)
 
 
-| table 
-    1_to_5_placeholders,
-    6_to_10_placeholders,
-    11_to_15_placeholders,
-    16_to_20_placeholders,
-    21_plus_placeholders
+
+| stats 
+    first(1_to_5_placeholders) as one
+    first(6_to_10_placeholders) as two
+    first(11_to_15_placeholders) as three
+    first(16_to_20_placeholders) as four
+    first(21_plus_placeholders) as five
+
+| eval label=mvappend("1-5 placeholders", "6-10 placeholders","11-15 placeholders","16-20 placeholders","21+ placeholders")
+| eval count=mvappend(one, two, three, four, five)
+
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+
+| rex field=soft_zip "(?<label>.*),(?<count>.*)"
+| table label, count
 
 
 

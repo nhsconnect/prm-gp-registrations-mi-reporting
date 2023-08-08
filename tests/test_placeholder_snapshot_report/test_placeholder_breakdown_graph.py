@@ -87,19 +87,14 @@ class TestPlaceholderBreakdownGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    @pytest.mark.parametrize("placeholders,output", [
-        (5, {"1_to_5_placeholders": "100.00", "6_to_10_placeholders": "0.00",
-         "11_to_15_placeholders": "0.00", "16_to_20_placeholders": "0.00", "21_plus_placeholders": "0.00"}),
-        (6, {"1_to_5_placeholders": "0.00", "6_to_10_placeholders": "100.00",
-         "11_to_15_placeholders": "0.00", "16_to_20_placeholders": "0.00", "21_plus_placeholders": "0.00"}),
-        (11, {"1_to_5_placeholders": "0.00", "6_to_10_placeholders": "0.00",
-         "11_to_15_placeholders": "100.00", "16_to_20_placeholders": "0.00", "21_plus_placeholders": "0.00"}),
-        (16, {"1_to_5_placeholders": "0.00", "6_to_10_placeholders": "0.00", "11_to_15_placeholders": "0.00",
-         "16_to_20_placeholders": "100.00", "21_plus_placeholders": "0.00"}),
-        (21, {"1_to_5_placeholders": "0.00", "6_to_10_placeholders": "0.00",
-         "11_to_15_placeholders": "0.00", "16_to_20_placeholders": "0.00", "21_plus_placeholders": "100.00"})
+    @pytest.mark.parametrize("placeholders,expected_output", [
+        (5, {"1-5 placeholders": "100.00", "6-10 placeholders": "0.00", "11-15 placeholders": "0.00", "16-20 placeholders": "0.00", "21+ placeholders": "0.00"}),
+        (6, {"1-5 placeholders": "0.00", "6-10 placeholders": "100.00", "11-15 placeholders": "0.00", "16-20 placeholders": "0.00", "21+ placeholders": "0.00"}),
+        (11, {"1-5 placeholders": "0.00", "6-10 placeholders": "0.00", "11-15 placeholders": "100.00", "16-20 placeholders": "0.00", "21+ placeholders": "0.00"}),
+        (16, {"1-5 placeholders": "0.00", "6-10 placeholders": "0.00", "11-15 placeholders": "0.00", "16-20 placeholders": "100.00", "21+ placeholders": "0.00"}),
+        (21, {"1-5 placeholders": "0.00", "6-10 placeholders": "0.00", "11-15 placeholders": "0.00", "16-20 placeholders": "0.00", "21+ placeholders": "100.00"})
     ])
-    def test_percentage_of_placeholders(self, placeholders, output):
+    def test_percentage_of_placeholders(self, placeholders, expected_output):
 
         self.LOG.info(f"placeholders: {placeholders}")
 
@@ -152,13 +147,15 @@ class TestPlaceholderBreakdownGraph(TestBase):
                 self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
-            # Assert
-            expected_values = output
-            self.LOG.info(f"output: {output}")
+             # Assert
+            expected_values = expected_output
+            self.LOG.info(f"output: {expected_output}")            
 
-            for row, row_values in expected_values.items():
+         
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
                 assert jq.first(
-                    f'.[] | select( ."{row}"=="{row_values}" )', telemetry)
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
 
         finally:
             self.delete_index(index_name)
