@@ -188,7 +188,10 @@ class TestOutcomeTable(TestBase):
             self.delete_index(index_name)            
 
 
-    def test_outcome_in_progress_1(self):
+    def test_outcome_in_progress_3(self):
+        '''
+        STATUS = EHR_SENT AND TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = false
+        '''
 
         # Arrange
 
@@ -292,6 +295,9 @@ class TestOutcomeTable(TestBase):
             
 
     def test_outcome_in_progress_2(self):
+        '''
+        STATUS = EHR_REQUESTED AND EHR SENDING OUTSIDE SLA = false
+        '''
 
         # Arrange
 
@@ -351,7 +357,10 @@ class TestOutcomeTable(TestBase):
             self.delete_index(index_name)            
 
 
-    def test_outcome_in_progress_3(self):
+    def test_outcome_in_progress_1(self):
+        '''
+        STATUS = ELIGIBLE_FOR_TRANSFER AND EHR REQUESTING OUTSIDE SLA = false
+        '''
 
         # Arrange
 
