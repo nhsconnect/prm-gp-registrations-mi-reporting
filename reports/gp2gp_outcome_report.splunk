@@ -6,7 +6,8 @@ filter_reporting_window,
 calculate_registration_status,
 calculate_transfer_compatibility,
 calculate_sla_status,
-calculate_outcome %}
+calculate_outcome,
+has_errors %}
 
 {{ set_time_to_registration_datetime() }}
 
@@ -22,6 +23,7 @@ calculate_outcome %}
 
 | transaction conversationId keeporphans=t
 
+{{ has_errors() }}
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
