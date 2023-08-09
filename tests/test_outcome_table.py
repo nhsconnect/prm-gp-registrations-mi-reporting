@@ -224,7 +224,7 @@ class TestOutcomeTable(TestBase):
 
     def test_outcome_in_progress_3(self):
         """
-        STATUS = EHR_SENT AND TOTAL TRANSFER TIME OUTSIDE SLA 24 HOURS = false
+        STATUS = (EHR_SENT AND (errors exist = Technical failure) or (errors do not exist = in progress))
         """
 
         # Arrange
@@ -236,10 +236,13 @@ class TestOutcomeTable(TestBase):
         report_end = generate_report_end_date()
 
         try:
-            conversation_id_1 = "test_outcome_in_progress_1_1"
 
-            now_minus_23_hours = datetime_utc_now() - timedelta(hours=23, minutes=0)
-
+            """
+            Scenario #1: EHR sent, no error submitted with matching conversation id, STATUS should be in-progress
+            """
+             
+            conversation_id_1 = "test_outcome_in_progress_3_scenario_1"       
+           
             index.submit(
                 json.dumps(
                     create_sample_event(
@@ -273,16 +276,18 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id_1,
-                        registration_event_datetime=now_minus_23_hours.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"
-                        ),
+                        registration_event_datetime=create_date_time(report_start,"06:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                     )
                 ),
                 sourcetype="myevent",
             )
 
-            conversation_id_2 = "test_outcome_in_progress_1_2"
+            """
+            Scenario #2: EHR sent, an error submitted with matching conversation id, STATUS should be technical failure
+            """
+
+            conversation_id_2 = "test_outcome_in_progress_3_scenario_2"
 
             index.submit(
                 json.dumps(
@@ -317,14 +322,25 @@ class TestOutcomeTable(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id_2,
-                        registration_event_datetime=create_date_time(
-                            report_start, "07:00:00"
-                        ),
+                        registration_event_datetime=create_date_time(report_start,"06:00"),
                         event_type=EventType.EHR_RESPONSES.value,
                     )
                 ),
                 sourcetype="myevent",
             )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime=create_date_time(report_start,"06:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload("99","ANY ERROR",EventType.EHR_RESPONSES.value)
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
 
             # Act
 
@@ -346,17 +362,21 @@ class TestOutcomeTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            assert jq.first(
-                '.[] | select( .outcome == "In progress" ) | select( .count == "2" )',
-                telemetry,
-            )
+            expected_values = {"In progress": "1", "Technical failure": "1"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                assert jq.first(
+                    f'.[{idx}] | select( .outcome=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
 
         finally:
             self.delete_index(index_name)
+        
 
     def test_outcome_in_progress_2(self):
         """
-        STATUS = EHR_REQUESTED AND EHR SENDING OUTSIDE SLA = false
+        STATUS = (EHR_REQUESTED AND (errors exist = Technical failure) or (errors do not exist = in progress))
         """
 
         # Arrange
@@ -368,17 +388,17 @@ class TestOutcomeTable(TestBase):
         report_end = generate_report_end_date()
 
         try:
-            conversation_id_1 = "test_outcome_in_progress_2_1"
-
-            # test requires a datetime less than 20mins
-            now_minus_18_mins = datetime_utc_now() - timedelta(hours=0, minutes=18)
+            """
+            Scenario #1: EHR requested, no error submitted with matching conversation id, STATUS should be in-progress
+            """
+            conversation_id_1 = "test_outcome_in_progress_2_scenario_1"
 
             index.submit(
                 json.dumps(
                     create_sample_event(
                         conversation_id=conversation_id_1,
-                        registration_event_datetime=now_minus_18_mins.strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"
+                        registration_event_datetime=create_date_time(
+                            report_start, "05:00:00"
                         ),
                         event_type=EventType.EHR_REQUESTS.value,
                     )
@@ -386,7 +406,11 @@ class TestOutcomeTable(TestBase):
                 sourcetype="myevent",
             )
 
-            conversation_id_2 = "test_outcome_in_progress_2_2"
+            """
+            Scenario #2: EHR requested, an error has been submitted with matching conversation id, STATUS should be technical failure
+            """
+
+            conversation_id_2 = "test_outcome_in_progress_2_scenario_2"
 
             index.submit(
                 json.dumps(
@@ -396,6 +420,22 @@ class TestOutcomeTable(TestBase):
                             report_start, "05:00:00"
                         ),
                         event_type=EventType.EHR_REQUESTS.value,
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=conversation_id_2,
+                        registration_event_datetime=create_date_time(
+                            report_start, "06:00:00"
+                        ),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            "99", "ANY ERROR", EventType.EHR_REQUESTS.value
+                        ),
                     )
                 ),
                 sourcetype="myevent",
@@ -418,20 +458,24 @@ class TestOutcomeTable(TestBase):
             telemetry = get_telemetry_from_splunk(
                 self.savedsearch(test_query), self.splunk_service
             )
-            self.LOG.info(f"telemetry: {telemetry}")
+            self.LOG.info(f"telemetry: {telemetry}")           
 
-            # Assert -
-            assert jq.first(
-                '.[] | select( .outcome == "In progress" ) | select( .count == "2" )',
-                telemetry,
-            )
+
+            # Assert
+            expected_values = {"In progress": "1", "Technical failure": "1"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                assert jq.first(
+                    f'.[{idx}] | select( .outcome=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
 
         finally:
             self.delete_index(index_name)
 
     def test_outcome_in_progress_1(self):
         """
-        STATUS = ELIGIBLE_FOR_TRANSFER AND there are no errors
+        STATUS = (EHR_REQUESTED AND (errors exist = Technical failure) or (errors do not exist = in progress))
         """
 
         # Arrange
