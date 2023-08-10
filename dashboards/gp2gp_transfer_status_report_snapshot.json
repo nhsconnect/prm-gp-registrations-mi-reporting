@@ -54,10 +54,10 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"xAxisLineVisibility": "show",
@@ -89,10 +89,10 @@
 				"seriesColorsByField": {},
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"xAxisMajorTickSize": 8
@@ -171,19 +171,19 @@
 				"item": "viz_table_1",
 				"type": "block",
 				"position": {
-					"x": 20,
-					"y": 120,
+					"x": 40,
+					"y": 170,
 					"w": 270,
-					"h": 80
+					"h": 50
 				}
 			},
 			{
 				"item": "viz_chart_1",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 340,
-					"w": 580,
+					"w": 550,
 					"h": 380
 				}
 			},
@@ -191,9 +191,9 @@
 				"item": "viz_chart_1_new",
 				"type": "block",
 				"position": {
-					"x": 600,
+					"x": 610,
 					"y": 340,
-					"w": 590,
+					"w": 550,
 					"h": 380
 				}
 			},
@@ -201,19 +201,19 @@
 				"item": "viz_2Atq7Q2K",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 20,
 					"w": 740,
-					"h": 90
+					"h": 140
 				}
 			},
 			{
 				"item": "viz_SIwQjjf1",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 230,
-					"w": 580,
+					"w": 550,
 					"h": 110
 				}
 			},
@@ -221,9 +221,9 @@
 				"item": "viz_pIixC4Pe",
 				"type": "block",
 				"position": {
-					"x": 600,
+					"x": 610,
 					"y": 230,
-					"w": 590,
+					"w": 550,
 					"h": 110
 				}
 			}

@@ -48,16 +48,16 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"legendDisplay": "bottom",
 				"legendTruncation": "ellipsisOff"
 			},
-			"title": "Count of Transfer Status per Time Period"
+			"title": ""
 		},
 		"viz_YuNkyEC4": {
 			"type": "splunk.column",
@@ -69,17 +69,17 @@
 				"dataValuesDisplay": "all",
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"backgroundColor": "#ECF1F2",
 				"legendDisplay": "bottom",
 				"legendTruncation": "ellipsisOff"
 			},
-			"title": "Percentage of Transfer Status per Time Period"
+			"title": ""
 		},
 		"viz_TsaIC6Wx": {
 			"type": "splunk.markdown",
@@ -167,9 +167,9 @@
 				"item": "viz_wjCvnsg0",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 250,
-					"w": 1180,
+					"x": 30,
+					"y": 330,
+					"w": 1140,
 					"h": 300
 				}
 			},
@@ -177,9 +177,9 @@
 				"item": "viz_YuNkyEC4",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 640,
-					"w": 1180,
+					"x": 30,
+					"y": 750,
+					"w": 1140,
 					"h": 250
 				}
 			},
@@ -187,19 +187,19 @@
 				"item": "viz_TsaIC6Wx",
 				"type": "block",
 				"position": {
-					"x": 0,
+					"x": 30,
 					"y": 0,
 					"w": 710,
-					"h": 90
+					"h": 150
 				}
 			},
 			{
 				"item": "viz_qZdZJD2c",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 180,
-					"w": 1180,
+					"x": 30,
+					"y": 260,
+					"w": 1140,
 					"h": 70
 				}
 			},
@@ -207,9 +207,9 @@
 				"item": "viz_T9Gc4FkE",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 570,
-					"w": 1180,
+					"x": 30,
+					"y": 680,
+					"w": 1140,
 					"h": 70
 				}
 			},
@@ -217,10 +217,10 @@
 				"item": "viz_MzUrGP16",
 				"type": "block",
 				"position": {
-					"x": 10,
-					"y": 90,
+					"x": 30,
+					"y": 150,
 					"w": 200,
-					"h": 90
+					"h": 100
 				}
 			}
 		],
