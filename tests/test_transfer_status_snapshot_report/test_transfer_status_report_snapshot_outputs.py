@@ -9,7 +9,7 @@ from helpers.splunk \
     create_integration_payload, create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
 from datetime import datetime, timedelta
-from helpers.datetime_helper import datetime_utc_now, create_date_time
+from helpers.datetime_helper import datetime_utc_now, create_date_time, generate_report_start_date, generate_report_end_date
 
 
 class TestTransferStatusReportSnapshotOutputs(TestBase):
@@ -21,8 +21,8 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
         index_name, index = self.create_index()
 
          # reporting window
-        report_start = datetime.today().date().replace(day=1)
-        report_end = datetime.today().date().replace(day=28)
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
         cutoff = "0"
 
         try:
