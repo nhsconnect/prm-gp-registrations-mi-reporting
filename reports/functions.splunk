@@ -72,10 +72,13 @@
     registrationStatus == "INTEGRATION" AND ((integration_outcome =="INTEGRATED") OR (integration_outcome=="INTEGRATED_AND_SUPPRESSED") OR (integration_outcome=="SUPPRESSED_AND_REACTIVATED") OR (integration_outcome=="FILED_AS_ATTACHMENT") OR (integration_outcome=="INTERNAL_TRANSFER")),"Successful integration",
     registrationStatus == "INTEGRATION" AND integration_outcome =="REJECTED", "Rejected",
     registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "Technical failure",
-    registrationStatus == "READY_TO_INTEGRATE","Awaiting integration",
-    registrationStatus == "EHR_SENT", "In progress",
-    registrationStatus == "EHR_REQUESTED", "In progress",
-    registrationStatus == "ELIGIBLE_FOR_TRANSFER", "In progress",
+    registrationStatus == "READY_TO_INTEGRATE","Awaiting integration",  
+    registrationStatus == "EHR_SENT" AND has_errors == 1, "Technical failure",
+    registrationStatus == "EHR_SENT" AND has_errors == 0, "In progress",   
+    registrationStatus == "EHR_REQUESTED" AND has_errors == 1, "Technical failure",
+    registrationStatus == "EHR_REQUESTED" AND has_errors == 0, "In progress",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 1, "Technical failure",
+    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 0, "In progress",
     registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "Not eligible for electronic transfer",
     registrationStatus == "REGISTRATION" AND is_dts_matched==0, "Not eligible for electronic transfer",
     1=1, "Unknown")
@@ -112,5 +115,11 @@
 | streamstats earliest(_time) as conversationStart by conversationId
 | where conversationStart >= start_time_epoch AND conversationStart <= end_time_epoch
 | where _time >= start_time_epoch AND _time <= relative_time(end_time_epoch, "+$cutoff$d")
+
+{% endmacro %}
+
+{% macro has_errors() %}
+
+| eval has_errors = if(match(upper(eventType),"ERROR"),1,0)
 
 {% endmacro %}
