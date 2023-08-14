@@ -2,7 +2,15 @@
   "visualizations": {
     "viz_Yrz79jnn": {
       "type": "splunk.bar",
-      "options": {        
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
         "yAxisLabelVisibility": "show",
         "xAxisLabelVisibility": "show",
         "xAxisLineVisibility": "show",
@@ -11,15 +19,7 @@
         "xAxisTitleVisibility": "hide",
         "legendDisplay": "off",
         "backgroundColor": "#ECF1F2",
-        "xAxisTitleText": "",
-        "seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				]
+        "xAxisTitleText": ""
       },
       "dataSources": {
         "primary": "ds_qBafRzi3"
@@ -44,7 +44,12 @@
       "title": "",
       "options": {
         "seriesColors": [
-          "#41B6E6"
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
         ],
         "xAxisTitleVisibility": "hide",
         "yAxisLabelVisibility": "show",
@@ -85,6 +90,75 @@
         "primary": "ds_bA8S89J3"
       },
       "title": "Total records transferred"
+    },
+    "viz_9fg5QVxA": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2",
+        "xAxisLabelVisibility": "show",
+        "xAxisTitleVisibility": "hide",
+        "showYAxisWithZero": true,
+        "dataValuesDisplay": "all"
+      },
+      "dataSources": {
+        "primary": "ds_X8UmRB1b"
+      }
+    },
+    "viz_kpUX4jIF": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisLabelVisibility": "show",
+        "xAxisLineVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "xAxisMajorTickSize": 8,
+        "xAxisTitleVisibility": "hide",
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2",
+        "xAxisTitleText": "",
+        "showYAxisWithZero": true,
+        "dataValuesDisplay": "all"
+      },
+      "dataSources": {
+        "primary": "ds_cy1hRWGw"
+      }
+    },
+    "viz_WAlqLHTW": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Count of placeholders\nGraph showing a count records transferred with placeholders broken down by the number of placeholders per transfer.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
+    },
+    "viz_R90jIhI2": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Percentage of placeholders\nGraph showing the percentage of records transferred with placeholders broken down by the number of placeholders per transfer.\n",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
     }
   },
   "dataSources": {
@@ -120,6 +194,28 @@
         }
       },
       "name": "gp2gp_placeholder_snapshot_report_total_records_transferred"
+    },
+    "ds_X8UmRB1b": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_placeholders_breakdown_graph_snapshot_report_count"
+    },
+    "ds_cy1hRWGw": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_placeholders_breakdown_graph_snapshot_report_percentage"
     }
   },
   "defaults": {
@@ -158,7 +254,8 @@
     "type": "absolute",
     "options": {
       "display": "auto",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "height": 1400
     },
     "structure": [
       {
@@ -219,6 +316,46 @@
           "y": 110,
           "w": 190,
           "h": 90
+        }
+      },
+      {
+        "item": "viz_9fg5QVxA",
+        "type": "block",
+        "position": {
+          "x": 5,
+          "y": 940,
+          "w": 590,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_kpUX4jIF",
+        "type": "block",
+        "position": {
+          "x": 605,
+          "y": 940,
+          "w": 590,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_WAlqLHTW",
+        "type": "block",
+        "position": {
+          "x": 5,
+          "y": 830,
+          "w": 590,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_R90jIhI2",
+        "type": "block",
+        "position": {
+          "x": 605,
+          "y": 830,
+          "w": 590,
+          "h": 110
         }
       }
     ],
