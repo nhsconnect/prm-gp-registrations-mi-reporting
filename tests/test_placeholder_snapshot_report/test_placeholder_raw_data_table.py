@@ -28,7 +28,7 @@ import uuid
 
 
 class TestPlaceholderRawDataTable(TestBase):
-    def test_total_number_of_placeholders(self):
+    def test_raw_data_table_output(self):
         # reporting window
         report_start = generate_report_start_date()
         report_end = generate_report_end_date()
@@ -78,20 +78,9 @@ class TestPlaceholderRawDataTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            expected_values = {
-                "conversation_id": random_conversation_id,
-                "total_number_of_placeholders": "2",
-            }
 
-            assert_list = []
-            for idx, (key, value) in enumerate(expected_values.items()):
-                assert_list.append('."{key}"=="{value}"')
-
-            assert_str = ",".join(assert_list)
-            self.LOG.info(f".[{idx}] | select( {assert_list})")
-
-            assert jq.first(
-                f".[{idx}] | select( {assert_list})",
+            assert jq.all(
+                f'.[0] | select( .conversation_id == "{random_conversation_id}") | select( .total_number_of_placeholders == "2")| select( .clinicalTypes == "SCANNED_DOCUMENT_0")',
                 telemetry,
             )
 
