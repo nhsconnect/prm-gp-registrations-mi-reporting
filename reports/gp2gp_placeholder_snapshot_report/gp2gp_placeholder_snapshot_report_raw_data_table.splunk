@@ -22,6 +22,12 @@ gp2gp_placeholder_report_snapshot_base %}
 
 | eval conversation_id = conversationId
 | eval total_number_of_placeholders = numPlaceholders
+| eval reporting_system_supplier = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
 | table 
     conversation_id, 
     total_number_of_placeholders, 
@@ -29,9 +35,9 @@ gp2gp_placeholder_report_snapshot_base %}
     generated_by, 
     original_mime_type, 
     reason, 
-    reportingSystemSupplier,
-    requestingSupplierName,
-    sendingSupplierName,
-    reportingPracticeOdsCode,
-    requestingPracticeOdsCode,
-    sendingPracticeOdsCode
+    reporting_system_supplier ,
+    requesting_supplier_name,
+    sending_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code

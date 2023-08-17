@@ -84,7 +84,7 @@ class TestPlaceholderRawDataTable(TestBase):
             generated_by_field = payload["ehr"]["placeholders"][0]["generatedBy"]
             original_mime_type = payload["ehr"]["placeholders"][0]["originalMimeType"]
             reason = payload["ehr"]["placeholders"][0]["reason"]
-            
+
             assert jq.all(
                 f".[0] "
                 + f'| select( .conversation_id == "{random_conversation_id}") '
@@ -93,14 +93,15 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .generated_by == "{generated_by_field}")'
                 + f'| select( .original_mime_type == "{original_mime_type}")'
                 + f'| select( .reason == "{reason}")'
-                + f'| select( .reportingSystemSupplier == "TEST_SYSTEM_SUPPLIER")'
-                + f'| select( .requestingSupplierName == "TEST_SUPPLIER")'
-                + f'| select( .sendingSupplierName == "TEST_SUPPLIER2")'
-                + f'| select( .reportingPracticeOdsCode == "A00029")'
-                + f'| select( .requestingPracticeOdsCode == "A00029")'
-                + f'| select( .sendingPracticeOdsCode == "B00157")'
+                + f'| select( .reporting_system_supplier == "TEST_SYSTEM_SUPPLIER")'
+                + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
+                + f'| select( .requesting_practice_ods_code == "A00029")'
+                + f'| select( .sending_practice_ods_code == "B00157")'
                 ,telemetry
-            )
+            ) 
+    
 
         finally:
             self.delete_index(index_name)
