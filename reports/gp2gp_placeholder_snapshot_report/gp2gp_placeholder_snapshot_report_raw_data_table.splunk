@@ -5,8 +5,14 @@ gp2gp_placeholder_report_snapshot_base %}
 
 {{ gp2gp_placeholder_report_snapshot_base() }}
 
+| spath output=clinicalTypes path=payload.ehr.placeholders{}.clinicalType
+| spath output=generatedBy path=payload.ehr.placeholders{}.generatedBy
 
-| mvexpand clinicalTypes
+| eval soft_zip = mvzip(clinicalTypes, generatedBy)
+| mvexpand soft_zip
+| rex field=soft_zip "^(?<clinical_types>[^,]+),(?<generated_by>.*)$"
+| fields - soft_zip
+
 | eval conversation_id = conversationId
 | eval total_number_of_placeholders = numPlaceholders
-| table conversation_id, total_number_of_placeholders, clinicalTypes
+| table conversation_id, total_number_of_placeholders, clinical_types, generated_by

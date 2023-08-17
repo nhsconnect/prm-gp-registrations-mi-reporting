@@ -28,6 +28,7 @@ import uuid
 
 
 class TestPlaceholderRawDataTable(TestBase):
+
     def test_raw_data_table_output(self):
         # reporting window
         report_start = generate_report_start_date()
@@ -40,6 +41,8 @@ class TestPlaceholderRawDataTable(TestBase):
 
             random_conversation_id = f"test_placeholder_graph_{uuid.uuid4()}"
 
+            payload = create_ehr_response_payload(number_of_placeholders=2)
+
             index.submit(
                 json.dumps(
                     create_sample_event(
@@ -48,7 +51,7 @@ class TestPlaceholderRawDataTable(TestBase):
                             date=report_start, time="05:00:00"
                         ),
                         event_type=EventType.EHR_RESPONSES.value,
-                        payload=create_ehr_response_payload(number_of_placeholders=2),
+                        payload=payload,
                     )
                 ),
                 sourcetype="myevent",
@@ -78,10 +81,15 @@ class TestPlaceholderRawDataTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-
+            generated_by_field = payload['ehr']['placeholders'][0]["generatedBy"]
+            self.LOG.info(f"payload: {generated_by_field}")
             assert jq.all(
-                f'.[0] | select( .conversation_id == "{random_conversation_id}") | select( .total_number_of_placeholders == "2")| select( .clinicalTypes == "SCANNED_DOCUMENT_0")',
-                telemetry,
+                f'.[0] '
+                + f'| select( .conversation_id == "{random_conversation_id}") '
+                + f'| select( .total_number_of_placeholders == "2") ' 
+                + f'| select( .clinical_types == "SCANNED_DOCUMENT_0")'
+                + f'| select( .generated_by == "{generated_by_field}")'             
+                ,telemetry
             )
 
         finally:

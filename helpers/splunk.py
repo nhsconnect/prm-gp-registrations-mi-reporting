@@ -5,6 +5,7 @@ from time import sleep
 from splunklib.binding import HTTPError
 import splunklib.results as results
 from jinja2 import Environment, FileSystemLoader
+import random
 
 
 def get_telemetry_from_splunk(search_query, service) -> None:
@@ -41,13 +42,13 @@ def get_telemetry_from_splunk(search_query, service) -> None:
 
 
 def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_placeholders: int = 0) -> dict:
-  
-    placeholders =[]
+    placeholders = []
+    generated_by_list = ['SENDER', 'PRE_EXISTING']
 
     for i in range(number_of_placeholders):
         placeholders.append(
             {
-                "generatedBy": "PRE_EXISTING",
+                "generatedBy": random.choice(generated_by_list),
                 "clinicalType": f"SCANNED_DOCUMENT_{i}",
                 "reason": "FILE_NOT_FOUND",
                 "originalMimeType": "application/pdf"
