@@ -64,8 +64,8 @@ def test_metrics_by_reg_status():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -75,8 +75,8 @@ def test_metrics_by_reg_status():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -86,8 +86,8 @@ def test_metrics_by_reg_status():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -97,8 +97,8 @@ def test_metrics_by_reg_status():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -134,8 +134,8 @@ def test_metrics_by_sending_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -145,8 +145,8 @@ def test_metrics_by_sending_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -156,8 +156,8 @@ def test_metrics_by_sending_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -167,8 +167,8 @@ def test_metrics_by_sending_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -187,7 +187,7 @@ def test_metrics_by_sending_supplier():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .sendingPracticeSupplierName == "EMIS" ) | select( .count == "1" )', telemetry)
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .sendingSupplierName == "EMIS" ) | select( .count == "1" )', telemetry)
 
 
 def test_metrics_by_receiving_supplier():
@@ -204,8 +204,8 @@ def test_metrics_by_receiving_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -215,8 +215,8 @@ def test_metrics_by_receiving_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -226,8 +226,8 @@ def test_metrics_by_receiving_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -237,8 +237,8 @@ def test_metrics_by_receiving_supplier():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -257,7 +257,7 @@ def test_metrics_by_receiving_supplier():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .count == "1" )', telemetry)
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingSupplierName == "TPP" ) | select( .count == "1" )', telemetry)
 
 
 def test_metrics_by_single_error_code():
@@ -274,8 +274,8 @@ def test_metrics_by_single_error_code():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -285,8 +285,8 @@ def test_metrics_by_single_error_code():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -296,8 +296,8 @@ def test_metrics_by_single_error_code():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -307,8 +307,8 @@ def test_metrics_by_single_error_code():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="99",
                     errorDescription="Error with EHR Response",
@@ -323,8 +323,8 @@ def test_metrics_by_single_error_code():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -343,7 +343,7 @@ def test_metrics_by_single_error_code():
 
     # Assert - check that there is 1 event each (count), 3 events in total (totalCount) and the percentage is 33.3
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory == "EHR_RESPONSE_99" ) | select( .count == "1" )', telemetry)
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingSupplierName == "TPP" ) | select( .errorHistory == "EHR_RESPONSE_99" ) | select( .count == "1" )', telemetry)
 
 
 def test_metrics_by_multiple_error_codes():
@@ -360,8 +360,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -371,8 +371,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -382,8 +382,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -393,8 +393,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="99",
                     errorDescription="Error with EHR Response",
@@ -409,8 +409,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="80",
                     errorDescription="Error with EHR Response",
@@ -425,8 +425,8 @@ def test_metrics_by_multiple_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
     # Act
@@ -445,7 +445,7 @@ def test_metrics_by_multiple_error_codes():
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "1" )', telemetry)
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "1" )', telemetry)
 
 
 def test_metrics_by_unordered_error_codes():
@@ -463,8 +463,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -474,8 +474,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -485,8 +485,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -496,8 +496,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="99",
                     errorDescription="Error with EHR Response",
@@ -512,8 +512,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="80",
                     errorDescription="Error with EHR Response",
@@ -528,8 +528,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -543,8 +543,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -554,8 +554,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -565,8 +565,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -576,8 +576,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:20:00",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="80",
                     errorDescription="Error with EHR Response",
@@ -592,8 +592,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:30:30",
                 event_type=EventType.ERROR.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_error_payload(
                     errorCode="99",
                     errorDescription="Error with EHR Response",
@@ -608,8 +608,8 @@ def test_metrics_by_unordered_error_codes():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -629,7 +629,7 @@ def test_metrics_by_unordered_error_codes():
 
     # Assert
     assert jq.first(
-        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingPracticeSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "2" )', telemetry)
+        '.[] | select( .registrationStatus == "INTEGRATED" ) | select( .requestingSupplierName == "TPP" ) | select( .errorHistory  == ["EHR_RESPONSE_80", "EHR_RESPONSE_99"] ) | select( .count == "2" )', telemetry)
 
 
 def test_percentage_of_all_transfers():
@@ -646,8 +646,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -657,8 +657,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=True,
@@ -673,8 +673,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -684,8 +684,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -695,8 +695,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP"
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP"
             )),
         sourcetype="myevent")
 
@@ -708,8 +708,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingSupplierName="TPP",
+                requestingSupplierName="EMIS"
             )),
         sourcetype="myevent")
 
@@ -719,8 +719,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=True,
@@ -735,8 +735,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingSupplierName="TPP",
+                requestingSupplierName="EMIS"
             )),
         sourcetype="myevent")
 
@@ -746,8 +746,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingSupplierName="TPP",
+                requestingSupplierName="EMIS"
             )),
         sourcetype="myevent")
 
@@ -757,8 +757,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="TPP",
-                requestingPracticeSupplierName="EMIS"
+                sendingSupplierName="TPP",
+                requestingSupplierName="EMIS"
             )),
         sourcetype="myevent")
 
@@ -770,8 +770,8 @@ def test_percentage_of_all_transfers():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS",
-                requestingPracticeSupplierName="TPP",
+                sendingSupplierName="EMIS",
+                requestingSupplierName="TPP",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=False,
@@ -811,8 +811,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:00:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS_One",
-                requestingPracticeSupplierName="TPP_One"
+                sendingSupplierName="EMIS_One",
+                requestingSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
@@ -822,8 +822,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS_One",
-                requestingPracticeSupplierName="TPP_One",
+                sendingSupplierName="EMIS_One",
+                requestingSupplierName="TPP_One",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=True,
@@ -838,8 +838,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:20:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="EMIS_One",
-                requestingPracticeSupplierName="TPP_One"
+                sendingSupplierName="EMIS_One",
+                requestingSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
@@ -849,8 +849,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:25:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="EMIS_One",
-                requestingPracticeSupplierName="TPP_One"
+                sendingSupplierName="EMIS_One",
+                requestingSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
@@ -860,8 +860,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_1',
                 registration_event_datetime="2023-03-10T08:30:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="EMIS_One",
-                requestingPracticeSupplierName="TPP_One"
+                sendingSupplierName="EMIS_One",
+                requestingSupplierName="TPP_One"
             )),
         sourcetype="myevent")
 
@@ -873,8 +873,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:35:00",
                 event_type=EventType.REGISTRATIONS.value,
-                sendingPracticeSupplierName="EMIS_two",
-                requestingPracticeSupplierName="TPP_two"
+                sendingSupplierName="EMIS_two",
+                requestingSupplierName="TPP_two"
             )),
         sourcetype="myevent")
 
@@ -884,8 +884,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:40:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS_two",
-                requestingPracticeSupplierName="TPP_two",
+                sendingSupplierName="EMIS_two",
+                requestingSupplierName="TPP_two",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=True,
@@ -900,8 +900,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:45:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMI_two",
-                requestingPracticeSupplierName="TPP_two",
+                sendingSupplierName="EMI_two",
+                requestingSupplierName="TPP_two",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=False,
@@ -916,8 +916,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:50:00",
                 event_type=EventType.EHR_REQUEST.value,
-                sendingPracticeSupplierName="TPP_two",
-                requestingPracticeSupplierName="EMIS_two"
+                sendingSupplierName="TPP_two",
+                requestingSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
@@ -927,8 +927,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_RESPONSE.value,
-                sendingPracticeSupplierName="TPP_two",
-                requestingPracticeSupplierName="EMIS_two"
+                sendingSupplierName="TPP_two",
+                requestingSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
@@ -938,8 +938,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id='TRANSFER_2',
                 registration_event_datetime="2023-03-10T08:19:00",
                 event_type=EventType.EHR_INTEGRATIONS.value,
-                sendingPracticeSupplierName="TPP_two",
-                requestingPracticeSupplierName="EMIS_two"
+                sendingSupplierName="TPP_two",
+                requestingSupplierName="EMIS_two"
             )),
         sourcetype="myevent")
 
@@ -951,8 +951,8 @@ def test_multiple_transfer_compatibility_event():
                 conversation_id,
                 registration_event_datetime="2023-03-10T08:30:00",
                 event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                sendingPracticeSupplierName="EMIS_three",
-                requestingPracticeSupplierName="TPP_three",
+                sendingSupplierName="EMIS_three",
+                requestingSupplierName="TPP_three",
                 payload=create_transfer_compatibility_payload(
                     internalTransfer=False,
                     transferCompatible=False,

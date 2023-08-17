@@ -142,14 +142,15 @@ def create_sample_event(
     registration_event_datetime="2023-03-10T12:53:01",
     event_type="READY_TO_INTEGRATE_STATUSES",
     payload=None,
-    requestingPracticeSupplierName="TEST_SUPPLIER",
-    sendingPracticeSupplierName="TEST_SUPPLIER2",
+    requestingSupplierName="TEST_SUPPLIER",
+    sendingSupplierName="TEST_SUPPLIER2",
+    reportingSystemSupplier="TEST_SYSTEM_SUPPLIER"
 ) -> dict:
     return {
         "eventId": str(uuid.uuid4()),
         "eventGeneratedDateTime": "2023-03-20T12:53:01",
         "eventType": event_type,
-        "reportingSystemSupplier": "200000000260",
+        "reportingSystemSupplier": reportingSystemSupplier,
         "reportingPracticeOdsCode": "A00029",
         "requestingPracticeOdsCode": "A00029",
         "requestingPracticeName": "GP A",
@@ -162,8 +163,8 @@ def create_sample_event(
         "conversationId": conversation_id,
         "registrationEventDateTime": registration_event_datetime,
         "payload": payload,
-        "requestingPracticeSupplierName": requestingPracticeSupplierName,
-        "sendingPracticeSupplierName": sendingPracticeSupplierName,
+        "requestingSupplierName": requestingSupplierName,
+        "sendingSupplierName": sendingSupplierName,
     }
 
 
