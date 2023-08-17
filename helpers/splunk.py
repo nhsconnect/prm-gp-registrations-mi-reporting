@@ -44,6 +44,7 @@ def get_telemetry_from_splunk(search_query, service) -> None:
 def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_placeholders: int = 0) -> dict:
     placeholders = []
     generated_by_list = ['SENDER', 'PRE_EXISTING']
+    original_mime_type_list = ['audio/mpeg','image/jpeg','application/pdf']
 
     for i in range(number_of_placeholders):
         placeholders.append(
@@ -51,7 +52,7 @@ def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_pl
                 "generatedBy": random.choice(generated_by_list),
                 "clinicalType": f"SCANNED_DOCUMENT_{i}",
                 "reason": "FILE_NOT_FOUND",
-                "originalMimeType": "application/pdf"
+                "originalMimeType": random.choice(original_mime_type_list)
             }
         )
 
