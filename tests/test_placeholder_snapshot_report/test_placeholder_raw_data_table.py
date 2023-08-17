@@ -81,6 +81,7 @@ class TestPlaceholderRawDataTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
+            clinical_type_field = payload['ehr']['placeholders'][0]["clinicalType"]
             generated_by_field = payload['ehr']['placeholders'][0]["generatedBy"]
             original_mime_type = payload['ehr']['placeholders'][0]["originalMimeType"]
             reason =  payload['ehr']['placeholders'][0]["reason"]
@@ -88,10 +89,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 f'.[0] '
                 + f'| select( .conversation_id == "{random_conversation_id}") '
                 + f'| select( .total_number_of_placeholders == "2") ' 
-                + f'| select( .clinical_types == "SCANNED_DOCUMENT_0")'
+                + f'| select( .clinical_type == "{clinical_type_field}")'
                 + f'| select( .generated_by == "{generated_by_field}")'           
                 + f'| select( .original_mime_type == "{original_mime_type}")'   
-                + f'| select( .reason == "{reason}")'             
+                + f'| select( .reason == "{reason}")' 
                 ,telemetry
             )
 
