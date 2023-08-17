@@ -45,13 +45,14 @@ def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_pl
     placeholders = []
     generated_by_list = ['SENDER', 'PRE_EXISTING']
     original_mime_type_list = ['audio/mpeg','image/jpeg','application/pdf']
+    reasons_list =['FILE_TYPE_UNSUPPORTED','FILE_DELETED','FILE_NOT_FOUND','FILE_LOCKED','UNABLE_TO_DETERMINE_PROBLEM']
 
     for i in range(number_of_placeholders):
         placeholders.append(
             {
                 "generatedBy": random.choice(generated_by_list),
                 "clinicalType": f"SCANNED_DOCUMENT_{i}",
-                "reason": "FILE_NOT_FOUND",
+                "reason": random.choice(reasons_list),
                 "originalMimeType": random.choice(original_mime_type_list)
             }
         )
