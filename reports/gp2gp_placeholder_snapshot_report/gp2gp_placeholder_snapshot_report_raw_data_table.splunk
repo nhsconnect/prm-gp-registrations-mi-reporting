@@ -22,4 +22,16 @@ gp2gp_placeholder_report_snapshot_base %}
 
 | eval conversation_id = conversationId
 | eval total_number_of_placeholders = numPlaceholders
-| table conversation_id, total_number_of_placeholders, clinical_type, generated_by, original_mime_type, reason
+| table 
+    conversation_id, 
+    total_number_of_placeholders, 
+    clinical_type, 
+    generated_by, 
+    original_mime_type, 
+    reason, 
+    reportingSystemSupplier,
+    requestingSupplierName,
+    sendingSupplierName,
+    reportingPracticeOdsCode,
+    requestingPracticeOdsCode,
+    sendingPracticeOdsCode
