@@ -13,10 +13,10 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"showYMinorGridLines": false,
@@ -40,10 +40,10 @@
 				"dataValuesDisplay": "all",
 				"seriesColors": [
 					"#003087",
+					"#0846A4",
 					"#7C2855",
-					"#D5281B",
 					"#FFB81C",
-					"#CCE3F5",
+					"#D5281B",
 					"#768692"
 				],
 				"seriesSpacing": 3,
@@ -187,9 +187,9 @@
 				"item": "viz_wjCvnsg0",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 290,
-					"w": 1180,
+					"w": 1120,
 					"h": 300
 				}
 			},
@@ -197,9 +197,9 @@
 				"item": "viz_YuNkyEC4",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 720,
-					"w": 1180,
+					"w": 1120,
 					"h": 250
 				}
 			},
@@ -207,19 +207,19 @@
 				"item": "viz_TsaIC6Wx",
 				"type": "block",
 				"position": {
-					"x": 0,
+					"x": 50,
 					"y": 0,
 					"w": 860,
-					"h": 90
+					"h": 80
 				}
 			},
 			{
 				"item": "viz_aTPox228",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 220,
-					"w": 1180,
+					"w": 1120,
 					"h": 70
 				}
 			},
@@ -227,9 +227,9 @@
 				"item": "viz_EDmOTwmV",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 630,
-					"w": 1180,
+					"w": 1120,
 					"h": 90
 				}
 			},
@@ -237,7 +237,7 @@
 				"item": "viz_jHcx0g7D",
 				"type": "block",
 				"position": {
-					"x": 10,
+					"x": 40,
 					"y": 80,
 					"w": 190,
 					"h": 120
