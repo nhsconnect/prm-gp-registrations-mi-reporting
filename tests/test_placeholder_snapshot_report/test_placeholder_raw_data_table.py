@@ -52,9 +52,7 @@ class TestPlaceholderRawDataTable(TestBase):
             # Arrange
             index_name, index = self.create_index()
 
-            random_conversation_id = f"test_placeholder_graph_{uuid.uuid4()}"
-
-            # payload = create_ehr_response_payload(number_of_placeholders=6)
+            random_conversation_id = f"test_placeholder_graph_{uuid.uuid4()}"            
 
             index.submit(
                 json.dumps(
@@ -65,6 +63,19 @@ class TestPlaceholderRawDataTable(TestBase):
                         ),
                         event_type=EventType.EHR_RESPONSES.value,
                         payload=payload,
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=random_conversation_id,
+                        registration_event_datetime=create_date_time(
+                            date=report_start, time="05:00:00"
+                        ),
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value                       
                     )
                 ),
                 sourcetype="myevent",
@@ -93,29 +104,21 @@ class TestPlaceholderRawDataTable(TestBase):
             )
             self.LOG.info(f"telemetry: {telemetry}")
 
-            # Assert
-            # clinical_type_field = payload["ehr"]["placeholders"][:]["clinicalType"]
-            # generated_by_field = payload["ehr"]["placeholders"][:]["generatedBy"]
-            # original_mime_type_field = payload["ehr"]["placeholders"][:]["originalMimeType"]
-            # reason_field = payload["ehr"]["placeholders"][:]["reason"]
-            # list_zipped_fields = list(zip(clinical_type_field,generated_by_field,original_mime_type_field,reason_field))
-            # count_field_combos = {field_combo: list_zipped_fields.count(field_combo)
-            #                       for field_combo in list_zipped_fields}
+            # Assert          
 
             assert jq.all(
                 f".[0] "
                 + f'| select( .conversation_id == "{random_conversation_id}") '
-                # + f'| select( .total_number_of_placeholders == "6") '
-                # + f'| select( .clinical_type == "{placeholder["clinicalType"]}")'
-                # + f'| select( .reason == "{placeholder["reason"]}")'
-                # + f'| select( .count_of_clinical_type_and_reason == "6")'
-                # + f'| select( .generated_by == "{placeholder["generatedBy"]}")'
-                # + f'| select( .original_mime_type == "{placeholder["originalMimeType"]}")'
-                # + f'| select( .reporting_system_supplier == "TEST_SYSTEM_SUPPLIER")'
-                # + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
-                # + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
-                # + f'| select( .requesting_practice_ods_code == "A00029")'
-                # + f'| select( .sending_practice_ods_code == "B00157")'
+                + f'| select( .total_number_of_placeholders == "6") '
+                + f'| select( .clinical_type == "{placeholder["clinicalType"]}")'
+                + f'| select( .reason == "{placeholder["reason"]}")'
+                + f'| select( .count_of_clinical_type_and_reason == "6")'
+                + f'| select( .generated_by == "{placeholder["generatedBy"]}")'
+                + f'| select( .original_mime_type == "{placeholder["originalMimeType"]}")'                
+                + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .requesting_practice_ods_code == "A00029")'
+                + f'| select( .sending_practice_ods_code == "B00157")'
                 ,telemetry
             ) 
     
