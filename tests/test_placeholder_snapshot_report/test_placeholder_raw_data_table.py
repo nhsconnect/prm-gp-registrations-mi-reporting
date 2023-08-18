@@ -40,7 +40,7 @@ class TestPlaceholderRawDataTable(TestBase):
 
             random_conversation_id = f"test_placeholder_graph_{uuid.uuid4()}"
 
-            payload = create_ehr_response_payload(number_of_placeholders=2)
+            payload = create_ehr_response_payload(number_of_placeholders=6)
 
             index.submit(
                 json.dumps(
@@ -80,19 +80,23 @@ class TestPlaceholderRawDataTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            clinical_type_field = payload["ehr"]["placeholders"][0]["clinicalType"]
-            generated_by_field = payload["ehr"]["placeholders"][0]["generatedBy"]
-            original_mime_type = payload["ehr"]["placeholders"][0]["originalMimeType"]
-            reason = payload["ehr"]["placeholders"][0]["reason"]
+            clinical_type_field = payload["ehr"]["placeholders"][:]["clinicalType"]
+            generated_by_field = payload["ehr"]["placeholders"][:]["generatedBy"]
+            original_mime_type_field = payload["ehr"]["placeholders"][:]["originalMimeType"]
+            reason_field = payload["ehr"]["placeholders"][:]["reason"]
+            list_zipped_fields = list(zip(clinical_type_field,generated_by_field,original_mime_type_field,reason_field))
+            count_field_combos = {field_combo: list_zipped_fields.count(field_combo)
+                                  for field_combo in list_zipped_fields}
 
             assert jq.all(
                 f".[0] "
                 + f'| select( .conversation_id == "{random_conversation_id}") '
-                + f'| select( .total_number_of_placeholders == "2") '
-                + f'| select( .clinical_type == "{clinical_type_field}")'
-                + f'| select( .generated_by == "{generated_by_field}")'
-                + f'| select( .original_mime_type == "{original_mime_type}")'
-                + f'| select( .reason == "{reason}")'
+                + f'| select( .total_number_of_placeholders == "6") '
+                + f'| select( .clinical_type == "{clinical_type_field[0]}")'
+                + f'| select( .reason == "{reason_field[0]}")'
+                + f'| select( .count_of_clinical_type_and_reason == "{count_field_combos[0]}")'
+                + f'| select( .generated_by == "{generated_by_field[0]}")'
+                + f'| select( .original_mime_type == "{original_mime_type_field[0]}")'
                 + f'| select( .reporting_system_supplier == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
