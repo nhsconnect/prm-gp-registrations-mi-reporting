@@ -57,7 +57,7 @@ class TestPlaceholderBreakdownGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_placeholder_snapshot_report/gp2gp_placeholders_breakdown_graph_count')
+                'gp2gp_placeholder_snapshot_report/gp2gp_placeholders_breakdown_graph_snapshot_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -132,7 +132,7 @@ class TestPlaceholderBreakdownGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_placeholder_snapshot_report/gp2gp_placeholders_breakdown_graph_percentages')
+                'gp2gp_placeholder_snapshot_report/gp2gp_placeholders_breakdown_graph_snapshot_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,

@@ -62,13 +62,13 @@ index="$index$"
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 | where outcome == "TECHNICAL_FAILURE"
-| eval scenario = mvzip(outcome, registrationStatus, sendingPracticeSupplierName)
+| eval scenario = mvzip(outcome, registrationStatus, sendingSupplierName)
 | eventstats count(eval(transCompatStatEvent==1)) as totalTransfers
 | stats
     first(totalTransfers) as totalTransfers,
-    first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
+    first(sendingSupplierName) as sendingSupplierName, 
     first(registrationStatus) as registrationStatus,
-    first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
+    first(requestingSupplierName) as requestingSupplierName,        
     first(slaStatus) as slaStatus,
     first(twentyFourHoursAgo) as twentyFourHoursAgo, 
     first(transCompatStatEventDateTime) as transCompatStatEventDateTime,
@@ -77,8 +77,8 @@ index="$index$"
 | rename dc(conversationId) as count
 | eval percentageOfAllTransfers=(count/totalTransfers) * 100
 | table 
-    sendingPracticeSupplierName, 
-    requestingPracticeSupplierName, 
+    sendingSupplierName, 
+    requestingSupplierName, 
     registrationStatus, 
     errorHistory, 
     count, 

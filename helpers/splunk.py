@@ -5,6 +5,7 @@ from time import sleep
 from splunklib.binding import HTTPError
 import splunklib.results as results
 from jinja2 import Environment, FileSystemLoader
+import random
 
 
 def get_telemetry_from_splunk(search_query, service) -> None:
@@ -14,22 +15,25 @@ def get_telemetry_from_splunk(search_query, service) -> None:
         print(f"query '{search_query}' is invalid:\n\t{str(error)}", 2)
         return
 
-    job = service.jobs.create(search_query,
-                              earliest_time="-3y@d",
-                              latest_time="+3y@d",
-                              )
+    job = service.jobs.create(
+        search_query,
+        earliest_time="-3y@d",
+        latest_time="+3y@d",
+    )
     while True:
         while not job.is_ready():
             pass
-        stats = {'isDone': job['isDone'],
-                 'doneProgress': job['doneProgress'],
-                 'scanCount': job['scanCount'],
-                 'eventCount': job['eventCount'],
-                 'resultCount': job['resultCount']}
-        if stats['isDone'] == '1':
+        stats = {
+            "isDone": job["isDone"],
+            "doneProgress": job["doneProgress"],
+            "scanCount": job["scanCount"],
+            "eventCount": job["eventCount"],
+            "resultCount": job["resultCount"],
+        }
+        if stats["isDone"] == "1":
             break
         sleep(2)
-    rr = results.JSONResultsReader(job.results(output_mode='json'))
+    rr = results.JSONResultsReader(job.results(output_mode="json"))
     telemetry = []
     for result in rr:
         if isinstance(result, results.Message):
@@ -40,71 +44,96 @@ def get_telemetry_from_splunk(search_query, service) -> None:
     return telemetry
 
 
-def create_ehr_response_payload(ehrStructuredSizeBytes: int = 4096, number_of_placeholders: int = 0) -> dict:
-  
-    placeholders =[]
+def create_ehr_response_payload(
+    ehrStructuredSizeBytes: int = 4096, number_of_placeholders: int = 0
+) -> dict:
+    placeholders = []
+
+    clinical_type_list = [
+        "SCANNED_DOCUMENT",
+        "ORIGINAL_TEXT_DOCUMENT",
+        "OCR_TEXT_DOCUMENT",
+        "IMAGE",
+        "AUDIO_DICTATION",
+        "OTHER_AUDIO",
+        "OTHER_DIGITAL_SIGNAL",
+        "EDI_MESSAGE",
+        "NOT_AVAILABLE",
+        "OTHER",
+    ]
+    generated_by_list = ["SENDER", "PRE_EXISTING"]
+    original_mime_type_list = ["audio/mpeg", "image/jpeg", "application/pdf"]
+    reasons_list = [
+        "FILE_TYPE_UNSUPPORTED",
+        "FILE_DELETED",
+        "FILE_NOT_FOUND",
+        "FILE_LOCKED",
+        "UNABLE_TO_DETERMINE_PROBLEM",
+    ]
 
     for i in range(number_of_placeholders):
         placeholders.append(
             {
-                "generatedBy": "PRE_EXISTING",
-                "clinicalType": f"SCANNED_DOCUMENT_{i}",
-                "reason": "FILE_NOT_FOUND",
-                "originalMimeType": "application/pdf"
+                "generatedBy": random.choice(generated_by_list),
+                "clinicalType": random.choice(clinical_type_list),
+                "reason": random.choice(reasons_list),
+                "originalMimeType": random.choice(original_mime_type_list),
             }
         )
 
     return {
         "ehr": {
             "ehrStructuredSizeBytes": ehrStructuredSizeBytes,
-            "placeholders": placeholders
+            "placeholders": placeholders,
         }
     }
 
 
 def create_integration_payload(outcome=None) -> dict:
-    return {
-        "integration": {
-            "outcome": outcome
-        }
-    }
+    return {"integration": {"outcome": outcome}}
 
 
-def create_transfer_compatibility_payload(internalTransfer: bool, transferCompatible: bool, reason: str = None) -> dict:
+def create_transfer_compatibility_payload(
+    internalTransfer: bool, transferCompatible: bool, reason: str = None
+) -> dict:
     return {
         "transferCompatibilityStatus": {
             "internalTransfer": internalTransfer,
             "transferCompatible": transferCompatible,
-            "reason": reason
+            "reason": reason,
         }
     }
 
 
-def create_error_payload(errorCode: str, errorDescription: str, failurePoint: str) -> dict:
+def create_error_payload(
+    errorCode: str, errorDescription: str, failurePoint: str
+) -> dict:
     return {
         "error": {
             "errorCode": errorCode,
             "errorDescription": errorDescription,
-            "failurePoint": failurePoint
+            "failurePoint": failurePoint,
         }
     }
 
 
-def create_registration_payload(returningPatient: bool = False, multifactorAuthenticationPresent: bool = True, dtsMatched: bool = True) -> dict:
+def create_registration_payload(
+    returningPatient: bool = False,
+    multifactorAuthenticationPresent: bool = True,
+    dtsMatched: bool = True,
+) -> dict:
     return {
         "registration": {
             "type": "NEW_GP_REGISTRATION",
             "returningPatient": returningPatient,
-            "multifactorAuthenticationPresent": multifactorAuthenticationPresent
+            "multifactorAuthenticationPresent": multifactorAuthenticationPresent,
         },
         "demographicTraceStatus": {
             "matched": dtsMatched,
             "reason": "no PDS trace results returned",
-            "multifactorAuthenticationPresent": True
+            "multifactorAuthenticationPresent": True,
         },
-        "gpLinks": {
-            "gpLinksComplete": True
-        }
+        "gpLinks": {"gpLinksComplete": True},
     }
 
 
@@ -113,14 +142,15 @@ def create_sample_event(
     registration_event_datetime="2023-03-10T12:53:01",
     event_type="READY_TO_INTEGRATE_STATUSES",
     payload=None,
-    requestingPracticeSupplierName="TEST_SUPPLIER",
-    sendingPracticeSupplierName="TEST_SUPPLIER2"
+    requestingSupplierName="TEST_SUPPLIER",
+    sendingSupplierName="TEST_SUPPLIER2",
+    reportingSystemSupplier="TEST_SYSTEM_SUPPLIER"
 ) -> dict:
     return {
         "eventId": str(uuid.uuid4()),
         "eventGeneratedDateTime": "2023-03-20T12:53:01",
         "eventType": event_type,
-        "reportingSystemSupplier": "200000000260",
+        "reportingSystemSupplier": reportingSystemSupplier,
         "reportingPracticeOdsCode": "A00029",
         "requestingPracticeOdsCode": "A00029",
         "requestingPracticeName": "GP A",
@@ -133,8 +163,8 @@ def create_sample_event(
         "conversationId": conversation_id,
         "registrationEventDateTime": registration_event_datetime,
         "payload": payload,
-        "requestingPracticeSupplierName": requestingPracticeSupplierName,
-        "sendingPracticeSupplierName": sendingPracticeSupplierName
+        "requestingSupplierName": requestingSupplierName,
+        "sendingSupplierName": sendingSupplierName,
     }
 
 
@@ -152,14 +182,14 @@ def set_variables_on_query(search_query, variables):
         result = result.replace(key, variables[key])
     return result
 
+
 def generate_splunk_query_from_report(self, report_name):
-    path = os.path.join(os.path.dirname(__file__),
-                        '../reports')
+    path = os.path.join(os.path.dirname(__file__), "../reports")
     env = Environment(loader=FileSystemLoader(path))
-    template = env.get_template(f'{report_name}.splunk')
+    template = env.get_template(f"{report_name}.splunk")
 
     # using with statement
-    with open('splunk_query', 'w') as file:
+    with open("splunk_query", "w") as file:
         file.write(template.render())
 
     return template.render()
