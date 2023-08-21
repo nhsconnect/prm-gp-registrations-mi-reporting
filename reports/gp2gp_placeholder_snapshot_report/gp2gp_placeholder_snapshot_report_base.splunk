@@ -22,6 +22,7 @@ filter_conversations_by_start_and_end_times_and_cutoff
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome
 | spath output=placeholders path=payload.ehr.placeholders{}
+
 | eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
 | eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
@@ -43,6 +44,8 @@ filter_conversations_by_start_and_end_times_and_cutoff
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
+
+| WHERE registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION"
 
 {% endmacro %}
 

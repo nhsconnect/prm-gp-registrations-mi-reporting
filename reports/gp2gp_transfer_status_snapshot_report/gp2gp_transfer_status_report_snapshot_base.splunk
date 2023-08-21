@@ -79,9 +79,9 @@ has_errors %}
     first(percentage_unknown) as percentage_unknown
 
 
-    first(sendingPracticeSupplierName) as sendingPracticeSupplierName, 
+    first(sendingSupplierName) as sendingSupplierName, 
     first(registrationStatus) as registrationStatus,
-    first(requestingPracticeSupplierName) as requestingPracticeSupplierName,        
+    first(requestingSupplierName) as requestingSupplierName,        
     first(slaStatus) as slaStatus
 
 {% endmacro %}

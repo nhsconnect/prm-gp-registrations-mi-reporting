@@ -31,8 +31,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_1',
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -48,8 +48,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_2',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -65,8 +65,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_3',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
                             transferCompatible=True,
@@ -126,8 +126,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -144,8 +144,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -162,8 +162,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
                             transferCompatible=True,
@@ -223,8 +223,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_1',
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -240,8 +240,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_2',
                         registration_event_datetime="2023-03-31T15:00:00.000+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -301,8 +301,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -382,8 +382,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_1,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -408,8 +408,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_2,
                         registration_event_datetime="2023-04-11T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -480,8 +480,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_1,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -506,8 +506,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_2,
                         registration_event_datetime="2023-03-17T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -575,8 +575,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_1',
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -592,8 +592,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_2',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -609,8 +609,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_3',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
                             transferCompatible=True,
@@ -670,8 +670,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -688,8 +688,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -706,8 +706,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         registration_event_datetime=now_minus_2_days.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
                             transferCompatible=True,
@@ -767,8 +767,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_1',
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -784,8 +784,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_2',
                         registration_event_datetime="2023-03-31T15:00:00.000+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -845,8 +845,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -926,8 +926,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_1,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -952,8 +952,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_2,
                         registration_event_datetime="2023-04-11T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -1024,8 +1024,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_1,
                         registration_event_datetime="2023-03-10T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -1050,8 +1050,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         conversation_id=conversation_id_2,
                         registration_event_datetime="2023-03-17T08:00:00+0000",
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -1124,8 +1124,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_1',
                         registration_event_datetime=create_date_time(report_start, "08:00:00"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,
@@ -1141,8 +1141,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_2',
                         registration_event_datetime=create_date_time(report_start, "09:00:00"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=True,
                             transferCompatible=True,
@@ -1158,8 +1158,8 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
                         'test_total_eligible_for_electronic_transfer_3',
                         registration_event_datetime=create_date_time(report_start, "10:00:00"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP",
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
                         payload=create_transfer_compatibility_payload(
                             internalTransfer=False,
                             transferCompatible=True,

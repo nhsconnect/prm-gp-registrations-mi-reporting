@@ -44,8 +44,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='outside_sla_24_hours_1',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -56,8 +56,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_23_hours.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),  # needs to be within 24 hours
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -69,8 +69,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_2_outside_sla',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -80,8 +80,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_2_outside_sla',
                         registration_event_datetime="2023-03-15T09:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -91,8 +91,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_2_inside_sla',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -102,8 +102,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_2_inside_sla',
                         registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -115,8 +115,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_3_outside_sla',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -126,8 +126,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_3_outside_sla',
                         registration_event_datetime="2023-03-15T09:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -147,8 +147,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_3_inside_sla',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -158,8 +158,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_3_inside_sla',
                         registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -216,8 +216,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_1',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -230,8 +230,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_20_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -243,8 +243,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -254,8 +254,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -265,8 +265,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T11:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -278,8 +278,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -289,8 +289,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T09:05:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -300,8 +300,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_ready_to_integrate',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -313,8 +313,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_integrated',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -324,8 +324,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_integrated',
                         registration_event_datetime="2023-03-10T09:05:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -335,8 +335,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_integrated',
                         registration_event_datetime="2023-03-10T10:01:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -358,8 +358,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_integrated',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -369,8 +369,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_integrated',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -380,8 +380,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_integrated',
                         registration_event_datetime="2023-03-10T10:01:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -403,8 +403,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_ehr_sent',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -414,8 +414,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_outside_sla_ehr_sent',
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -427,8 +427,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_ehr_sent',
                         registration_event_datetime="2023-03-10T09:00:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -438,8 +438,8 @@ class TestSlaStatus(TestBase):
                         conversation_id='test_ehr_sending_inside_sla_ehr_sent',
                         registration_event_datetime="2023-03-10T09:15:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -532,8 +532,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -543,8 +543,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -576,8 +576,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_20_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -587,8 +587,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -615,8 +615,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -626,8 +626,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -659,8 +659,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_20_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -670,8 +670,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_INTEGRATIONS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -698,8 +698,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -709,8 +709,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -742,8 +742,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_20_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -753,8 +753,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T10:00:00+0000",
                         event_type=EventType.EHR_RESPONSES.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -781,8 +781,8 @@ class TestSlaStatus(TestBase):
                         conversation_id=conversation_id,
                         registration_event_datetime="2023-03-10T09:30:00+0000",
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 
@@ -814,8 +814,8 @@ class TestSlaStatus(TestBase):
                         registration_event_datetime=now_minus_20_mins.strftime(
                             "%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
-                        sendingPracticeSupplierName="EMIS",
-                        requestingPracticeSupplierName="TPP"
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"
                     )),
                 sourcetype="myevent")
 

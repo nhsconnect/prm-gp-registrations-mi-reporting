@@ -5,7 +5,8 @@ gp2gp_placeholder_report_snapshot_base %}
 
 {{ gp2gp_placeholder_report_snapshot_base() }}
 
-| WHERE registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION"
+
+| WHERE numPlaceholders > 0
 | spath output=placeholders path=payload.ehr.placeholders{}
 
 
