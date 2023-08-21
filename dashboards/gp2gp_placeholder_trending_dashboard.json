@@ -11,10 +11,10 @@
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
-					"#0846A4",
 					"#7C2855",
-					"#FFB81C",
 					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
 					"#768692"
 				],
 				"legendDisplay": "bottom",
@@ -33,10 +33,10 @@
 				"dataValuesDisplay": "all",
 				"seriesColors": [
 					"#003087",
-					"#0846A4",
 					"#7C2855",
-					"#FFB81C",
 					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
 					"#768692"
 				],
 				"seriesSpacing": 3,
