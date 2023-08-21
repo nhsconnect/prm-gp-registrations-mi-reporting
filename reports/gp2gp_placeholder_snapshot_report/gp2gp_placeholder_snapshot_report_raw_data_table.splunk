@@ -50,7 +50,6 @@ gp2gp_placeholder_report_snapshot_base %}
         count_of_clinical_type_and_reason,
         generated_by,
         original_mime_type,
-        reporting_system_supplier ,
         requesting_supplier_name,
         sending_supplier_name,
         requesting_practice_ods_code,
