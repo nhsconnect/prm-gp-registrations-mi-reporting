@@ -1,129 +1,95 @@
 {
 	"dataSources": {
-		"ds_LJnvHy0y": {
+		"ds_uGaAnEM4": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_counts index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_transfer_status_report_snapshot_counts"
+			"name": "gp2gp_transfer_status_report_trending_count"
 		},
-		"ds_30YiHQq9": {
+		"ds_RN4dPMq2": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer"
+			"name": "gp2gp_transfer_status_trending_report_percentage"
 		},
-		"ds_yg6oqZuY": {
+		"ds_M5PzE81U": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_transfer_status_report_snapshot_percentages index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"query": "|  savedsearch gp2gp_transfer_status_trending_report_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=$time_period$",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_transfer_status_report_snapshot_percentages"
+			"name": "gp2gp_transfer_status_trending_report_total_eligible_for_transfer"
 		}
 	},
 	"visualizations": {
-		"viz_chart_1_new": {
+		"viz_wjCvnsg0": {
 			"type": "splunk.column",
 			"dataSources": {
-				"primary": "ds_yg6oqZuY"
-			},
-			"options": {
-				"y2AxisAbbreviation": "auto",
-				"showRoundedY2AxisLabels": false,
-				"showY2MajorGridLines": true,
-				"yAxisTitleVisibility": "show",
-				"y2AxisTitleVisibility": "show",
-				"yAxisScale": "linear",
-				"dataValuesDisplay": "all",
-				"stackMode": "auto",
-				"legendDisplay": "off",
-				"lineWidth": 2,
-				"backgroundColor": "#ECF1F2",
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"xAxisLineVisibility": "show",
-				"yAxisTitleText": "Percentage",
-				"xAxisMajorTickSize": 8,
-				"xAxisTitleVisibility": "hide"
-			},
-			"title": ""
-		},
-		"viz_chart_1": {
-			"type": "splunk.column",
-			"dataSources": {
-				"primary": "ds_LJnvHy0y"
-			},
-			"options": {
-				"yAxisAbbreviation": "auto",
-				"y2AxisAbbreviation": "auto",
-				"showRoundedY2AxisLabels": false,
-				"showY2MajorGridLines": true,
-				"xAxisTitleVisibility": "hide",
-				"yAxisTitleVisibility": "show",
-				"y2AxisTitleVisibility": "show",
-				"yAxisScale": "linear",
-				"dataValuesDisplay": "all",
-				"stackMode": "auto",
-				"legendDisplay": "off",
-				"lineWidth": 2,
-				"backgroundColor": "#ECF1F2",
-				"seriesColorsByField": {},
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"xAxisMajorTickSize": 8
-			},
-			"title": ""
-		},
-		"viz_table_1": {
-			"type": "splunk.singlevalue",
-			"dataSources": {
-				"primary": "ds_30YiHQq9"
+				"primary": "ds_uGaAnEM4"
 			},
 			"showProgressBar": false,
 			"showLastUpdated": false,
-			"title": "Total Eligible for Electronic Transfer",
 			"options": {
-				"backgroundColor": "#FFFFFF",
-				"majorColor": "#000000",
-				"trendColor": "#0072CE",
-				"trendDisplay": "off",
-				"majorFontSize": 50
-			}
+				"dataValuesDisplay": "all",
+				"yAxisTitleText": "Count",
+				"backgroundColor": "#ECF1F2",
+				"seriesColors": [
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
+				],
+				"legendDisplay": "bottom",
+				"legendTruncation": "ellipsisOff"
+			},
+			"title": "Count of Transfer Status per Time Period"
 		},
-		"viz_2Atq7Q2K": {
+		"viz_YuNkyEC4": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_RN4dPMq2"
+			},
+			"options": {
+				"yAxisTitleText": "Percentage",
+				"dataValuesDisplay": "all",
+				"seriesColors": [
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
+				],
+				"backgroundColor": "#ECF1F2",
+				"legendDisplay": "bottom",
+				"legendTruncation": "ellipsisOff"
+			},
+			"title": "Percentage of Transfer Status per Time Period"
+		},
+		"viz_TsaIC6Wx": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "## Transfer Status Snapshot Report  \n### Counts",
-				"fontColor": "#231f20",
+				"markdown": "## Transfer Status Trending Report\n### Counts",
+				"fontColor": "#000000",
 				"fontSize": "extraLarge"
 			}
 		},
-		"viz_SIwQjjf1": {
+		"viz_qZdZJD2c": {
 			"type": "splunk.markdown",
 			"options": {
 				"markdown": "#### Count of transfer statuses\nGraph showing the number of transfers at each stage based on the reporting window",
@@ -131,109 +97,140 @@
 				"fontColor": "#000000"
 			}
 		},
-		"viz_pIixC4Pe": {
+		"viz_T9Gc4FkE": {
 			"type": "splunk.markdown",
 			"options": {
 				"markdown": "#### Percentage of transfer statuses\nGraph showing the percentage of transfers at each stage based on the reporting window",
 				"backgroundColor": "#ECF1F2",
 				"fontColor": "#000000"
 			}
+		},
+		"viz_MzUrGP16": {
+			"type": "splunk.singlevalue",
+			"dataSources": {
+				"primary": "ds_M5PzE81U"
+			},
+			"title": "Total eligible for transfer"
 		}
 	},
 	"inputs": {
-		"input_N4dUT4Cz": {
+		"input_uKjxpglv": {
 			"options": {
-				"defaultValue": "0,",
+				"defaultValue": "-1mon@mon,@mon",
 				"token": "time_range"
 			},
 			"title": "Time Range",
 			"type": "input.timerange"
 		},
-		"input_2puDOPI6": {
+		"input_s1JNn01c": {
 			"options": {
-				"defaultValue": 1,
+				"defaultValue": 0,
 				"token": "cutoff",
 				"min": 0,
 				"max": 14
 			},
 			"title": "Cutoff (days)",
 			"type": "input.number"
+		},
+		"input_hKwKMe7q": {
+			"options": {
+				"items": [
+					{
+						"label": "Day",
+						"value": "day"
+					},
+					{
+						"label": "Week",
+						"value": "week"
+					},
+					{
+						"label": "Month",
+						"value": "month"
+					}
+				],
+				"defaultValue": "month",
+				"token": "time_period"
+			},
+			"title": "Time Period",
+			"type": "input.dropdown"
 		}
 	},
 	"layout": {
 		"type": "absolute",
 		"options": {
 			"display": "auto-scale",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#ffffff",
+			"height": 1200
 		},
 		"structure": [
 			{
-				"item": "viz_table_1",
-				"type": "block",
-				"position": {
-					"x": 20,
-					"y": 120,
-					"w": 270,
-					"h": 80
-				}
-			},
-			{
-				"item": "viz_chart_1",
+				"item": "viz_wjCvnsg0",
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 340,
-					"w": 580,
-					"h": 380
+					"y": 280,
+					"w": 1180,
+					"h": 300
 				}
 			},
 			{
-				"item": "viz_chart_1_new",
+				"item": "viz_YuNkyEC4",
 				"type": "block",
 				"position": {
-					"x": 600,
-					"y": 340,
-					"w": 590,
-					"h": 380
+					"x": 10,
+					"y": 690,
+					"w": 1180,
+					"h": 250
 				}
 			},
 			{
-				"item": "viz_2Atq7Q2K",
+				"item": "viz_TsaIC6Wx",
 				"type": "block",
 				"position": {
 					"x": 10,
 					"y": 10,
-					"w": 740,
-					"h": 110
+					"w": 710,
+					"h": 100
 				}
 			},
 			{
-				"item": "viz_SIwQjjf1",
+				"item": "viz_qZdZJD2c",
 				"type": "block",
 				"position": {
 					"x": 10,
-					"y": 230,
-					"w": 580,
-					"h": 110
+					"y": 210,
+					"w": 1180,
+					"h": 70
 				}
 			},
 			{
-				"item": "viz_pIixC4Pe",
+				"item": "viz_T9Gc4FkE",
 				"type": "block",
 				"position": {
-					"x": 600,
-					"y": 230,
-					"w": 590,
-					"h": 110
+					"x": 10,
+					"y": 620,
+					"w": 1180,
+					"h": 70
+				}
+			},
+			{
+				"item": "viz_MzUrGP16",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 110,
+					"w": 200,
+					"h": 90
 				}
 			}
 		],
 		"globalInputs": [
-			"input_N4dUT4Cz",
-			"input_2puDOPI6"
+			"input_uKjxpglv",
+			"input_s1JNn01c",
+			"input_hKwKMe7q"
 		]
 	},
-	"title": "gp2gp_transfer_status_report_snapshot",
+	"title": "gp2gp_transfer_status_trending_dashboard",
 	"description": "",
 	"defaults": {
 		"dataSources": {
