@@ -1,15 +1,13 @@
 {
 	"visualizations": {
 		"viz_wjCvnsg0": {
-			"type": "splunk.column",
+			"type": "splunk.line",
 			"dataSources": {
 				"primary": "ds_uGaAnEM4"
 			},
 			"showProgressBar": false,
 			"showLastUpdated": false,
 			"options": {
-				"dataValuesDisplay": "all",
-				"yAxisTitleText": "Count",
 				"backgroundColor": "#ECF1F2",
 				"seriesColors": [
 					"#003087",
@@ -19,14 +17,9 @@
 					"#D5281B",
 					"#768692"
 				],
-				"showYMinorGridLines": false,
-				"xAxisMajorTickSize": 10,
-				"seriesSpacing": 3,
-				"columnSpacing": 0,
 				"legendDisplay": "bottom",
-				"showXMinorGridLines": false,
-				"showYMajorGridLines": true,
-				"legendTruncation": "ellipsisOff"
+				"xAxisTitleText": "",
+				"yAxisTitleText": "Count"
 			},
 			"title": ""
 		},
@@ -49,8 +42,7 @@
 				"seriesSpacing": 3,
 				"columnSpacing": 0,
 				"backgroundColor": "#ECF1F2",
-				"legendDisplay": "bottom",
-				"legendTruncation": "ellipsisOff"
+				"legendDisplay": "bottom"
 			},
 			"title": ""
 		},
@@ -187,9 +179,9 @@
 				"item": "viz_wjCvnsg0",
 				"type": "block",
 				"position": {
-					"x": 40,
+					"x": 10,
 					"y": 290,
-					"w": 1120,
+					"w": 1180,
 					"h": 300
 				}
 			},
@@ -197,9 +189,9 @@
 				"item": "viz_YuNkyEC4",
 				"type": "block",
 				"position": {
-					"x": 40,
+					"x": 10,
 					"y": 720,
-					"w": 1120,
+					"w": 1180,
 					"h": 250
 				}
 			},
@@ -207,19 +199,19 @@
 				"item": "viz_TsaIC6Wx",
 				"type": "block",
 				"position": {
-					"x": 50,
+					"x": 0,
 					"y": 0,
 					"w": 860,
-					"h": 80
+					"h": 90
 				}
 			},
 			{
 				"item": "viz_aTPox228",
 				"type": "block",
 				"position": {
-					"x": 40,
+					"x": 10,
 					"y": 220,
-					"w": 1120,
+					"w": 1180,
 					"h": 70
 				}
 			},
@@ -227,9 +219,9 @@
 				"item": "viz_EDmOTwmV",
 				"type": "block",
 				"position": {
-					"x": 40,
+					"x": 10,
 					"y": 630,
-					"w": 1120,
+					"w": 1180,
 					"h": 90
 				}
 			},
@@ -237,7 +229,7 @@
 				"item": "viz_jHcx0g7D",
 				"type": "block",
 				"position": {
-					"x": 40,
+					"x": 10,
 					"y": 80,
 					"w": 190,
 					"h": 120
