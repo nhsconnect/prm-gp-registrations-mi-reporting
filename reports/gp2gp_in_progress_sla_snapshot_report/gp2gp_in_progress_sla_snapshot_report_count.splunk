@@ -30,5 +30,8 @@ totalEhrRequestingOutsideSla=0
 ```
 
 | eventstats count(eval(totalTransferTimeOutsideSla24Hours==0 AND totalEhrSendingOutsideSla=0 AND totalEhrRequestingOutsideSla==0)) as "in_flight"
+| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1)) as "broken_24hr_sla"
 
-| table in_flight, totalTransferTimeOutsideSla24Hours, totalEhrSendingOutsideSla, totalEhrRequestingOutsideSla
+        
+
+| table in_flight, broken_24hr_sla, outcome, registrationStatus, totalTransferTimeOutsideSla24Hours, totalEhrSendingOutsideSla, totalEhrRequestingOutsideSla
