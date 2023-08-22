@@ -45,9 +45,7 @@ has_errors
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-| WHERE outcome=="In progress"
-| stats count as "in_flight"
-
+```| WHERE outcome=="In progress" OR outcome=="Awaiting integration"```
 
 
 {% endmacro %}
