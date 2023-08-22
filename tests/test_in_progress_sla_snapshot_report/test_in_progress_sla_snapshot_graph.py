@@ -1,31 +1,34 @@
+import logging
 import os
-import json
+from enum import Enum
 import pytest
+import json
 from time import sleep
 from splunklib import client
 import jq
 from helpers.splunk import (
-    create_ehr_response_payload,
-    create_registration_payload,
     get_telemetry_from_splunk,
+    get_or_create_index,
     create_sample_event,
     set_variables_on_query,
     create_integration_payload,
+    create_error_payload,
     create_transfer_compatibility_payload,
+    create_ehr_response_payload,
 )
-from tests.test_base import TestBase, EventType
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
+from jinja2 import Environment, FileSystemLoader
 from helpers.datetime_helper import (
-    datetime_utc_now,
     create_date_time,
     generate_report_start_date,
     generate_report_end_date,
 )
+import uuid
+from tests.test_base import TestBase, EventType
 
 
-class TestInProgressSlaSnapshotGraph(TestBase):
-    def in_flight(self):       
-
+class TestSnapshotSlaGraph(TestBase):
+    def test_in_flight(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -77,14 +80,10 @@ class TestInProgressSlaSnapshotGraph(TestBase):
             )
             self.LOG.info(f"telemetry: {telemetry}")
 
-            # Assert
-            expected_values = {"in-flight": "1"}
+            # Assert 
 
-            for idx, (key, value) in enumerate(expected_values.items()):
-                assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")',
-                    telemetry,
-                )
+            assert jq.all(
+                '.[0] | select( .in_flight=="1" )', telemetry)
 
         finally:
             self.delete_index(index_name)

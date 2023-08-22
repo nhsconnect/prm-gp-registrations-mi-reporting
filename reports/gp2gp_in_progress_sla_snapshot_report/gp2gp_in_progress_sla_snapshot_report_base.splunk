@@ -11,7 +11,8 @@ calculate_outcome,
 calculate_registration_status,
 calculate_sla_status,
 generate_report_start_and_end_time,
-filter_conversations_by_start_and_end_times_and_cutoff
+filter_conversations_by_start_and_end_times_and_cutoff,
+has_errors
 %}
 
 {{ set_time_to_registration_datetime() }}
@@ -38,13 +39,16 @@ filter_conversations_by_start_and_end_times_and_cutoff
 | eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
 | eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
 
+
+{{ has_errors() }}
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-| WHERE outcome=="In-progress"
+| WHERE outcome=="In progress"
+| stats count as "in_flight"
 
-| stats count as "in-flight"
+
 
 {% endmacro %}
 
