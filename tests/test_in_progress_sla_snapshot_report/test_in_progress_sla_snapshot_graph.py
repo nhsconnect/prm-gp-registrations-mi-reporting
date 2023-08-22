@@ -16,24 +16,25 @@ from helpers.splunk import (
     create_transfer_compatibility_payload,
     create_ehr_response_payload,
 )
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from jinja2 import Environment, FileSystemLoader
 from helpers.datetime_helper import (
     create_date_time,
     generate_report_start_date,
     generate_report_end_date,
+    datetime_utc_now,
 )
 import uuid
 from tests.test_base import TestBase, EventType
 
 
-class TestSnapshotSlaGraph(TestBase):
+class TestSnapshotInProgressSlaGraph(TestBase):
     def test_in_flight(self):
         # Arrange
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = generate_report_start_date()
+        report_start = date.today()
         report_end = generate_report_end_date()
         cutoff = "0"
 
@@ -42,9 +43,7 @@ class TestSnapshotSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         "test_in_flight",
-                        registration_event_datetime=create_date_time(
-                            report_start, "05:00:00"
-                        ),
+                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=5)).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -58,9 +57,35 @@ class TestSnapshotSlaGraph(TestBase):
                 sourcetype="myevent",
             )
 
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        "test_in_flight",
+                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=4)).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"                        
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        "test_in_flight",
+                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=3)).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP"                        
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_in_progress_sla_snapshot_report/gp2gp_in_progress_sla_snapshot_report_base"
+                "gp2gp_in_progress_sla_snapshot_report/gp2gp_in_progress_sla_snapshot_report_count"
             )
 
             test_query = set_variables_on_query(
