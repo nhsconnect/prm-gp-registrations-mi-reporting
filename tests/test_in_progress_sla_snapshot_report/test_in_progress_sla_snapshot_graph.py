@@ -365,7 +365,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime(
+                        registration_event_datetime=(datetime_utc_now() - timedelta(hours=1)).strftime(
                             "%Y-%m-%dT%H:%M:%S%z"
                         ),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
@@ -386,7 +386,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=1)
+                            datetime_utc_now()
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
