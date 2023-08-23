@@ -27,8 +27,12 @@ gp2gp_in_progress_sla_snapshot_base %}
 | eventstats count(eval(totalTransferTimeOutsideSla24Hours==1)) as "broken_24hr_sla"
 | eventstats count(eval(totalEhrSendingOutsideSla==1)) as "broken_ehr_sending_sla"
 | eventstats count(eval(totalEhrRequestingOutsideSla==1)) as "broken_ehr_requesting_sla"
-        
 
+| eval label=mvappend("In flight", "Broken 24hr sla", "Broken ehr sending sla", "Broken ehr requesting sla")
+| eval count=mvappend(in_flight, broken_24hr_sla, broken_ehr_sending_sla, broken_ehr_requesting_sla)
 
-| table in_flight, broken_24hr_sla, broken_ehr_sending_sla,broken_ehr_requesting_sla
-        
+| eval soft_zip = mvzip(label, count)
+| mvexpand soft_zip
+ 
+| rex field=soft_zip "(?<label>.*),(?<count>.*)"
+| table label, count        
