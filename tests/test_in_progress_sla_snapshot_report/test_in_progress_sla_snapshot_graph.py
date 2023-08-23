@@ -45,7 +45,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime(
+                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=6)).strftime(
                             "%Y-%m-%dT%H:%M:%S%z"
                         ),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
@@ -135,7 +135,11 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[0] | select( .in_flight=="1" )', telemetry)
+            assert jq.all('.[] | select( .in_flight=="1")'
+                          + '| select( .broken_24hr_sla=="0")'
+                          + '| select( .broken_ehr_sending_sla=="0")'
+                          + '| select( .broken_ehr_requesting_sla=="0")'
+                          , telemetry)
 
         finally:
             self.delete_index(index_name)
@@ -157,7 +161,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=28)
+                            datetime_utc_now() - timedelta(hours=25)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -177,7 +181,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=26)
+                            datetime_utc_now() - timedelta(hours=25)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -246,8 +250,11 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .broken_24hr_sla=="1")', telemetry)
-
+            assert jq.all('.[] | select( .in_flight=="0")'
+                          + '| select( .broken_24hr_sla=="1")'
+                          + '| select( .broken_ehr_sending_sla=="0")'
+                          + '| select( .broken_ehr_requesting_sla=="0")'
+                          , telemetry)
         finally:
             self.delete_index(index_name)
 
@@ -269,7 +276,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_sending_outside_sla_conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime(
+                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=25)).strftime(
                             "%Y-%m-%dT%H:%M:%S%z"
                         ),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
@@ -290,7 +297,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_ehr_sending_outside_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=1)
+                            datetime_utc_now() - timedelta(minutes=21)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -310,7 +317,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_ehr_sending_outside_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(minutes=30)
+                            datetime_utc_now()
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
@@ -344,8 +351,11 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .broken_ehr_sending_sla=="1")', telemetry)
-
+            assert jq.all('.[] | select( .in_flight=="0")'
+                          + '| select( .broken_24hr_sla=="0")'
+                          + '| select( .broken_ehr_sending_sla=="1")'
+                          + '| select( .broken_ehr_requesting_sla=="0")'
+                          , telemetry)
         finally:
             self.delete_index(index_name)
 
@@ -420,7 +430,11 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .broken_ehr_requesting_sla=="1")', telemetry)
+            assert jq.all('.[] | select( .in_flight=="0")'
+                          + '| select( .broken_24hr_sla=="0")'
+                          + '| select( .broken_ehr_sending_sla=="0")'
+                          + '| select( .broken_ehr_requesting_sla=="1")'
+                          , telemetry)
 
         finally:
             self.delete_index(index_name)
