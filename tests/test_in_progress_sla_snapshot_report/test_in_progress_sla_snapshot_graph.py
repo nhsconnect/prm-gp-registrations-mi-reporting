@@ -45,9 +45,9 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=6)).strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"
-                        ),
+                        registration_event_datetime=(
+                            datetime_utc_now() - timedelta(minutes=6)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -135,11 +135,21 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .in_flight=="1")'
-                          + '| select( .broken_24hr_sla=="0")'
-                          + '| select( .broken_ehr_sending_sla=="0")'
-                          + '| select( .broken_ehr_requesting_sla=="0")'
-                          , telemetry)
+            expected_values = {
+                "In flight": "1",
+                "Broken 24hr sla": "0",
+                "Broken ehr sending sla": "0",
+                "Broken ehr requesting sla": "0",
+            }
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")'
+                )
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
 
         finally:
             self.delete_index(index_name)
@@ -250,11 +260,22 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .in_flight=="0")'
-                          + '| select( .broken_24hr_sla=="1")'
-                          + '| select( .broken_ehr_sending_sla=="0")'
-                          + '| select( .broken_ehr_requesting_sla=="0")'
-                          , telemetry)
+            expected_values = {
+                "In flight": "0",
+                "Broken 24hr sla": "1",
+                "Broken ehr sending sla": "0",
+                "Broken ehr requesting sla": "0",
+            }
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")'
+                )
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
+
         finally:
             self.delete_index(index_name)
 
@@ -276,9 +297,9 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_sending_outside_sla_conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(minutes=25)).strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"
-                        ),
+                        registration_event_datetime=(
+                            datetime_utc_now() - timedelta(minutes=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -316,9 +337,9 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_sending_outside_sla_conversation_id,
-                        registration_event_datetime=(
-                            datetime_utc_now()
-                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        registration_event_datetime=(datetime_utc_now()).strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"
+                        ),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -351,11 +372,22 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             # Assert
 
-            assert jq.all('.[] | select( .in_flight=="0")'
-                          + '| select( .broken_24hr_sla=="0")'
-                          + '| select( .broken_ehr_sending_sla=="1")'
-                          + '| select( .broken_ehr_requesting_sla=="0")'
-                          , telemetry)
+            expected_values = {
+                "In flight": "0",
+                "Broken 24hr sla": "0",
+                "Broken ehr sending sla": "1",
+                "Broken ehr requesting sla": "0",
+            }
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")'
+                )
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
+
         finally:
             self.delete_index(index_name)
 
@@ -375,9 +407,9 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
-                        registration_event_datetime=(datetime_utc_now() - timedelta(hours=1)).strftime(
-                            "%Y-%m-%dT%H:%M:%S%z"
-                        ),
+                        registration_event_datetime=(
+                            datetime_utc_now() - timedelta(hours=1)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -395,9 +427,9 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
-                        registration_event_datetime=(
-                            datetime_utc_now()
-                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        registration_event_datetime=(datetime_utc_now()).strftime(
+                            "%Y-%m-%dT%H:%M:%S%z"
+                        ),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -429,12 +461,22 @@ class TestSnapshotInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
+           
+            expected_values = {
+                "In flight": "0",
+                "Broken 24hr sla": "0",
+                "Broken ehr sending sla": "0",
+                "Broken ehr requesting sla": "1",
+            }
 
-            assert jq.all('.[] | select( .in_flight=="0")'
-                          + '| select( .broken_24hr_sla=="0")'
-                          + '| select( .broken_ehr_sending_sla=="0")'
-                          + '| select( .broken_ehr_requesting_sla=="1")'
-                          , telemetry)
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")'
+                )
+                assert jq.first(
+                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")',
+                    telemetry,
+                )
 
         finally:
             self.delete_index(index_name)
