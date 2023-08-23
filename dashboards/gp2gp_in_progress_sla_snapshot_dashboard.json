@@ -1,0 +1,259 @@
+{
+	"visualizations": {
+		"viz_Yrz79jnn": {
+			"type": "splunk.column",
+			"options": {
+				"seriesColors": [
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
+				],
+				"xAxisTitleVisibility": "hide",
+				"yAxisLabelVisibility": "show",
+				"xAxisMajorTickVisibility": "hide",
+				"legendDisplay": "off",
+				"backgroundColor": "#ECF1F2"
+			},
+			"dataSources": {
+				"primary": "ds_qBafRzi3"
+			},
+			"title": "",
+			"showProgressBar": false,
+			"showLastUpdated": false,
+			"description": ""
+		},
+		"viz_RYPhSk8c": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "## In-progress SLA snapshot report\n### Counts",
+				"fontSize": "extraLarge"
+			}
+		},
+		"viz_nrRMTa9E": {
+			"type": "splunk.column",
+			"dataSources": {
+				"primary": "ds_wBXZ14Ef"
+			},
+			"title": "",
+			"options": {
+				"seriesColors": [
+					"#003087",
+					"#7C2855",
+					"#D5281B",
+					"#FFB81C",
+					"#CCE3F5",
+					"#768692"
+				],
+				"xAxisTitleVisibility": "hide",
+				"yAxisLabelVisibility": "show",
+				"xAxisMajorTickVisibility": "hide",
+				"legendDisplay": "off",
+				"backgroundColor": "#ECF1F2"
+			},
+			"context": {},
+			"showProgressBar": false,
+			"showLastUpdated": false
+		},
+		"viz_ysvkHFbs": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Count of \nGraph showing ",
+				"fontColor": "#000000",
+				"backgroundColor": "#ECF1F2",
+				"fontSize": "large"
+			}
+		},
+		"viz_VXusQloW": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "#### Percentage of \nGraph showing t\n",
+				"fontColor": "#000000",
+				"backgroundColor": "#ECF1F2",
+				"fontSize": "large"
+			}
+		},
+		"viz_KKkIX6xn": {
+			"type": "splunk.singlevalue",
+			"options": {
+				"majorColor": "#000000",
+				"trendColor": "#000000",
+				"sparklineDisplay": "off",
+				"majorFontSize": 50,
+				"unit": "",
+				"trendDisplay": "off"
+			},
+			"dataSources": {
+				"primary": "ds_bA8S89J3"
+			},
+			"title": "Total records currently in-progress"
+		}
+	},
+	"dataSources": {
+		"ds_qBafRzi3": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_in_progress_sla_snapshot_report_count"
+		},
+		"ds_wBXZ14Ef": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_in_progress_sla_snapshot_report_percentage"
+		},
+		"ds_bA8S89J3": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress"
+		},
+		"ds_X8UmRB1b": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_placeholders_breakdown_graph_snapshot_report_count"
+		},
+		"ds_cy1hRWGw": {
+			"type": "ds.search",
+			"options": {
+				"query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+				"queryParameters": {
+					"earliest": "0",
+					"latest": ""
+				}
+			},
+			"name": "gp2gp_placeholders_breakdown_graph_snapshot_report_percentage"
+		}
+	},
+	"defaults": {
+		"dataSources": {
+			"ds.search": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			}
+		}
+	},
+	"inputs": {
+		"input_x1LK7THX": {
+			"options": {
+				"defaultValue": 0,
+				"token": "cutoff",
+				"min": 0,
+				"max": 14
+			},
+			"title": "Cutoff (days)",
+			"type": "input.number"
+		},
+		"input_udP1B2BG": {
+			"options": {
+				"defaultValue": "0,",
+				"token": "time_range"
+			},
+			"title": "Time Range",
+			"type": "input.timerange"
+		}
+	},
+	"layout": {
+		"type": "absolute",
+		"options": {
+			"display": "auto",
+			"backgroundColor": "#ffffff",
+			"height": 1400
+		},
+		"structure": [
+			{
+				"item": "viz_Yrz79jnn",
+				"type": "block",
+				"position": {
+					"x": 5,
+					"y": 330,
+					"w": 590,
+					"h": 380
+				}
+			},
+			{
+				"item": "viz_RYPhSk8c",
+				"type": "block",
+				"position": {
+					"x": 10,
+					"y": 10,
+					"w": 920,
+					"h": 100
+				}
+			},
+			{
+				"item": "viz_nrRMTa9E",
+				"type": "block",
+				"position": {
+					"x": 600,
+					"y": 330,
+					"w": 590,
+					"h": 380
+				}
+			},
+			{
+				"item": "viz_ysvkHFbs",
+				"type": "block",
+				"position": {
+					"x": 5,
+					"y": 220,
+					"w": 590,
+					"h": 110
+				}
+			},
+			{
+				"item": "viz_VXusQloW",
+				"type": "block",
+				"position": {
+					"x": 600,
+					"y": 220,
+					"w": 590,
+					"h": 110
+				}
+			},
+			{
+				"item": "viz_KKkIX6xn",
+				"type": "block",
+				"position": {
+					"x": 20,
+					"y": 110,
+					"w": 260,
+					"h": 90
+				}
+			}
+		],
+		"globalInputs": [
+			"input_udP1B2BG",
+			"input_x1LK7THX"
+		]
+	},
+	"description": "",
+	"title": "gp2gp_in_progress_sla_snapshot_dashboard"
+}
