@@ -70,12 +70,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                        payload=create_transfer_compatibility_payload(
-                            internalTransfer=False,
-                            transferCompatible=True,
-                            reason="test_in_flight",
-                        ),
+                        requestingSupplierName="TPP"                        
                     )
                 ),
                 sourcetype="myevent",
