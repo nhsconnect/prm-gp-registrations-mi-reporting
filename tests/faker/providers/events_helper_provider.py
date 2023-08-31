@@ -18,7 +18,7 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
         "FAILED_TO_INTEGRATE",
     ]
 
-    placeholder_clinical_type_list = [
+    clinical_type_list = [
         "SCANNED_DOCUMENT",
         "ORIGINAL_TEXT_DOCUMENT",
         "OCR_TEXT_DOCUMENT",
@@ -30,13 +30,14 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
         "NOT_AVAILABLE",
         "OTHER",
     ]
-    placeholder_generated_by_list = ["SENDER", "PRE_EXISTING"]
-    placeholder_original_mime_type_list = [
+    generated_by_list = ["SENDER", "PRE_EXISTING"]
+
+    mime_type_list = [
         "audio/mpeg",
         "image/jpeg",
         "application/pdf",
     ]
-    placeholder_reasons_list = [
+    reasons_list = [
         "FILE_TYPE_UNSUPPORTED",
         "FILE_DELETED",
         "FILE_NOT_FOUND",
@@ -77,17 +78,13 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
                 for i in range(number_random_placeholders):
                     placeholders.append(
                         {
-                            "generatedBy": self.random_element(
-                                self.placeholder_generated_by_list
-                            ),
+                            "generatedBy": self.random_element(self.generated_by_list),
                             "clinicalType": self.random_element(
-                                self.placeholder_clinical_type_list
+                                self.clinical_type_list
                             ),
-                            "reason": self.random_element(
-                                self.placeholder_clinical_type_list
-                            ),
+                            "reason": self.random_element(self.clinical_type_list),
                             "originalMimeType": self.random_element(
-                                self.placeholder_original_mime_type_list
+                                self.mime_type_list
                             ),
                         }
                     )
@@ -98,7 +95,6 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
                     "placeholders": placeholders,
                 }
             case EventType.TRANSFER_COMPATIBILITY_STATUSES:
-                
                 transfer_compatible = self.boolean(chance_of_getting_true=80)
 
                 return_val = {
@@ -111,6 +107,26 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
                 if not transfer_compatible:
                     reason = "Previous practice not eligible for transfer"
                     return_val["transferCompatibilityStatus"]["reason"] = reason
+
+                return return_val
+
+            case EventType.DOCUMENT_RESPONSES:
+                document_migration_successful = self.boolean(chance_of_getting_true=50)
+
+                return_val = {
+                    "attachment": {
+                        "clinicalType": self.random_element(self.clinical_type_list),
+                        "mimeType": self.random_element(self.mime_type_list),
+                        "sizeBytes": self.random_int(min=1000000, max=9999999),
+                    },
+                    "documentMigration": {
+                        "successful": f"{document_migration_successful}"
+                    },
+                }
+
+                if not document_migration_successful:
+                    reason = "Large file size"
+                    return_val["documentMigration"]["reason"] = reason
 
                 return return_val
 

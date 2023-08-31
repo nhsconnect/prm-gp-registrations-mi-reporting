@@ -168,3 +168,7 @@ class TransferCompatibilityStatusesEvent(Event, BaseProvider):
     def __init__(self):
         Event.__init__(self, EventType.TRANSFER_COMPATIBILITY_STATUSES)
 
+class DocumentResponsesEvent(Event, BaseProvider):
+
+    def __init__(self):
+        Event.__init__(self, EventType.DOCUMENT_RESPONSES)
