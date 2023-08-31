@@ -98,7 +98,8 @@ class Event:
     def payload(self):
         return self._payload
 
-    def get_json(self):
+    def get_json(self):     
+     
      
      return {
             "conversationId": self.conversationId,            
@@ -123,7 +124,7 @@ class Event:
        
 
 
-class RegistrationEvent(Event, BaseProvider):
+class RegistrationsEvent(Event, BaseProvider):
     def __init__(self):
         Event.__init__(self, EventType.REGISTRATIONS)       
      
@@ -132,39 +133,38 @@ class RegistrationEvent(Event, BaseProvider):
         
         base_json = super().get_json()
 
-        print(f"base json: {base_json}")
-        base_json.update({"foo": "bar"})
+        # print(f"base json: {base_json}")
+        # base_json.update({"foo": "bar"})
 
         return base_json
 
-class ReadyToIntegrateStatuses(Event, BaseProvider):
+class ReadyToIntegrateStatusesEvent(Event, BaseProvider):
+
     def __init__(self):
-        Event.__init__(self, EventType.READY_TO_INTEGRATE_STATUSES)
-
-    def get_json(self):
-
-        base_json = super().get_json()
-
-        print(f"base json: {base_json}")
-        base_json.update({"foo": "bar"})
-
-        return base_json
+        Event.__init__(self, EventType.READY_TO_INTEGRATE_STATUSES)    
     
-class EhrIntegrations(Event, BaseProvider):
+class EhrIntegrationsEvent(Event, BaseProvider):
 
     def __init__(self):
         Event.__init__(self, EventType.EHR_INTEGRATIONS)
 
-    def get_json(self):
+class ErrorsEvent(Event, BaseProvider):
 
-        base_json = super().get_json()
+    def __init__(self):
+        Event.__init__(self, EventType.ERRORS)
 
-        print(f"base json: {base_json}")
-        base_json.update({"foo": "bar"})
+class EhrResponsesEvent(Event, BaseProvider):
 
-        return base_json
+    def __init__(self):
+        Event.__init__(self, EventType.EHR_RESPONSES)
 
+class EhrRequestsEvent(Event, BaseProvider):
 
+    def __init__(self):
+        Event.__init__(self, EventType.EHR_REQUESTS)
 
+class TransferCompatibilityStatusesEvent(Event, BaseProvider):
 
+    def __init__(self):
+        Event.__init__(self, EventType.TRANSFER_COMPATIBILITY_STATUSES)
 
