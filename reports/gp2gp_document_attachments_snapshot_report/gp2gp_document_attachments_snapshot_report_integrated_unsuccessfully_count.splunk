@@ -1,0 +1,10 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_snapshot_report/gp2gp_document_attachments_snapshot_report_base.splunk' import
+gp2gp_document_attachments_snapshot_base %}
+
+{{ gp2gp_document_attachments_snapshot_base() }}
+
+| stats count(eval(successfulDocumentMigration=="false")) as count_of_unsuccessful_document_migrations
+
+| table count_of_unsuccessful_document_migrations
