@@ -1,10 +1,16 @@
 import json
-from tests.faker.providers.events.event_factory import RegistrationsEvent, ReadyToIntegrateStatusesEvent, EhrIntegrationsEvent,TransferCompatibilityStatusesEvent
+from tests.faker.providers.events.event_factory import (
+    RegistrationsEvent,
+    ReadyToIntegrateStatusesEvent,
+    EhrIntegrationsEvent,
+    TransferCompatibilityStatusesEvent,
+    DocumentResponsesEvent
+)
 
 
 # # RegistrationEvent
 # re = RegistrationEvent()
-# re_json = json.dumps(re.get_json(), indent = 4) 
+# re_json = json.dumps(re.get_json(), indent = 4)
 # print(f"RegistrationEvent Json: {re_json}")
 
 # # ReadyToIntegrateStatuses
@@ -15,11 +21,17 @@ from tests.faker.providers.events.event_factory import RegistrationsEvent, Ready
 
 # # EHR_INTEGRATIONS
 # ehr_integ = EhrIntegrationsEvent()
-# ehr_integ_json = json.dumps(ehr_integ.get_json(), indent = 4) 
+# ehr_integ_json = json.dumps(ehr_integ.get_json(), indent = 4)
 # print(f"RegistrationEvent Json: {ehr_integ_json}")
 
 
 #  Transfer Compatibility Statuses
-event = TransferCompatibilityStatusesEvent()
-json = json.dumps(event.get_json(), indent = 4) 
+# event = TransferCompatibilityStatusesEvent()
+# json = json.dumps(event.get_json(), indent = 4)
+# print(f"json: {json}")
+
+
+#  Transfer Compatibility Statuses
+event = DocumentResponsesEvent()
+json = json.dumps(event.get_json(), indent=4)
 print(f"json: {json}")
