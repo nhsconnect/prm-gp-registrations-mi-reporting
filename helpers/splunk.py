@@ -88,6 +88,40 @@ def create_ehr_response_payload(
         }
     }
 
+def create_document_response_payload(successful: bool, size_bytes: int = 4096) -> dict:
+    clinical_type_list = [
+        "SCANNED_DOCUMENT",
+        "ORIGINAL_TEXT_DOCUMENT",
+        "OCR_TEXT_DOCUMENT",
+        "IMAGE",
+        "AUDIO_DICTATION",
+        "OTHER_AUDIO",
+        "OTHER_DIGITAL_SIGNAL",
+        "EDI_MESSAGE",
+        "NOT_AVAILABLE",
+        "OTHER",
+    ]
+    original_mime_type_list = ["audio/mpeg", "image/jpeg", "application/pdf"]
+    reasons_list = [
+        "FILE_TYPE_UNSUPPORTED",
+        "FILE_DELETED",
+        "FILE_NOT_FOUND",
+        "FILE_LOCKED",
+        "UNABLE_TO_DETERMINE_PROBLEM",
+    ]
+
+
+    return {
+        "attachment": {
+            "MimeType": random.choice(original_mime_type_list),
+            "clinicalType": random.choice(clinical_type_list),
+            "sizeBytes": size_bytes
+        },
+        "documentMigration": {
+            "reason": random.choice(reasons_list),
+            "successful": successful
+        }
+    }
 
 def create_integration_payload(outcome=None) -> dict:
     return {"integration": {"outcome": outcome}}
