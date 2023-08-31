@@ -130,6 +130,15 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
 
                 return return_val
 
+            case EventType.ERRORS:
+                return {
+                    "error": {
+                        "errorCode": "99",
+                        "errorDescription": "unexpected error",
+                        "failurePoint": "EHR_RESPONSE",
+                    }
+                }
+
             case _:
                 pass
 

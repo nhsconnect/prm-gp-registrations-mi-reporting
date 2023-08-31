@@ -1,17 +1,18 @@
 from faker import Faker
 from faker.providers import BaseProvider
-from ..events_helper_provider import EventsHelperProvider
+from .events_helper_provider import EventsHelperProvider
 from datetime import datetime
 from tests.test_base import EventType
 import json
+from uuid import uuid4
 
 
 class Event:
-    def __init__(self, EventType):
+    def __init__(self, EventType, conversation_id:uuid4):
         self._fake = Faker()
         self._fake.add_provider(EventsHelperProvider)
 
-        self._conversationId = self._fake.uuid4()
+        self._conversationId = conversation_id
         self._eventGeneratedDateTime = datetime.utcnow().isoformat()
         self._eventType = EventType
         self._reportingSystemSupplier = self._fake.random_supplier_ods_code()
@@ -125,8 +126,8 @@ class Event:
 
 
 class RegistrationsEvent(Event, BaseProvider):
-    def __init__(self):
-        Event.__init__(self, EventType.REGISTRATIONS)       
+    def __init__(self, conversation_id):
+        Event.__init__(self, EventType.REGISTRATIONS, conversation_id)       
      
 
     def get_json(self):
@@ -150,8 +151,14 @@ class EhrIntegrationsEvent(Event, BaseProvider):
 
 class ErrorsEvent(Event, BaseProvider):
 
-    def __init__(self):
-        Event.__init__(self, EventType.ERRORS)
+    def __init__(self, conversation_id):
+        Event.__init__(self, EventType.ERRORS,conversation_id)
+
+    def Create(conversation_id:uuid4, failure_point):
+        errorsEvent = ErrorsEvent(conversation_id)
+        errorsEvent.payload["error"]["failurePoint"] = failure_point
+
+        return errorsEvent
 
 class EhrResponsesEvent(Event, BaseProvider):
 
@@ -165,8 +172,8 @@ class EhrRequestsEvent(Event, BaseProvider):
 
 class TransferCompatibilityStatusesEvent(Event, BaseProvider):
 
-    def __init__(self):
-        Event.__init__(self, EventType.TRANSFER_COMPATIBILITY_STATUSES)
+    def __init__(self,conversation_id:uuid4):
+        Event.__init__(self, EventType.TRANSFER_COMPATIBILITY_STATUSES, conversation_id)
 
 class DocumentResponsesEvent(Event, BaseProvider):
 
