@@ -1,5 +1,5 @@
 import json
-from tests.faker.providers.events.event_factory import (
+from tests.faker.events import (
     RegistrationsEvent,
     ReadyToIntegrateStatusesEvent,
     EhrIntegrationsEvent,
