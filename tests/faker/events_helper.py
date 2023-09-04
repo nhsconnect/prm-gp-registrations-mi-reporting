@@ -90,7 +90,7 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
                     )
                 return {
                     "ehr": {
-                        f"ehrStructuredSizeBytes": {self.random_int(min=100, max=9999)}
+                        f"ehrStructuredSizeBytes": self.random_int(min=100, max=9999)
                     },
                     "placeholders": placeholders,
                 }
@@ -99,8 +99,8 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
 
                 return_val = {
                     "transferCompatibilityStatus": {
-                        "internalTransfer": f"{self.boolean(chance_of_getting_true=30)}",
-                        "transferCompatible": f"{transfer_compatible}",
+                        "internalTransfer": self.boolean(chance_of_getting_true=30),
+                        "transferCompatible": transfer_compatible,
                     }
                 }
 
