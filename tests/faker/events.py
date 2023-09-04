@@ -149,7 +149,7 @@ class ErrorsEvent(Event, BaseProvider):
 
     def Create(conversation_id: uuid4, failure_point):
         errorsEvent = ErrorsEvent(conversation_id)
-        errorsEvent.payload["error"]["failurePoint"] = failure_point
+        errorsEvent.payload["error"]["failurePoint"] = failure_point.value
 
         return errorsEvent
 

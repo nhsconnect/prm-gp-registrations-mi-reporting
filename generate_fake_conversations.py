@@ -73,6 +73,7 @@ conversations = conversationService.generate_conversations(
     number_to_error_at_integration
 )
 
+json_events = []
 
 for i, value in enumerate(conversations):
     
@@ -82,6 +83,13 @@ for i, value in enumerate(conversations):
         
         print(f"Conversaion: {i}, Event: {y} EventType: {event.eventType}")
 
-        print(event.get_json())
+        json_event = event.get_json()
+       
+
+        json_events.append(json_event)
+
+
+with open('synthetic_data.json', 'w') as f:   
+        json.dump(json_events,f)
         
 
