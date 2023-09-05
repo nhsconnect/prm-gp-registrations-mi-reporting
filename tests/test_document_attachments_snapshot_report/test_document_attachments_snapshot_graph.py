@@ -352,7 +352,6 @@ class TestSnapshotDocumentAttachmentsGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-
     def test_percentage_clinical_type_scanned_documents(self):
         # Arrange
         index_name, index = self.create_index()
@@ -377,7 +376,7 @@ class TestSnapshotDocumentAttachmentsGraph(TestBase):
                 "NOT_AVAILABLE": (random.randint(1, 10), random.randint(1, 10)),
                 "OTHER": (random.randint(1, 10), random.randint(1, 10)),
             }
-            total_num_document_migrations = sum([int1+int2 for int1, int2 in clinical_type_count_dict.values()])
+            total_num_document_migrations = sum([int1 + int2 for int1, int2 in clinical_type_count_dict.values()])
 
             # testing successful=False records not counted
 
@@ -447,45 +446,85 @@ class TestSnapshotDocumentAttachmentsGraph(TestBase):
 
             # Assert
 
-            expected_values = {"0": {"Clinical Type": "AUDIO_DICTATION",
-                                     "Success": clinical_type_count_dict["AUDIO_DICTATION"][0],
-                                     "Fail": clinical_type_count_dict["AUDIO_DICTATION"][1],
+            expected_values = {"0": {"clinical_type": "AUDIO_DICTATION",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["AUDIO_DICTATION"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["AUDIO_DICTATION"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "1": {"Clinical Type": "EDI_MESSAGE",
-                                     "Success": clinical_type_count_dict["EDI_MESSAGE"][0],
-                                     "Fail": clinical_type_count_dict["EDI_MESSAGE"][1],
+                               "1": {"clinical_type": "EDI_MESSAGE",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["EDI_MESSAGE"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["EDI_MESSAGE"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "2": {"Clinical Type": "IMAGE",
-                                     "Success": clinical_type_count_dict["IMAGE"][0],
-                                     "Fail": clinical_type_count_dict["IMAGE"][1],
+                               "2": {"clinical_type": "IMAGE",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["IMAGE"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["IMAGE"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "3": {"Clinical Type": "NOT_AVAILABLE",
-                                     "Success": clinical_type_count_dict["NOT_AVAILABLE"][0],
-                                     "Fail": clinical_type_count_dict["NOT_AVAILABLE"][1],
+                               "3": {"clinical_type": "NOT_AVAILABLE",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["NOT_AVAILABLE"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["NOT_AVAILABLE"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "4": {"Clinical Type": "OCR_TEXT_DOCUMENT",
-                                     "Success": clinical_type_count_dict["OCR_TEXT_DOCUMENT"][0],
-                                     "Fail": clinical_type_count_dict["OCR_TEXT_DOCUMENT"][1],
+                               "4": {"clinical_type": "OCR_TEXT_DOCUMENT",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OCR_TEXT_DOCUMENT"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OCR_TEXT_DOCUMENT"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "5": {"Clinical Type": "ORIGINAL_TEXT_DOCUMENT",
-                                     "Success": clinical_type_count_dict["ORIGINAL_TEXT_DOCUMENT"][0],
-                                     "Fail": clinical_type_count_dict["ORIGINAL_TEXT_DOCUMENT"][1],
+                               "5": {"clinical_type": "ORIGINAL_TEXT_DOCUMENT",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["ORIGINAL_TEXT_DOCUMENT"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["ORIGINAL_TEXT_DOCUMENT"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "6": {"Clinical Type": "OTHER",
-                                     "Success": clinical_type_count_dict["OTHER"][0],
-                                     "Fail": clinical_type_count_dict["OTHER"][1],
+                               "6": {"clinical_type": "OTHER",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "7": {"Clinical Type": "OTHER_AUDIO",
-                                     "Success": clinical_type_count_dict["OTHER_AUDIO"][0],
-                                     "Fail": clinical_type_count_dict["OTHER_AUDIO"][1],
+                               "7": {"clinical_type": "OTHER_AUDIO",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER_AUDIO"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER_AUDIO"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "8": {"Clinical Type": "OTHER_DIGITAL_SIGNAL",
-                                     "Success": clinical_type_count_dict["OTHER_DIGITAL_SIGNAL"][0],
-                                     "Fail": clinical_type_count_dict["OTHER_DIGITAL_SIGNAL"][1],
+                               "8": {"clinical_type": "OTHER_DIGITAL_SIGNAL",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER_DIGITAL_SIGNAL"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["OTHER_DIGITAL_SIGNAL"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
-                               "9": {"Clinical Type": "SCANNED_DOCUMENT",
-                                     "Success": clinical_type_count_dict["SCANNED_DOCUMENT"][0],
-                                     "Fail": clinical_type_count_dict["SCANNED_DOCUMENT"][1],
+                               "9": {"clinical_type": "SCANNED_DOCUMENT",
+                                     "Success": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["SCANNED_DOCUMENT"][0] * 100
+                                               / total_num_document_migrations, 2)),
+                                     "Fail": '{:.2f}'.format(
+                                         round(clinical_type_count_dict["SCANNED_DOCUMENT"][1] * 100
+                                               / total_num_document_migrations, 2)),
                                      },
                                }
 
