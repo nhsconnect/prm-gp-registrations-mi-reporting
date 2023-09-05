@@ -83,8 +83,7 @@ for i, value in enumerate(conversations):
         
         print(f"Conversaion: {i}, Event: {y} EventType: {event.eventType}")
 
-        json_event = event.get_json()
-       
+        json_event = event.get_json()       
 
         json_events.append(json_event)
 
