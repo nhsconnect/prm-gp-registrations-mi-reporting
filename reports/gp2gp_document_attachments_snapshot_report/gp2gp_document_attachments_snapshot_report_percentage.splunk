@@ -1,0 +1,16 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_snapshot_report/gp2gp_document_attachments_snapshot_report_base.splunk' import
+gp2gp_document_attachments_snapshot_base %}
+
+{{ gp2gp_document_attachments_snapshot_base() }}
+
+| eval migration_outcome = if( successfulDocumentMigration=="true", "Success", "Fail")
+| eval clinical_type = documentMigrationClinicalType
+| eventstats count(successfulDocumentMigration) as totalNumDocumentMigrations
+
+| chart count by clinical_type, migration_outcome
+| addtotals row=true
+| eventstats sum(Total) as totalNumDocumentMigrations
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "clinical_type", <<FIELD>>, round('<<FIELD>>'*100/ totalNumDocumentMigrations, 2))]
+| fields - Total, totalNumDocumentMigrations

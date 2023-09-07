@@ -1,0 +1,11 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_snapshot_report/gp2gp_document_attachments_snapshot_report_base.splunk' import
+gp2gp_document_attachments_snapshot_base %}
+
+{{ gp2gp_document_attachments_snapshot_base() }}
+
+| eval migration_outcome = if( successfulDocumentMigration=="true", "Success", "Fail")
+| eval "Clinical Type" = documentMigrationClinicalType
+
+| chart count by "Clinical Type", migration_outcome
