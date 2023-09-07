@@ -1,0 +1,24 @@
+{% macro gp2gp_document_attachments_snapshot_base () %}
+
+{% from 'functions.splunk' import
+set_time_to_registration_datetime,
+generate_report_start_and_end_time,
+filter_conversations_by_start_and_end_times_and_cutoff
+%}
+
+{{ set_time_to_registration_datetime() }}
+
+{{ generate_report_start_and_end_time() }}
+{{ filter_conversations_by_start_and_end_times_and_cutoff() }}
+
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| spath output=integration_outcome path=payload{}.integration.outcome
+| spath output=placeholders path=payload.ehr.placeholders{}
+| spath output=successfulDocumentMigration path=payload.documentMigration.successful
+| spath output=documentMigrationClinicalType path=payload.attachment.clinicalType
+
+
+{% endmacro %}
+
+index="$index$"
+{{ gp2gp_document_attachments_snapshot_base() }}
