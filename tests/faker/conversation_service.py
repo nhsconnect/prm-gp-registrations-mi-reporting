@@ -44,7 +44,7 @@ class ConversationService:
                 EventType.REGISTRATIONS, conversation, number_to_error_at_registrations
             )
 
-            if not reg_error_event is None:
+            if reg_error_event is not None:
                 continue
 
             # create the next event - TRANSFER_COMPATIBILITY_STATUSES
@@ -57,7 +57,7 @@ class ConversationService:
                 conversation,
                 number_to_error_at_transfer_compatibility_statuses,
             )
-            if not trans_compat_error_event is None:
+            if trans_compat_error_event is not None:
                 continue
 
             # create the next event - EHR_REQUESTS
@@ -70,7 +70,7 @@ class ConversationService:
                 conversation=conversation,
                 error_counter=number_to_error_at_ehr_request,
             )
-            if not ehr_request_error_event is None:
+            if ehr_request_error_event is not None:
                 continue
 
             # create the next event - EHR_RESPONSES
@@ -84,7 +84,7 @@ class ConversationService:
                 error_counter=number_to_error_at_ehr_response,
             )
 
-            if not ehr_response_error is None:
+            if ehr_response_error is not None:
                 continue
 
             # create the next event - READY_TO_INTEGRATE_STATUSES
@@ -98,18 +98,25 @@ class ConversationService:
                 error_counter=number_to_error_at_ready_to_integrate,
             )
 
-            if not ready_to_integrate_error_event is None:
+            if ready_to_integrate_error_event is not None:
                 continue
 
             # create the next event - EHR_INTEGRATIONS
-            integration_event,integration_error ,number_to_error_at_integration= self._generate_events(
-                event_type=EventType.EHR_INTEGRATIONS, conversation=conversation, error_counter=number_to_error_at_integration
+            (
+                integration_event,
+                integration_error,
+                number_to_error_at_integration,
+            ) = self._generate_events(
+                event_type=EventType.EHR_INTEGRATIONS,
+                conversation=conversation,
+                error_counter=number_to_error_at_integration,
             )
 
-            if not integration_error is None:                
-                integration_event.payload["integration"]["outcome"] = "FAILED_TO_INTEGRATE"
-                continue            
-
+            if not integration_error is None:
+                integration_event.payload["integration"][
+                    "outcome"
+                ] = "FAILED_TO_INTEGRATE"
+                continue
 
         return conversations
 
