@@ -63,3 +63,17 @@ Only after making changes to the Dockerfile
 - REGISTRATIONS
 - READY_TO_INTEGRATE_STATUSES
 - INTEGRATIONS
+
+## Generating synthetic data
+
+Below is an example of generating synthetic data. The result will generate a file called 'synthetic_data.json'.
+The data is generating using Faker. At the moment it is fairly random but further work could be done to generate specific data which could cover certain 'scenarios'. e.g. creating a fake "Error 6" situation that could be used to test dashboards and provide training.
+
+**Note:** make sure the number of conversations *-c* is equal to or greater than the number of error points (the other parameters).
+i.e. below *-c 7* = 7 conversations. The other parameters total 6.
+
+This data can now be uploaded into Splunk.
+
+```
+python3 generate_fake_conversations.py -c 7 -com 1 -reg 1 -req 1 -res 1 -red 1 -int 1      
+```
