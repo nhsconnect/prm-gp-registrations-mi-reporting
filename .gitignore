@@ -13,3 +13,4 @@ build/deployment.zip
 my_query
 splunk_query
 .DS_Store
+synthetic_data.json
