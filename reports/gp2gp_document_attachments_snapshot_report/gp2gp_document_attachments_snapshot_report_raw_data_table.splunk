@@ -1,0 +1,33 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_snapshot_report/gp2gp_document_attachments_snapshot_report_base.splunk' import
+gp2gp_document_attachments_snapshot_base %}
+
+{{ gp2gp_document_attachments_snapshot_base() }}
+
+| spath output=failed_to_integrate_reason path=payload.documentMigration.reason
+| spath output=size_bytes path=payload.attachment.sizeBytes
+| spath output=mime_type path=payload.attachment.mimeType
+
+| eval conversation_id = conversationId
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+| eval attachment_type = documentMigrationClinicalType
+| eval integrated_successfully = successfulDocumentMigration
+| eval size_greater_than_100mb = if(size_bytes > 100 * 1048576, "true", "false")
+
+| table
+    conversation_id,
+    requesting_supplier_name,
+    sending_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code,
+    attachment_type,
+    integrated_successfully,
+    failed_to_integrate_reason,
+    size_greater_than_100mb,
+    mime_type

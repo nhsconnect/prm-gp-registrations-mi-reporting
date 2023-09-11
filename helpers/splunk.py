@@ -91,7 +91,9 @@ def create_ehr_response_payload(
 def create_document_response_payload(
         successful: bool,
         size_bytes: int = 4096,
-        clinical_type: str | None = None
+        clinical_type: str | None = None,
+        reason: str | None = None,
+        mime_type: str | None = None
 ) -> dict:
     clinical_type_list = [
         "SCANNED_DOCUMENT",
@@ -115,15 +117,17 @@ def create_document_response_payload(
     ]
 
     clinical_type = random.choice(clinical_type_list) if clinical_type is None else clinical_type
+    reason = random.choice(reasons_list) if reason is None else reason
+    mime_type = random.choice(original_mime_type_list) if mime_type is None else mime_type
 
     return {
         "attachment": {
-            "MimeType": random.choice(original_mime_type_list),
+            "mimeType": mime_type,
             "clinicalType": clinical_type,
             "sizeBytes": size_bytes
         },
         "documentMigration": {
-            "reason": random.choice(reasons_list),
+            "reason": reason,
             "successful": successful
         }
     }
