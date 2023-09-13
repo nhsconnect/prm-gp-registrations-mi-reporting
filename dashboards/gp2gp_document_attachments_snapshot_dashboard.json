@@ -1,0 +1,348 @@
+{
+  "visualizations": {
+    "viz_Yrz79jnn": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "legendDisplay": "bottom",
+        "backgroundColor": "#ECF1F2",
+        "yAxisTitleText": "Count",
+        "dataValuesDisplay": "all",
+        "xAxisTitleText": "Clinical Type"
+      },
+      "dataSources": {
+        "primary": "ds_qBafRzi3"
+      },
+      "title": "",
+      "showProgressBar": false,
+      "showLastUpdated": false,
+      "description": "",
+      "eventHandlers": [
+        {
+          "type": "drilldown.setToken",
+          "options": {
+            "tokens": [
+              {
+                "token": "column",
+                "key": "row.clinical_type.value"
+              },
+              {
+                "token": "legend",
+                "key": "name"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "viz_RYPhSk8c": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Document attachments snapshot report\n### Counts",
+        "fontSize": "extraLarge"
+      }
+    },
+    "viz_ysvkHFbs": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Count of document attachments\nGraph showing the number of successful and failed document attachments by attachment type.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
+    },
+    "viz_KKkIX6xn": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#000000",
+        "trendColor": "#000000",
+        "sparklineDisplay": "off",
+        "majorFontSize": 50,
+        "unit": "",
+        "trendDisplay": "off"
+      },
+      "dataSources": {
+        "primary": "ds_bA8S89J3"
+      },
+      "title": "Number of attachments integrated successfully"
+    },
+    "viz_gdRTmDfE": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#000000",
+        "trendColor": "#000000",
+        "sparklineDisplay": "off",
+        "majorFontSize": 50,
+        "unit": "",
+        "trendDisplay": "off"
+      },
+      "dataSources": {
+        "primary": "ds_COJYYkCT_ds_bA8S89J3"
+      },
+      "title": "Number of attachments integrated unsuccessfully"
+    },
+    "viz_XtQL7Beq": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Percentage of document attachments\nGraph showing the percentage of successful and failed document attachments by attachment type. The percentage is taken with respect to the total number of document attachments.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
+    },
+    "viz_MwlF0hu2": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "legendDisplay": "bottom",
+        "backgroundColor": "#ECF1F2",
+        "yAxisTitleText": "Percentage",
+        "dataValuesDisplay": "all"
+      },
+      "dataSources": {
+        "primary": "ds_4fGzj1RA_ds_qBafRzi3"
+      },
+      "title": "",
+      "showProgressBar": false,
+      "showLastUpdated": false,
+      "description": "",
+      "eventHandlers": [
+        {
+          "type": "drilldown.setToken",
+          "options": {
+            "tokens": [
+              {
+                "token": "column",
+                "key": "row.clinical_type.value"
+              },
+              {
+                "token": "legend",
+                "key": "name"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "viz_9iFf9IGf": {
+      "type": "splunk.table",
+      "options": {},
+      "dataSources": {
+        "primary": "ds_6pK9IpdB"
+      }
+    }
+  },
+  "dataSources": {
+    "ds_qBafRzi3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_count"
+    },
+    "ds_bA8S89J3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_integrated_successfully_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_integrated_successfully_count"
+    },
+    "ds_COJYYkCT_ds_bA8S89J3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_countcopy 1"
+    },
+    "ds_4fGzj1RA_ds_qBafRzi3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_percentage"
+    },
+    "ds_6pK9IpdB": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\" legend=\"$legend$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_raw_data_table"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "latest": "$global_time.latest$",
+            "earliest": "$global_time.earliest$"
+          }
+        }
+      }
+    },
+    "tokens": {
+      "default": {
+        "column": {
+          "value": "None"
+        },
+        "legend": {
+          "value": "None"
+        }
+      }
+    }
+  },
+  "inputs": {
+    "input_x1LK7THX": {
+      "options": {
+        "defaultValue": 0,
+        "token": "cutoff",
+        "min": 0,
+        "max": 14
+      },
+      "title": "Cutoff (days)",
+      "type": "input.number"
+    },
+    "input_udP1B2BG": {
+      "options": {
+        "defaultValue": "0,",
+        "token": "time_range"
+      },
+      "title": "Time Range",
+      "type": "input.timerange"
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "display": "auto",
+      "backgroundColor": "#ffffff",
+      "height": 1900
+    },
+    "structure": [
+      {
+        "item": "viz_Yrz79jnn",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 330,
+          "w": 1160,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_RYPhSk8c",
+        "type": "block",
+        "position": {
+          "x": 10,
+          "y": 10,
+          "w": 920,
+          "h": 100
+        }
+      },
+      {
+        "item": "viz_ysvkHFbs",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 220,
+          "w": 1160,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_KKkIX6xn",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 110,
+          "w": 330,
+          "h": 90
+        }
+      },
+      {
+        "item": "viz_gdRTmDfE",
+        "type": "block",
+        "position": {
+          "x": 360,
+          "y": 110,
+          "w": 340,
+          "h": 90
+        }
+      },
+      {
+        "item": "viz_XtQL7Beq",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 760,
+          "w": 1160,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_MwlF0hu2",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 870,
+          "w": 1160,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_9iFf9IGf",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1300,
+          "w": 1160,
+          "h": 530
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_udP1B2BG",
+      "input_x1LK7THX"
+    ]
+  },
+  "description": "",
+  "title": "gp2gp_document_attachments_snapshot_dashboard"
+}

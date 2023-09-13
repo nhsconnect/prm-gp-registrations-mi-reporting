@@ -14,9 +14,11 @@ filter_conversations_by_start_and_end_times_and_cutoff
 | spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
 | spath output=integration_outcome path=payload{}.integration.outcome
 | spath output=placeholders path=payload.ehr.placeholders{}
+
 | spath output=successfulDocumentMigration path=payload.documentMigration.successful
 | spath output=documentMigrationClinicalType path=payload.attachment.clinicalType
 
+| where eventType="DOCUMENT_RESPONSES"
 
 {% endmacro %}
 
