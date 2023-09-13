@@ -23,6 +23,12 @@ gp2gp_document_attachments_snapshot_base %}
 
 | fillnull value="N/A"
 
+| where attachment_type = "$column$"
+| where case( "$legend$" == "Success", integrated_successfully=="true",
+              "$legend$" == "Fail", integrated_successfully=="false",
+              1=1, 1=0
+              )
+
 | table
     conversation_id,
     requesting_supplier_name,
@@ -34,4 +40,4 @@ gp2gp_document_attachments_snapshot_base %}
     integrated_successfully,
     failed_to_integrate_reason,
     size_greater_than_100mb,
-    mime_type,
+    mime_type
