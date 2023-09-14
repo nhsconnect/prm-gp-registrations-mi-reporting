@@ -47,43 +47,6 @@ has_errors %}
 {{ calculate_outcome() }}
 
 
-| eventstats count as total_eligible_for_electronic_transfer
-
-| eventstats count(eval(outcome=="Successful integration")) as count_successfully_integrated
-| eventstats count(eval(outcome=="Rejected")) as count_rejected
-| eventstats count(eval(outcome=="Awaiting integration")) as count_awaiting_integration
-| eventstats count(eval(outcome=="In progress")) as count_in_progress
-| eventstats count(eval(outcome=="Technical failure")) as count_technical_failure
-| eventstats count(eval(outcome=="Unknown")) as count_unknown
-
-| eval percentage_successfully_integrated=round((count_successfully_integrated/total_eligible_for_electronic_transfer) * 100,2)
-| eval percentage_rejected=round((count_rejected/total_eligible_for_electronic_transfer) * 100,2)
-| eval percentage_awaiting_integration=round((count_awaiting_integration/total_eligible_for_electronic_transfer) * 100,2)
-| eval percentage_in_progress=round((count_in_progress/total_eligible_for_electronic_transfer) *100,2)
-| eval percentage_technical_failure=round((count_technical_failure/total_eligible_for_electronic_transfer) *100,2)
-| eval percentage_unknown=round((count_unknown/total_eligible_for_electronic_transfer) *100,2)
-
-| stats 
-    first(total_eligible_for_electronic_transfer) as total_eligible_for_electronic_transfer
-    first(count_successfully_integrated) as count_successfully_integrated,
-    first(percentage_successfully_integrated) as percentage_successfully_integrated,
-    first(count_rejected) as count_rejected,
-    first(percentage_rejected) as percentage_rejected,
-    first(count_awaiting_integration) as count_awaiting_integration,
-    first(percentage_awaiting_integration) as percentage_awaiting_integration
-    first(count_in_progress) as count_in_progress
-    first(percentage_in_progress) as percentage_in_progress
-    first(count_technical_failure) as count_technical_failure
-    first(percentage_technical_failure) as percentage_technical_failure
-    first(count_unknown) as count_unknown
-    first(percentage_unknown) as percentage_unknown
-
-
-    first(sendingSupplierName) as sendingSupplierName, 
-    first(registrationStatus) as registrationStatus,
-    first(requestingSupplierName) as requestingSupplierName,        
-    first(slaStatus) as slaStatus
-
 {% endmacro %}
 
 index="$index$"
