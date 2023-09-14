@@ -1,0 +1,320 @@
+{
+  "visualizations": {
+    "viz_Yrz79jnn": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2",
+        "yAxisTitleText": "Count",
+        "dataValuesDisplay": "all",
+        "xAxisTitleText": "",
+        "xAxisTitleVisibility": "hide"
+      },
+      "dataSources": {
+        "primary": "ds_qBafRzi3"
+      },
+      "title": "",
+      "showProgressBar": false,
+      "showLastUpdated": false,
+      "description": "",
+      "eventHandlers": [
+        {
+          "type": "drilldown.setToken",
+          "options": {
+            "tokens": [
+              {
+                "token": "column",
+                "key": "row.clinical_type.value"
+              },
+              {
+                "token": "legend",
+                "key": "name"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "viz_RYPhSk8c": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Successfully integrated snapshot report\n### Counts",
+        "fontSize": "extraLarge"
+      }
+    },
+    "viz_ysvkHFbs": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Count of successful integrations\nGraph showing the count of successful and not successful integrations.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
+    },
+    "viz_KKkIX6xn": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#000000",
+        "trendColor": "#000000",
+        "sparklineDisplay": "off",
+        "majorFontSize": 50,
+        "unit": "",
+        "trendDisplay": "off"
+      },
+      "dataSources": {
+        "primary": "ds_bA8S89J3"
+      },
+      "title": "Total eligible for electronic transfer"
+    },
+    "viz_hgSHp5l5": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "#### Count of successful integrations\nGraph showing the count of successful and not successful integrations.",
+        "fontColor": "#000000",
+        "backgroundColor": "#ECF1F2",
+        "fontSize": "large"
+      }
+    },
+    "viz_NDVX2XQM": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#003087",
+          "#7C2855",
+          "#D5281B",
+          "#FFB81C",
+          "#CCE3F5",
+          "#768692"
+        ],
+        "yAxisLabelVisibility": "show",
+        "xAxisMajorTickVisibility": "hide",
+        "legendDisplay": "off",
+        "backgroundColor": "#ECF1F2",
+        "yAxisTitleText": "Count",
+        "dataValuesDisplay": "all",
+        "xAxisTitleText": "",
+        "xAxisTitleVisibility": "hide"
+      },
+      "dataSources": {
+        "primary": "ds_rMpbjuWx_ds_qBafRzi3"
+      },
+      "title": "",
+      "showProgressBar": false,
+      "showLastUpdated": false,
+      "description": "",
+      "eventHandlers": [
+        {
+          "type": "drilldown.setToken",
+          "options": {
+            "tokens": [
+              {
+                "token": "column",
+                "key": "row.clinical_type.value"
+              },
+              {
+                "token": "legend",
+                "key": "name"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "dataSources": {
+    "ds_qBafRzi3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_transfer_status_report_snapshot_successfully_integrated_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_transfer_status_report_snapshot_successfully_integrated_count"
+    },
+    "ds_bA8S89J3": {
+      "type": "ds.search",
+      "options": {
+        "query": "| savedsearch gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer"
+    },
+    "ds_COJYYkCT_ds_bA8S89J3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_countcopy 1"
+    },
+    "ds_4fGzj1RA_ds_qBafRzi3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_percentage"
+    },
+    "ds_6pK9IpdB": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\" legend=\"$legend$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_document_attachments_snapshot_report_raw_data_table"
+    },
+    "ds_rMpbjuWx_ds_qBafRzi3": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_transfer_status_report_snapshot_successfully_integrated_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_transfer_status_report_snapshot_successfully_integrated_percentage"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "latest": "$global_time.latest$",
+            "earliest": "$global_time.earliest$"
+          }
+        }
+      }
+    },
+    "tokens": {
+      "default": {
+        "column": {
+          "value": "None"
+        },
+        "legend": {
+          "value": "None"
+        }
+      }
+    }
+  },
+  "inputs": {
+    "input_x1LK7THX": {
+      "options": {
+        "defaultValue": 0,
+        "token": "cutoff",
+        "min": 0,
+        "max": 14
+      },
+      "title": "Cutoff (days)",
+      "type": "input.number"
+    },
+    "input_udP1B2BG": {
+      "options": {
+        "defaultValue": "0,",
+        "token": "time_range"
+      },
+      "title": "Time Range",
+      "type": "input.timerange"
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "display": "auto",
+      "backgroundColor": "#ffffff",
+      "height": 1200
+    },
+    "structure": [
+      {
+        "item": "viz_Yrz79jnn",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 330,
+          "w": 570,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_RYPhSk8c",
+        "type": "block",
+        "position": {
+          "x": 10,
+          "y": 10,
+          "w": 920,
+          "h": 100
+        }
+      },
+      {
+        "item": "viz_ysvkHFbs",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 220,
+          "w": 570,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_KKkIX6xn",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 110,
+          "w": 250,
+          "h": 90
+        }
+      },
+      {
+        "item": "viz_hgSHp5l5",
+        "type": "block",
+        "position": {
+          "x": 610,
+          "y": 220,
+          "w": 570,
+          "h": 110
+        }
+      },
+      {
+        "item": "viz_NDVX2XQM",
+        "type": "block",
+        "position": {
+          "x": 610,
+          "y": 330,
+          "w": 570,
+          "h": 380
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_udP1B2BG",
+      "input_x1LK7THX"
+    ]
+  },
+  "description": "",
+  "title": "gp2gp_successfully_integrated_snapshot_dashboard"
+}
