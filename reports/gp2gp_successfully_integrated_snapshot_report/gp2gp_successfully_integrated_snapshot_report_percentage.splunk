@@ -1,10 +1,10 @@
 index="$index$"
 
-{% from 'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
-gp2gp_transfer_status_report_snapshot_base %}
+{% from 'gp2gp_successfully_integrated_snapshot_report/gp2gp_successfully_integrated_snapshot_report_base.splunk' import
+gp2gp_successfully_integrated_snapshot_report_base %}
 
 
-{{ gp2gp_transfer_status_report_snapshot_base() }}
+{{ gp2gp_successfully_integrated_snapshot_report_base() }}
 
 | eval column = case(outcome = "Successful integration", "Successfully integrated",
                      1=1, "Not successfully integrated")

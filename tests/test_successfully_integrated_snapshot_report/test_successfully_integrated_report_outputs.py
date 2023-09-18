@@ -50,7 +50,7 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_successfully_integrated_snapshot_report/'
-                'gp2gp_transfer_status_report_snapshot_successfully_integrated_count')
+                'gp2gp_successfully_integrated_snapshot_report_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -121,7 +121,7 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_successfully_integrated_snapshot_report/'
-                'gp2gp_transfer_status_report_snapshot_successfully_integrated_percentage')
+                'gp2gp_successfully_integrated_snapshot_report_percentage')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
