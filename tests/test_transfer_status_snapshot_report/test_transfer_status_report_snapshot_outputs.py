@@ -349,12 +349,19 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Successfully integrated": "5",
-                               "Not successfully integrated": "1"}
+            expected_values = {"0": {"column": "Not successfully integrated",
+                                     "count": "1"},
+                               "1": {"column": "Successfully integrated",
+                                     "count": "5"},
+                               }
 
-            for idx, (key, value) in enumerate(expected_values.items()):
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")', telemetry)
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
 
         finally:
             self.delete_index(index_name)
