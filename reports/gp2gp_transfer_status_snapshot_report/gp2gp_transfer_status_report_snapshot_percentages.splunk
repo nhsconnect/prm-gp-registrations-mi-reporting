@@ -5,12 +5,8 @@ gp2gp_transfer_status_report_snapshot_base %}
 
 
 {{ gp2gp_transfer_status_report_snapshot_base() }}
-
-| eval label=mvappend("Successfully integrated", "Rejected", "Awaiting integration", "In progress", "Technical failure", "Unknown")
-| eval count=mvappend(percentage_successfully_integrated, percentage_rejected, percentage_awaiting_integration, percentage_in_progress, percentage_technical_failure, percentage_unknown)
-
-| eval soft_zip = mvzip(label, count)
-| mvexpand soft_zip
-
-| rex field=soft_zip "(?<label>.*),(?<count>.*)"
-| table label, count
+| chart count by outcome
+| addtotals row=true
+| eventstats sum(Total) as total_eligible_for_electronic_transfer
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "outcome", <<FIELD>>, round('<<FIELD>>'*100/ total_eligible_for_electronic_transfer, 2))]
+| fields - Total, total_eligible_for_electronic_transfer
