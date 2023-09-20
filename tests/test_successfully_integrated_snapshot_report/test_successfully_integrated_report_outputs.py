@@ -137,9 +137,6 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"Successfully integrated": "83.33",
-                               "Not successfully integrated": "16.67"}
-
             expected_values = {"0": {"column": "Not successfully integrated",
                                      "count": "16.67"},
                                "1": {"column": "Successfully integrated",
