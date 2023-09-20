@@ -1,0 +1,16 @@
+index="$index$"
+
+{% from 'gp2gp_rejected_snapshot_report/gp2gp_rejected_report_snapshot_base.splunk' import
+gp2gp_rejected_snapshot_report_base %}
+
+
+{{ gp2gp_rejected_snapshot_report_base() }}
+
+| eval column = case(outcome = "Rejected", "Rejected",
+                     1=1, "Not rejected")
+
+| chart count by column
+| addtotals row=true
+| eventstats sum(Total) as total_eligible_for_electronic_transfer
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "column", <<FIELD>>, round('<<FIELD>>'*100/ total_eligible_for_electronic_transfer, 2))]
+| fields - Total, total_eligible_for_electronic_transfer

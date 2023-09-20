@@ -10,9 +10,9 @@ from helpers.datetime_helper import create_date_time, generate_report_start_date
     generate_report_end_date
 
 
-class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
+class TestRejectedSnapshotReportOutputs(TestBase):
 
-    def test_gp2gp_successfully_integrated_report_snapshot_count(self):
+    def test_gp2gp_rejected_report_snapshot_count(self):
 
         # Arrange
         index_name, index = self.create_index()
@@ -49,8 +49,8 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_successfully_integrated_snapshot_report/'
-                'gp2gp_successfully_integrated_snapshot_report_count')
+                'gp2gp_rejected_snapshot_report/'
+                'gp2gp_rejected_report_snapshot_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -66,10 +66,10 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"column": "Not successfully integrated",
-                                     "count": "1"},
-                               "1": {"column": "Successfully integrated",
+            expected_values = {"0": {"column": "Not rejected",
                                      "count": "5"},
+                               "1": {"column": "Rejected",
+                                     "count": "1"},
                                }
 
             for row, row_values in expected_values.items():
@@ -83,7 +83,7 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_successfully_integrated_report_snapshot_percentage(self):
+    def test_gp2gp_rejected_report_snapshot_percentage(self):
 
         # Arrange
         index_name, index = self.create_index()
@@ -120,8 +120,8 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_successfully_integrated_snapshot_report/'
-                'gp2gp_successfully_integrated_snapshot_report_percentage')
+                'gp2gp_rejected_snapshot_report/'
+                'gp2gp_rejected_report_snapshot_percentage')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -137,10 +137,10 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"column": "Not successfully integrated",
-                                     "count": "16.67"},
-                               "1": {"column": "Successfully integrated",
+            expected_values = {"0": {"column": "Not rejected",
                                      "count": "83.33"},
+                               "1": {"column": "Rejected",
+                                     "count": "16.67"},
                                }
 
             for row, row_values in expected_values.items():

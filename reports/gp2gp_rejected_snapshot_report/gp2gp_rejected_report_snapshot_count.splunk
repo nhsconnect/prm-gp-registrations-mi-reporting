@@ -1,0 +1,12 @@
+index="$index$"
+
+{% from 'gp2gp_rejected_snapshot_report/gp2gp_rejected_report_snapshot_base.splunk' import
+gp2gp_rejected_snapshot_report_base %}
+
+
+{{ gp2gp_rejected_snapshot_report_base() }}
+
+| eval column = case(outcome = "Rejected", "Rejected",
+                     1=1, "Not rejected")
+
+| chart count by column
