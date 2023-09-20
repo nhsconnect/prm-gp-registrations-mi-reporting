@@ -48,14 +48,14 @@
     "viz_RYPhSk8c": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "## Successfully integrated snapshot report\n### Counts",
+        "markdown": "## Rejected snapshot report\n### Counts",
         "fontSize": "extraLarge"
       }
     },
     "viz_ysvkHFbs": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Count of successful integrations\nGraph showing the count of successful and not successful integrations.",
+        "markdown": "#### Count of rejected integrations\nGraph showing the count of rejected and not rejected integrations.",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
@@ -79,7 +79,7 @@
     "viz_hgSHp5l5": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Percentage of successful integrations\nGraph showing the percentage of successful and not successful integrations. The percentage is taken with respect to the total number of records eligible for electronic transfer.",
+        "markdown": "#### Percentage of rejected integrations\nGraph showing the percentage of rejected and not rejected integrations. The percentage is taken with respect to the total number of records eligible for electronic transfer.",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
@@ -135,13 +135,13 @@
     "ds_qBafRzi3": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_successfully_integrated_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_rejected_report_snapshot_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
         }
       },
-      "name": "gp2gp_successfully_integrated_snapshot_report_count"
+      "name": "gp2gp_rejected_report_snapshot_count"
     },
     "ds_bA8S89J3": {
       "type": "ds.search",
@@ -190,13 +190,13 @@
     "ds_rMpbjuWx_ds_qBafRzi3": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_successfully_integrated_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_rejected_report_snapshot_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
         }
       },
-      "name": "gp2gp_successfully_integrated_snapshot_report_percentage"
+      "name": "gp2gp_rejected_report_snapshot_percentage"
     }
   },
   "defaults": {
@@ -316,5 +316,5 @@
     ]
   },
   "description": "",
-  "title": "gp2gp_successfully_integrated_snapshot_dashboard"
+  "title": "gp2gp_rejected_snapshot_dashboard"
 }
