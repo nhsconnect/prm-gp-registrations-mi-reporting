@@ -1,4 +1,4 @@
-{% macro gp2gp_transfer_status_report_snapshot_base () %}
+{% macro gp2gp_rejected_snapshot_report_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -50,4 +50,4 @@ has_errors %}
 {% endmacro %}
 
 index="$index$"
-{{ gp2gp_transfer_status_report_snapshot_base() }}
+{{ gp2gp_rejected_snapshot_report_base() }}
