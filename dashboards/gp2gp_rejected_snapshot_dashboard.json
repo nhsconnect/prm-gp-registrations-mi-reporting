@@ -34,11 +34,7 @@
             "tokens": [
               {
                 "token": "column",
-                "key": "row.clinical_type.value"
-              },
-              {
-                "token": "legend",
-                "key": "name"
+                "key": "row.column.value"
               }
             ]
           }
@@ -119,16 +115,19 @@
             "tokens": [
               {
                 "token": "column",
-                "key": "row.clinical_type.value"
-              },
-              {
-                "token": "legend",
-                "key": "name"
+                "key": "row.column.value"
               }
             ]
           }
         }
       ]
+    },
+    "viz_5AhR8NB3": {
+      "type": "splunk.table",
+      "options": {},
+      "dataSources": {
+        "primary": "ds_8OpyJrMs"
+      }
     }
   },
   "dataSources": {
@@ -197,6 +196,17 @@
         }
       },
       "name": "gp2gp_rejected_report_snapshot_percentage"
+    },
+    "ds_8OpyJrMs": {
+      "type": "ds.search",
+      "options": {
+        "query": "| savedsearch gp2gp_rejected_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_rejected_raw_data_table"
     }
   },
   "defaults": {
@@ -246,7 +256,7 @@
     "options": {
       "display": "auto",
       "backgroundColor": "#ffffff",
-      "height": 1200
+      "height": 1400
     },
     "structure": [
       {
@@ -307,6 +317,16 @@
           "y": 330,
           "w": 570,
           "h": 380
+        }
+      },
+      {
+        "item": "viz_5AhR8NB3",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 760,
+          "w": 1150,
+          "h": 460
         }
       }
     ],
