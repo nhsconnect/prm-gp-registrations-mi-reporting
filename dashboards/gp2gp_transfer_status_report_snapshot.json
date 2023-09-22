@@ -226,7 +226,15 @@
         "fontSize": "extraLarge",
         "backgroundColor": "#003087"
       },
-      "eventHandlers": []
+      "eventHandlers": [
+        {
+          "type": "drilldown.customUrl",
+          "options": {
+            "url": "https://nhsdptl.splunkcloud.com/en-GB/app/nhsd_gp2gp_all_sh_all_viz/gp2gp_rejected_snapshot_dashboard",
+            "newTab": true
+          }
+        }
+      ]
     },
     "viz_IxiMI2nL": {
       "type": "splunk.markdown",
