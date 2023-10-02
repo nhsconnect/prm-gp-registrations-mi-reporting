@@ -13,9 +13,7 @@ class EventsHelperProvider(en_GB_provider, misc_provider):
         "INTEGRATED_AND_SUPPRESSED",
         "SUPPRESSED_AND_REACTIVATED",
         "FILED_AS_ATTACHMENT",
-        "REJECTED",
         "INTERNAL_TRANSFER",
-        "FAILED_TO_INTEGRATE",
     ]
 
     clinical_type_list = [
