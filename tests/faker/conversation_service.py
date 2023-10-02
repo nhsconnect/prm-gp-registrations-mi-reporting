@@ -1,3 +1,5 @@
+import random
+
 from tests.faker.conversation import Conversation
 from tests.faker.events import (
     Event,
@@ -112,10 +114,12 @@ class ConversationService:
                 error_counter=number_to_error_at_integration,
             )
 
-            if not integration_error is None:
+            if integration_error is not None:
+                unsuccessful_outcomes = ["FAILED_TO_INTEGRATE", "REJECTED"]
+                outcome = random.choice(unsuccessful_outcomes)
                 integration_event.payload["integration"][
                     "outcome"
-                ] = "FAILED_TO_INTEGRATE"
+                ] = outcome
                 continue
 
         return conversations
