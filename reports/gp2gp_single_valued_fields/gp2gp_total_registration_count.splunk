@@ -1,0 +1,9 @@
+index="$index$"
+
+{% from 'gp2gp_single_valued_fields/gp2gp_single_valued_fields_base.splunk' import
+gp2gp_single_valued_fields_base %}
+
+
+{{ gp2gp_single_valued_fields_base() }}
+| stats count(outcome) as total_number_of_registrations
+| table total_number_of_registrations
