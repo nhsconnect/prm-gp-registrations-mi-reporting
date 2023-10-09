@@ -4,7 +4,7 @@ from time import sleep
 import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
-    create_integration_payload
+    create_integration_payload, create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
 from helpers.datetime_helper import create_date_time, generate_report_start_date, \
     generate_report_end_date
@@ -46,6 +46,22 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
 
                         )),
                     sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        f'ehr_integrations_not_eligible_for_electronic_transfer',
+                        registration_event_datetime=create_date_time(report_start, "08:00:00"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=False
+                        )
+
+                    )),
+                sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
