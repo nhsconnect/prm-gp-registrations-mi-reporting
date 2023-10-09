@@ -134,6 +134,22 @@ class TestSuccessfullyIntegratedSnapshotReportOutputs(TestBase):
                         )),
                     sourcetype="myevent")
 
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        f'ehr_integrations_not_eligible_for_electronic_transfer',
+                        registration_event_datetime=create_date_time(report_start, "08:00:00"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=False
+                        )
+
+                    )),
+                sourcetype="myevent")
+
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_successfully_integrated_snapshot_report/'
