@@ -4,7 +4,7 @@ from time import sleep
 import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
-    create_integration_payload
+    create_integration_payload, create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
 from helpers.datetime_helper import create_date_time, generate_report_start_date, \
     generate_report_end_date
@@ -48,6 +48,7 @@ class TestRejectedRawDataTableOutputs(TestBase):
                         )),
                     sourcetype="myevent")
 
+
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_rejected_snapshot_report/'
@@ -68,8 +69,8 @@ class TestRejectedRawDataTableOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            assert jq.first(
-                f".[0] "
+            assert jq.all(
+                f".[] "
                 + f'| select( .conversation_id == "ehr_integrations_REJECTED") '
                 + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER") '
                 + f'| select( .requesting_supplier_name == "TPP") '
@@ -119,6 +120,22 @@ class TestRejectedRawDataTableOutputs(TestBase):
                         )),
                     sourcetype="myevent")
 
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        f'ehr_integrations_not_eligible_for_electronic_transfer',
+                        registration_event_datetime=create_date_time(report_start, "08:00:00"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=False
+                        )
+
+                    )),
+                sourcetype="myevent")
+
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_rejected_snapshot_report/'
@@ -153,6 +170,7 @@ class TestRejectedRawDataTableOutputs(TestBase):
                     + f'| select( .sending_practice_ods_code == "B00157") '
                     , telemetry
                 )
+            assert len(telemetry) == len(conversation_ids)
 
         finally:
             self.delete_index(index_name)
