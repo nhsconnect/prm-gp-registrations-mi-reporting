@@ -8,7 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 import random
 
 
-def get_telemetry_from_splunk(search_query, service) -> None:
+def get_telemetry_from_splunk(search_query, service) -> list | None:
     try:
         service.parse(search_query, parse_only=True)
     except HTTPError as error:
