@@ -91,16 +91,39 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 sourcetype="myevent",
             )
 
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
+                        conversation_id=tech_failure_conv_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(minutes=3)
+                                datetime_utc_now() - timedelta(minutes=4)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(minutes=4)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -216,16 +239,39 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 sourcetype="myevent",
             )
 
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
+                        conversation_id=tech_failure_conv_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(minutes=3)
+                                datetime_utc_now() - timedelta(minutes=4)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                        event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(minutes=4)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -256,7 +302,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
             # Assert
 
             expected_values = {
-                "In flight": "100.00",
+                "In flight": "50.00",
                 "Broken 24hr sla": "0.00",
                 "Broken ehr sending sla": "0.00",
                 "Broken ehr requesting sla": "0.00",
@@ -351,6 +397,44 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -470,12 +554,87 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 json.dumps(
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
-                        registration_event_datetime=(datetime_utc_now()).strftime(
+                        registration_event_datetime=(
+                                datetime_utc_now()
+                        ).strftime(
                             "%Y-%m-%dT%H:%M:%S%z"
                         ),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -507,7 +666,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
 
             expected_values = {
                 "In flight": "0.00",
-                "Broken 24hr sla": "100.00",
+                "Broken 24hr sla": "50.00",
                 "Broken ehr sending sla": "0.00",
                 "Broken ehr requesting sla": "0.00",
             }
@@ -588,6 +747,79 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -705,6 +937,79 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 sourcetype="myevent",
             )
 
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
             # Act
             test_query = self.generate_splunk_query_from_report(
                 "gp2gp_in_progress_sla_snapshot_report/gp2gp_in_progress_sla_snapshot_report_percentage"
@@ -732,7 +1037,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
             expected_values = {
                 "In flight": "0.00",
                 "Broken 24hr sla": "0.00",
-                "Broken ehr sending sla": "100.00",
+                "Broken ehr sending sla": "50.00",
                 "Broken ehr requesting sla": "0.00",
             }
 
@@ -765,7 +1070,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=1)
+                            datetime_utc_now() - timedelta(minutes=21)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -790,6 +1095,79 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -855,7 +1233,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_ehr_requesting_sla_conversation_id,
                         registration_event_datetime=(
-                            datetime_utc_now() - timedelta(hours=1)
+                            datetime_utc_now() - timedelta(minutes=21)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -880,6 +1258,79 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
@@ -913,7 +1364,7 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                 "In flight": "0.00",
                 "Broken 24hr sla": "0.00",
                 "Broken ehr sending sla": "0.00",
-                "Broken ehr requesting sla": "100.00",
+                "Broken ehr requesting sla": "50.00",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
@@ -996,6 +1447,79 @@ class TestSnapshotInProgressSlaGraph(TestBase):
                             transferCompatible=True,
                             reason="test",
                         ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            # create technical failure conversation
+            tech_failure_conv_id = "tech_failure_1"
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True,
+                            reason="test",
+                        ),
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_REQUESTS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.EHR_RESPONSES.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                    )
+                ),
+                sourcetype="myevent",
+            )
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id=tech_failure_conv_id,
+                        registration_event_datetime=(
+                                datetime_utc_now() - timedelta(hours=25)
+                        ).strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        event_type=EventType.ERRORS.value,
+                        sendingSupplierName="EMIS",
+                        requestingSupplierName="TPP",
+                        payload= create_error_payload(
+                            errorCode="99",
+                            errorDescription="test",
+                            failurePoint="EHR_SENT"
+                        )
                     )
                 ),
                 sourcetype="myevent",
