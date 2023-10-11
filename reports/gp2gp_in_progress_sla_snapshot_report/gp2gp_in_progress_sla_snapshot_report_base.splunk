@@ -45,8 +45,7 @@ has_errors
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-```| WHERE outcome=="In progress" OR outcome=="Awaiting integration"```
-
+| where outcome!="Not eligible for electronic transfer" or outcome!="Unknown"
 
 {% endmacro %}
 
