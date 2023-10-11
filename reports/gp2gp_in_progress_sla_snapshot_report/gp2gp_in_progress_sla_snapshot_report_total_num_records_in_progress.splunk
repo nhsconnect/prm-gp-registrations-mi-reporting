@@ -5,9 +5,7 @@ gp2gp_in_progress_sla_snapshot_base %}
 
 {{ gp2gp_in_progress_sla_snapshot_base() }}
 
-| WHERE isTransferCompatible==1 ``` This is here because if it is not compatible it is not a transfer. i.e. It might just be a new registration. ```
-
-| eventstats count(isTransferCompatible) as "totalRecords"
+| eventstats count(eval(outcome=="In progress")) as "totalRecords"
 
 | stats first(totalRecords) as totalRecords
 | table totalRecords
