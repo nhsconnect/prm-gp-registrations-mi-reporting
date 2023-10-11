@@ -5,19 +5,27 @@ gp2gp_in_progress_sla_snapshot_base %}
 
 {{ gp2gp_in_progress_sla_snapshot_base() }}
 
-| WHERE isTransferCompatible==1 ``` This is here because if it is not compatible it is not a transfer. i.e. It might just be a new registration. ```
+| eventstats count(eval(outcome!="Not eligible for electronic transfer")) as total_number_of_eligible_transfers
 
-| eventstats count(isTransferCompatible) as "totalRecords"
+| eventstats count(eval(totalTransferTimeOutsideSla24Hours==0
+                        and totalEhrSendingOutsideSla==0
+                        and totalEhrRequestingOutsideSla==0
+                        and outcome=="In progress"
+                        )) as "in_flight_count"
+| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1
+                        and outcome!="Technical failure"
+                        )) as "broken_24hr_sla_count"
+| eventstats count(eval(totalEhrSendingOutsideSla==1
+                        and outcome!="Technical failure"
+                        )) as "broken_ehr_sending_sla_count"
+| eventstats count(eval(totalEhrRequestingOutsideSla==1
+                        and outcome!="Technical failure"
+                        )) as "broken_ehr_requesting_sla_count"
 
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==0 AND totalEhrSendingOutsideSla=0 AND totalEhrRequestingOutsideSla==0)) as "in_flight_count"
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1)) as "broken_24hr_sla_count"
-| eventstats count(eval(totalEhrSendingOutsideSla==1)) as "broken_ehr_sending_sla_count"
-| eventstats count(eval(totalEhrRequestingOutsideSla==1)) as "broken_ehr_requesting_sla_count"
-
-| eval in_flight_percentage = round((in_flight_count/totalRecords) * 100,2)
-| eval broken_24hr_sla_percentage =  round((broken_24hr_sla_count/totalRecords) * 100,2)
-| eval broken_ehr_sending_sla_percentage = round((broken_ehr_sending_sla_count/totalRecords) * 100,2)
-| eval broken_ehr_requesting_sla_percentage = round((broken_ehr_requesting_sla_count/totalRecords) * 100,2)
+| eval in_flight_percentage = round((in_flight_count/total_number_of_eligible_transfers) * 100,2)
+| eval broken_24hr_sla_percentage =  round((broken_24hr_sla_count/total_number_of_eligible_transfers) * 100,2)
+| eval broken_ehr_sending_sla_percentage = round((broken_ehr_sending_sla_count/total_number_of_eligible_transfers) * 100,2)
+| eval broken_ehr_requesting_sla_percentage = round((broken_ehr_requesting_sla_count/total_number_of_eligible_transfers) * 100,2)
 
 | stats 
     first(in_flight_percentage) as in_flight_percentage, 
