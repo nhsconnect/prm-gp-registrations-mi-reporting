@@ -1,131 +1,9 @@
 index="$index$"
 
+{% from 'gp2gp_in_progress_sla_snapshot_report/gp2gp_in_progress_sla_snapshot_report_base.splunk' import
+gp2gp_in_progress_sla_snapshot_base %}
 
-| eval tz_hours = substr(strftime(now(), "%z") , 1 ,3)
-| eval registrationEventDateTimeEpoch = relative_time(strptime(registrationEventDateTime,"%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
-| eval _time=registrationEventDateTimeEpoch
-| sort 0 _time
-
-
-
-
-| eval start_time = case(
-       "$start_time$"="0", 0,
-       like("$start_time$","%T%"), "$start_time$",
-       1=1, relative_time(now(),"$start_time$")
-       )
-| eval end_time = case(
-       "$end_time$"="now", relative_time(now(),"-0s"),
-       like("$end_time$","%T%"), "$end_time$",
-       1=1, relative_time(now(),"$end_time$")
-       )
-| eval start_time_epoch = if(isnum(start_time), start_time, strptime(start_time, "%Y-%m-%dT%H:%M:%S"))
-| eval end_time_epoch = if(isnum(end_time), end_time, strptime(end_time, "%Y-%m-%dT%H:%M:%S"))
-
-
-
-
-| streamstats earliest(_time) as conversationStart by conversationId
-| where conversationStart >= start_time_epoch AND conversationStart <= end_time_epoch
-| where _time >= start_time_epoch AND _time <= relative_time(end_time_epoch, "+$cutoff$d")
-
-
-
-| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
-| spath output=integration_outcome path=payload{}.integration.outcome
-| spath output=placeholders path=payload.ehr.placeholders{}
-
-| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
-| eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
-| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
-| eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
-
-
-
-| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
-| eventstats latest(transCompatStatEventDateTime) as latestTransferCompatibilityEventDateTime by conversationId
-| eval transCompatStatEventDateTimeFormatted = strftime(latestTransferCompatibilityEventDateTime,"%Y-%m-%dT%H:%M:%S")
-| eval isTransferCompatible = if(transferCompatible == "true", 1, 0)
-
-
-| spath output=internalTransfer path=payload.transferCompatibilityStatus.internalTransfer
-| eval isInteralTransfer = if(internalTransfer == "true",1 ,0)
-
-
-| where isInteralTransfer==0
-
-
-| transaction conversationId keeporphans=t
-
-| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
-| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
-
-
-
-
-| eval has_errors = if(match(upper(eventType),"ERROR"),1,0)
-
-
-
-| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
-| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
-| eval ehrResponseEvent = if(eventType=="EHR_RESPONSES", 1, 0)
-| eval ehrRequestEvent = if(eventType=="EHR_REQUESTS", 1, 0)
-| eval transCompatStatEvent = if(eventType=="TRANSFER_COMPATIBILITY_STATUSES", 1, 0)
-| eval isTransferCompatible = if(transCompatStatEvent == 1 AND transferCompatible == "true",1 ,0)
-| eval isRegistration = if(eventType="REGISTRATIONS", 1, 0)
-| eval registrationStatus = case(    
-    isIntegrated == 1, "INTEGRATION",
-    readyToIntegrate == 1, "READY_TO_INTEGRATE", 
-    ehrResponseEvent == 1, "EHR_SENT",   
-    ehrRequestEvent == 1, "EHR_REQUESTED",       
-    (transCompatStatEvent==1 AND isTransferCompatible == 1), "ELIGIBLE_FOR_TRANSFER",
-    (transCompatStatEvent==1 AND isTransferCompatible == 0), "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER",
-    isRegistration == 1,"REGISTRATION",
-    1=1, "UNKNOWN")
-
-
-| eval twentyMinsAgo = relative_time(now(), "-20m")
-| eval twentyFourHoursAgo = relative_time(now(), "-24h")
-| eval totalTransferTimeOutsideSla24Hours = if((registrationStatus=="EHR_SENT" AND twentyFourHoursAgo > ehrResponseEventDateTime) 
-    OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h"))
-    OR (registrationStatus=="INTEGRATION" AND ehrReadyToIntegrateEventDateTime > relative_time(ehrResponseEventDateTime, "+24h")),1,0)    
-| eval totalEhrSendingOutsideSla = if((registrationStatus=="EHR_REQUESTED" AND twentyMinsAgo > ehrRequestEventDateTime)
-    OR (registrationStatus=="READY_TO_INTEGRATE" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
-    OR (registrationStatus=="INTEGRATION" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins"))
-    OR (registrationStatus=="EHR_SENT" AND ehrResponseEventDateTime > relative_time(ehrRequestEventDateTime, "+20mins")),1,0)
-| eval totalEhrRequestingOutsideSla = if((registrationStatus=="ELIGIBLE_FOR_TRANSFER" AND twentyMinsAgo > transCompatStatEventDateTime)
-    OR (registrationStatus=="READY_TO_INTEGRATE" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
-    OR (registrationStatus=="INTEGRATION" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
-    OR (registrationStatus=="EHR_SENT" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime)
-    OR (registrationStatus=="EHR_REQUESTED" AND relative_time(transCompatStatEventDateTime, "+20mins") < ehrRequestEventDateTime),1,0)
-
-
-
-
-| eval outcome = case(    
-    registrationStatus == "INTEGRATION" AND ((integration_outcome =="INTEGRATED") OR (integration_outcome=="INTEGRATED_AND_SUPPRESSED") OR (integration_outcome=="SUPPRESSED_AND_REACTIVATED") OR (integration_outcome=="FILED_AS_ATTACHMENT") OR (integration_outcome=="INTERNAL_TRANSFER")),"Successful integration",
-    registrationStatus == "INTEGRATION" AND integration_outcome =="REJECTED", "Rejected",
-    registrationStatus == "INTEGRATION" AND integration_outcome =="FAILED_TO_INTEGRATE", "Technical failure",
-    registrationStatus == "READY_TO_INTEGRATE","Awaiting integration",  
-    registrationStatus == "EHR_SENT" AND has_errors == 1, "Technical failure",
-    registrationStatus == "EHR_SENT" AND has_errors == 0, "In progress",   
-    registrationStatus == "EHR_REQUESTED" AND has_errors == 1, "Technical failure",
-    registrationStatus == "EHR_REQUESTED" AND has_errors == 0, "In progress",
-    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 1, "Technical failure",
-    registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 0, "In progress",
-    registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "Not eligible for electronic transfer",
-    registrationStatus == "REGISTRATION" AND is_dts_matched==0, "Not eligible for electronic transfer",
-    1=1, "Unknown")
-
-
-```| WHERE outcome=="In progress" OR outcome=="Awaiting integration"```
-
-
-
-
-
-| where isTransferCompatible==1 ``` This is here because if it is not compatible it is not a transfer. i.e. It might just be a new registration. ```
+{{ gp2gp_in_progress_sla_snapshot_base() }}
 
 | eval conversation_id = conversationId
 | eval requesting_supplier_name = requestingSupplierName
@@ -134,10 +12,16 @@ index="$index$"
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
 
 
-| where case("$column$" == "In flight", totalTransferTimeOutsideSla24Hours==0 AND totalEhrSendingOutsideSla=0 AND totalEhrRequestingOutsideSla==0,
-             "$column$" == "Broken 24hr sla", totalTransferTimeOutsideSla24Hours==1,
-             "$column$" == "Broken ehr sending sla", totalEhrSendingOutsideSla==1,
-             "$column$" == "Broken ehr requesting sla", totalEhrRequestingOutsideSla==1,
+| where case("$column$" == "In flight", totalTransferTimeOutsideSla24Hours==0
+                                        and totalEhrSendingOutsideSla==0
+                                        and totalEhrRequestingOutsideSla==0
+                                        and outcome=="In progress",
+             "$column$" == "Broken 24hr sla", totalTransferTimeOutsideSla24Hours==1
+                                              and outcome!="Technical failure",
+             "$column$" == "Broken ehr sending sla", totalEhrSendingOutsideSla==1
+                                                     and outcome!="Technical failure",
+             "$column$" == "Broken ehr requesting sla", totalEhrRequestingOutsideSla==1
+                                                        and outcome!="Technical failure",
              1=1, 1=0)
 
 | table 
