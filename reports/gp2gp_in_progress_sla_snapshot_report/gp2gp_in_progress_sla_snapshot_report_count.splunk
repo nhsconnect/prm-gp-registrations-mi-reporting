@@ -5,13 +5,20 @@ gp2gp_in_progress_sla_snapshot_base %}
 
 {{ gp2gp_in_progress_sla_snapshot_base() }}
 
-
-| WHERE isTransferCompatible==1 ``` This is here because if it is not compatible it is not a transfer. i.e. It might just be a new registration. ```
-
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==0 AND totalEhrSendingOutsideSla=0 AND totalEhrRequestingOutsideSla==0)) as "in_flight"
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1)) as "broken_24hr_sla"
-| eventstats count(eval(totalEhrSendingOutsideSla==1)) as "broken_ehr_sending_sla"
-| eventstats count(eval(totalEhrRequestingOutsideSla==1)) as "broken_ehr_requesting_sla"
+| eventstats count(eval(totalTransferTimeOutsideSla24Hours==0
+                        and totalEhrSendingOutsideSla==0
+                        and totalEhrRequestingOutsideSla==0
+                        and outcome=="In progress"
+                        )) as "in_flight"
+| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1
+                        and outcome!="Technical failure"
+                        )) as "broken_24hr_sla"
+| eventstats count(eval(totalEhrSendingOutsideSla==1
+                        and outcome!="Technical failure"
+                        )) as "broken_ehr_sending_sla"
+| eventstats count(eval(totalEhrRequestingOutsideSla==1
+                        and outcome!="Technical failure"
+                        )) as "broken_ehr_requesting_sla"
 
 | stats 
     first(in_flight) as in_flight, 
