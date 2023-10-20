@@ -23,6 +23,19 @@ filter_conversations_by_start_and_end_times_and_cutoff
 | spath output=integration_outcome path=payload{}.integration.outcome
 | spath output=placeholders path=payload.ehr.placeholders{}
 
+| spath output=generated_by path=payload.ehr.placeholders{}.generatedBy
+| spath output=clinical_type path=payload.ehr.placeholders{}.clinicalType
+| spath output=reason path=payload.ehr.placeholders{}.reason
+| spath output=original_mime_type path=payload.ehr.placeholders{}.originalMimeType
+
+| eval placeholder_count = mvzip(generated_by, mvzip(clinical_type, mvzip(reason, original_mime_type)))
+| mvexpand placeholder_count
+| rex field=placeholder_count "^(?<generated_by_c>[^,]+),(?<clinical_type_c>[^,]+),(?<reason_c>[^,]+),(?<original_mime_type_c>.*)$"
+| eventstats count as count_of_placeholders_with_same_content by conversationId, generated_by_c, clinical_type_c, reason_c, original_mime_type_c
+
+| eval placeholder = mvzip(count_of_placeholders_with_same_content ,mvzip(generated_by_c, mvzip(clinical_type_c, mvzip(reason_c, original_mime_type_c))))
+
+
 | eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
 | eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())

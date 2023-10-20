@@ -8,20 +8,8 @@ gp2gp_placeholder_report_snapshot_base %}
 
 | WHERE numPlaceholders > 0
 
-| spath output=clinicalType path=payload.ehr.placeholders{}.clinicalType
-| spath output=generatedBy path=payload.ehr.placeholders{}.generatedBy
-| spath output=originalMimeType path=payload.ehr.placeholders{}.originalMimeType
-| spath output=reason path=payload.ehr.placeholders{}.reason
-
-| eval soft_zip = mvzip(clinicalType, 
-                        mvzip(generatedBy, 
-                            mvzip(originalMimeType, reason)
-                        )
-                    )
-| mvexpand soft_zip
-
-| rex field=soft_zip "^(?<clinical_type>[^,]+),(?<generated_by>[^,]+),(?<original_mime_type>[^,]+),(?<reason>.*)$"
-| fields - soft_zip
+| mvexpand placeholder
+| rex field=placeholder "^(?<placeholders_content_count>[^,]+),(?<generated_by>[^,]+),(?<clinical_type>[^,]+),(?<reason>[^,]+),(?<original_mime_type>.*)$"
 
 | eval conversation_id = conversationId
 | eval total_number_of_placeholders = numPlaceholders
@@ -30,27 +18,20 @@ gp2gp_placeholder_report_snapshot_base %}
 | eval sending_supplier_name = sendingSupplierName
 | eval requesting_practice_ods_code = requestingPracticeOdsCode
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
+| eval count_of_placeholders_with_same_content = placeholders_content_count
+
 
 | fillnull value="N/A"
-| stats
-    count as count_of_clinical_type_and_reason BY conversation_id,
-                                                    total_number_of_placeholders,
-                                                    clinical_type,
-                                                    generated_by,
-                                                    original_mime_type,
-                                                    reason,
-                                                    requesting_supplier_name,
-                                                    sending_supplier_name,
-                                                    requesting_practice_ods_code,
-                                                    sending_practice_ods_code
+
 | table conversation_id,
         total_number_of_placeholders,
+        count_of_placeholders_with_same_content,
+        generated_by,
         clinical_type,
         reason,
-        count_of_clinical_type_and_reason,
-        generated_by,
         original_mime_type,
         requesting_supplier_name,
         sending_supplier_name,
         requesting_practice_ods_code,
-        sending_practice_ods_code
+        sending_practice_ods_code,
+        tot_placeholders
