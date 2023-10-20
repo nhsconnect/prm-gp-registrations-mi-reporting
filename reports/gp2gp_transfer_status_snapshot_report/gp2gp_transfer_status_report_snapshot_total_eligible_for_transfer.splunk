@@ -1,9 +1,0 @@
-index="$index$"
-
-{% from 'gp2gp_transfer_status_snapshot_report/gp2gp_transfer_status_report_snapshot_base.splunk' import
-gp2gp_transfer_status_report_snapshot_base %}
-
-
-{{ gp2gp_transfer_status_report_snapshot_base() }}
-| eventstats count(outcome) as total_eligible_for_electronic_transfer
-| table total_eligible_for_electronic_transfer
