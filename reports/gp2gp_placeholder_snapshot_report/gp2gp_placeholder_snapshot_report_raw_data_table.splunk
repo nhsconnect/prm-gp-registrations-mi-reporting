@@ -33,5 +33,4 @@ gp2gp_placeholder_report_snapshot_base %}
         requesting_supplier_name,
         sending_supplier_name,
         requesting_practice_ods_code,
-        sending_practice_ods_code,
-        tot_placeholders
+        sending_practice_ods_code
