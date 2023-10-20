@@ -116,7 +116,7 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .total_number_of_placeholders == "6") '
                 + f'| select( .clinical_type == "{placeholder["clinicalType"]}")'
                 + f'| select( .reason == "{placeholder["reason"]}")'
-                + f'| select( .count_of_clinical_type_and_reason == "6")'
+                + f'| select( .count_of_placeholders_with_same_content == "6")'
                 + f'| select( .generated_by == "{placeholder["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder["originalMimeType"]}")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
@@ -156,8 +156,8 @@ class TestPlaceholderRawDataTable(TestBase):
                 "originalMimeType": "application/pdf",
             }
 
-            placeholders = [placeholder_1] * 3
-            placeholders += [placeholder_2] * 3
+            placeholders = [placeholder_1] * 2
+            placeholders += [placeholder_2] * 4
 
             payload = {
                 "ehr": {
@@ -224,11 +224,11 @@ class TestPlaceholderRawDataTable(TestBase):
                 f".[0] "
                 + f'| select( .conversation_id == "{random_conversation_id}") '
                 + f'| select( .total_number_of_placeholders == "6") '
-                + f'| select( .clinical_type == "{placeholder_2["clinicalType"]}")'
-                + f'| select( .reason == "{placeholder_2["reason"]}")'
-                + f'| select( .count_of_clinical_type_and_reason == "3")'
-                + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
-                + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
+                + f'| select( .clinical_type == "{placeholder_1["clinicalType"]}")'
+                + f'| select( .reason == "{placeholder_1["reason"]}")'
+                + f'| select( .count_of_placeholders_with_same_content == "2")'
+                + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
+                + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
@@ -240,11 +240,11 @@ class TestPlaceholderRawDataTable(TestBase):
                 f".[1] "
                 + f'| select( .conversation_id == "{random_conversation_id}") '
                 + f'| select( .total_number_of_placeholders == "6") '
-                + f'| select( .clinical_type == "{placeholder_1["clinicalType"]}")'
-                + f'| select( .reason == "{placeholder_1["reason"]}")'
-                + f'| select( .count_of_clinical_type_and_reason == "3")'
-                + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
-                + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
+                + f'| select( .clinical_type == "{placeholder_2["clinicalType"]}")'
+                + f'| select( .reason == "{placeholder_2["reason"]}")'
+                + f'| select( .count_of_placeholders_with_same_content == "4")'
+                + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
+                + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
@@ -383,13 +383,13 @@ class TestPlaceholderRawDataTable(TestBase):
 
             assert jq.all(
                 f".[0] "
-                + f'| select( .conversation_id == "{conversation_id_1}") '
+                + f'| select( .conversation_id == "{conversation_id_2}") '
                 + f'| select( .total_number_of_placeholders == "3") '
-                + f'| select( .clinical_type == "{placeholder_1["clinicalType"]}")'
-                + f'| select( .reason == "{placeholder_1["reason"]}")'
-                + f'| select( .count_of_clinical_type_and_reason == "3")'
-                + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
-                + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
+                + f'| select( .clinical_type == "{placeholder_2["clinicalType"]}")'
+                + f'| select( .reason == "{placeholder_2["reason"]}")'
+                + f'| select( .count_of_placeholders_with_same_content == "3")'
+                + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
+                + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
@@ -399,13 +399,13 @@ class TestPlaceholderRawDataTable(TestBase):
 
             assert jq.all(
                 f".[1] "
-                + f'| select( .conversation_id == "{conversation_id_2}") '
+                + f'| select( .conversation_id == "{conversation_id_1}") '
                 + f'| select( .total_number_of_placeholders == "3") '
-                + f'| select( .clinical_type == "{placeholder_2["clinicalType"]}")'
-                + f'| select( .reason == "{placeholder_2["reason"]}")'
-                + f'| select( .count_of_clinical_type_and_reason == "3")'
-                + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
-                + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
+                + f'| select( .clinical_type == "{placeholder_1["clinicalType"]}")'
+                + f'| select( .reason == "{placeholder_1["reason"]}")'
+                + f'| select( .count_of_placeholders_with_same_content == "3")'
+                + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
+                + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
