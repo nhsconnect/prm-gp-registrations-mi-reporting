@@ -1,0 +1,12 @@
+index="$index$"
+
+{% from 'gp2gp_single_valued_fields/gp2gp_single_valued_fields_base.splunk' import
+gp2gp_single_valued_fields_base %}
+
+{{ gp2gp_single_valued_fields_base() }}
+
+| eventstats count(eval(registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION")) as total_records_transferred
+
+| stats first(total_records_transferred) as total_records_transferred
+
+| table total_records_transferred
