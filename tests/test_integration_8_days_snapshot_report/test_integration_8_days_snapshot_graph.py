@@ -8,7 +8,7 @@ from helpers.splunk import (
     create_integration_payload,
     create_transfer_compatibility_payload,
 )
-from datetime import date, timedelta
+from datetime import timedelta
 from helpers.datetime_helper import (
     generate_report_start_date,
     generate_report_end_date,
@@ -17,23 +17,26 @@ from helpers.datetime_helper import (
 from tests.test_base import TestBase, EventType
 
 class TestIntegrationEightDaysGraph(TestBase):
-    def test_under_8_days_not_integrated_count(self):
+    def test_records_not_integrated_within_8_days_count(self):
         # Arrange
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = datetime_utc_now()
+        report_start = generate_report_start_date()
         report_end = generate_report_end_date()
         cutoff = "0"
 
+        # Testing events that occurred less than 8 days from now i.e (within 8 days)
+        registration_event_datetime = datetime_utc_now() - timedelta(days=7)
+
         try:
-            in_flight_conversation_id = "test_in_flight"
+            conversation_id = "in_flight_under_8_days"
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        conversation_id=conversation_id,
+                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -50,8 +53,8 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        conversation_id=conversation_id,
+                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP"                        
@@ -63,8 +66,8 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        conversation_id=conversation_id,
+                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -76,8 +79,8 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=in_flight_conversation_id,
-                        registration_event_datetime=report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                        conversation_id=conversation_id,
+                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
@@ -129,7 +132,7 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
     
-    def test_integrated_in_8_days_count(self):
+    def test_records_integrated_within_8_days_count(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -138,17 +141,17 @@ class TestIntegrationEightDaysGraph(TestBase):
         report_end = generate_report_end_date()
         cutoff = "0"
 
-        # test requires a date difference of less than 8 days.
-        registration_event_datetime = datetime_utc_now().replace(day=1)
-        ehr_integrated_datetime = datetime_utc_now().replace(day=8)
+        # Date difference of less than 8 days from the EHR response and integration events
+        registration_event_datetime = datetime_utc_now() - timedelta(days=7)
+        ehr_integrated_datetime = datetime_utc_now()
 
         try:
-            integrated_conversation_id = "test_integrated_on_time"
+            conversation_id = "integrated_on_time"
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -166,7 +169,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -179,7 +182,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
@@ -192,7 +195,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -205,7 +208,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         sendingSupplierName="EMIS",
@@ -262,7 +265,7 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_integrated_after_8_days_count(self):
+    def test_records_integrated_after_8_days_count(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -271,17 +274,17 @@ class TestIntegrationEightDaysGraph(TestBase):
         report_end = generate_report_end_date()
         cutoff = "0"
 
-        # test requires a date difference of more than 8 days.
-        registration_event_datetime = datetime_utc_now()
-        ehr_integrated_datetime = datetime_utc_now() + timedelta(days=9)
+        # Date difference of more than 8 days from the EHR response and integration events
+        registration_event_datetime = datetime_utc_now() - timedelta(days=9)
+        ehr_integrated_datetime = datetime_utc_now()
 
         try:
-            integrated_conversation_id = "test_integrated_on_time"
+            conversation_id = "integrated_late"
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -299,7 +302,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -312,7 +315,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
@@ -325,7 +328,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -338,7 +341,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         sendingSupplierName="EMIS",
@@ -350,7 +353,6 @@ class TestIntegrationEightDaysGraph(TestBase):
                     )),
                 sourcetype="myevent"
             )
-
 
             # Act
             test_query = self.generate_splunk_query_from_report(
@@ -395,7 +397,7 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_not_integrated_after_8_days_count(self):
+    def test_records_not_integrated_after_8_days_count(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -404,15 +406,16 @@ class TestIntegrationEightDaysGraph(TestBase):
         report_end = generate_report_end_date()
         cutoff = "0"
 
+        # Testing events that occurred more than 8 days from now i.e (> 8 days)
         registration_event_datetime = datetime_utc_now() - timedelta(days=8)
 
         try:
-            not_integrated_conversation_id = "test_not_integrated_on_time"
+            conversation_id = "not_integrated_after_8_days"
 
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=not_integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -430,7 +433,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=not_integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -443,7 +446,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=not_integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
@@ -456,7 +459,7 @@ class TestIntegrationEightDaysGraph(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id=not_integrated_conversation_id,
+                        conversation_id=conversation_id,
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -465,7 +468,6 @@ class TestIntegrationEightDaysGraph(TestBase):
                 ),
                 sourcetype="myevent",
             )
-
 
             # Act
             test_query = self.generate_splunk_query_from_report(
