@@ -17,6 +17,7 @@ from helpers.datetime_helper import (
 )
 from tests.test_base import TestBase, EventType
 
+
 class TestIntegrationEightDaysGraph(TestBase):
     def test_records_not_integrated_within_8_days_count(self):
         # Arrange
@@ -58,7 +59,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP"                        
+                        requestingSupplierName="TPP"
                     )
                 ),
                 sourcetype="myevent",
@@ -132,8 +133,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
         finally:
             self.delete_index(index_name)
-    
-    @pytest.mark.parametrize("integration_outcome",["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED", "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE" ])
+
+    @pytest.mark.parametrize("integration_outcome",
+                             ["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED",
+                              "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE"])
     def test_records_successfully_integrated_within_8_days_count(self, integration_outcome):
         # Arrange
         index_name, index = self.create_index()
@@ -175,7 +178,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP"                        
+                        requestingSupplierName="TPP"
                     )
                 ),
                 sourcetype="myevent",
@@ -223,7 +226,6 @@ class TestIntegrationEightDaysGraph(TestBase):
                 sourcetype="myevent"
             )
 
-
             # Act
             test_query = self.generate_splunk_query_from_report(
                 "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_count"
@@ -248,7 +250,9 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
 
-            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
+            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (
+                    integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (
+                    integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
 
                 expected_values = {
                     "In flight": "0",
@@ -277,7 +281,9 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    @pytest.mark.parametrize("integration_outcome",["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED", "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE" ])
+    @pytest.mark.parametrize("integration_outcome",
+                             ["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED",
+                              "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE"])
     def test_records_successfully_integrated_after_8_days_count(self, integration_outcome):
         # Arrange
         index_name, index = self.create_index()
@@ -319,7 +325,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP"                        
+                        requestingSupplierName="TPP"
                     )
                 ),
                 sourcetype="myevent",
@@ -391,7 +397,9 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
 
-            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
+            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (
+                    integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (
+                    integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
 
                 expected_values = {
                     "In flight": "0",
@@ -460,7 +468,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP"                        
+                        requestingSupplierName="TPP"
                     )
                 ),
                 sourcetype="myevent",
