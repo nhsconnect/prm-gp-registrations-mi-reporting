@@ -1,4 +1,4 @@
-{% macro gp2gp_integration_8_days_snapshot_base () %}
+{% macro gp2gp_integration_8_days_snapshot_report_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -47,4 +47,4 @@ has_errors
 
 index="$index$"
 
-{{ gp2gp_integration_8_days_snapshot_base() }}
+{{ gp2gp_integration_8_days_snapshot_report_base() }}

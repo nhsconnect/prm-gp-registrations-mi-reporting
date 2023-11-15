@@ -93,7 +93,7 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_count"
+                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_count"
             )
 
             test_query = set_variables_on_query(
@@ -228,7 +228,7 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_count"
+                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_count"
             )
 
             test_query = set_variables_on_query(
@@ -375,7 +375,7 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_count"
+                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_count"
             )
 
             test_query = set_variables_on_query(
@@ -502,7 +502,7 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_count"
+                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_count"
             )
 
             test_query = set_variables_on_query(
