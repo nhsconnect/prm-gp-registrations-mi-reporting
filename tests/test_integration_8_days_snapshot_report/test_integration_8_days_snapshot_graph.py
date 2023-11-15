@@ -1,6 +1,7 @@
 import json
 from time import sleep
 import jq
+import pytest
 from helpers.splunk import (
     get_telemetry_from_splunk,
     create_sample_event,
@@ -132,7 +133,8 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
     
-    def test_records_integrated_within_8_days_count(self):
+    @pytest.mark.parametrize("integration_outcome",["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED", "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE" ])
+    def test_records_successfully_integrated_within_8_days_count(self, integration_outcome):
         # Arrange
         index_name, index = self.create_index()
 
@@ -214,7 +216,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
                         payload=create_integration_payload(
-                            outcome="INTEGRATED"
+                            outcome=integration_outcome
                         )
 
                     )),
@@ -246,12 +248,22 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
 
-            expected_values = {
-                "In flight": "0",
-                "Integrated on time": "1",
-                "Integrated after 8 days": "0",
-                "Not integrated after 8 days": "0",
-            }
+            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
+
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "1",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
+
+            else:
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
@@ -265,7 +277,8 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_records_integrated_after_8_days_count(self):
+    @pytest.mark.parametrize("integration_outcome",["INTEGRATED", "INTEGRATED_AND_SUPPRESSED", "SUPPRESSED_AND_REACTIVATED", "FILED_AS_ATTACHMENT", "INTERNAL_TRANSFER", "REJECTED", "FAILED_TO_INTEGRATE" ])
+    def test_records_successfully_integrated_after_8_days_count(self, integration_outcome):
         # Arrange
         index_name, index = self.create_index()
 
@@ -347,7 +360,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
                         payload=create_integration_payload(
-                            outcome="INTEGRATED"
+                            outcome=integration_outcome
                         )
 
                     )),
@@ -378,12 +391,22 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
 
-            expected_values = {
-                "In flight": "0",
-                "Integrated on time": "0",
-                "Integrated after 8 days": "1",
-                "Not integrated after 8 days": "0",
-            }
+            if (integration_outcome == "INTEGRATED") or (integration_outcome == "INTEGRATED_AND_SUPPRESSED") or (integration_outcome == "SUPPRESSED_AND_REACTIVATED") or (integration_outcome == "FILED_AS_ATTACHMENT") or (integration_outcome == "INTERNAL_TRANSFER"):
+
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "1",
+                    "Not integrated after 8 days": "0",
+                }
+
+            else:
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
