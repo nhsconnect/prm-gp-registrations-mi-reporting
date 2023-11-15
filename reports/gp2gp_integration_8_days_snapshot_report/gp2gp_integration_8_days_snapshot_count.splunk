@@ -7,18 +7,6 @@ gp2gp_integration_8_days_snapshot_base %}
 
 | WHERE isTransferCompatible==1
 
-```
-| eval integrationStatus = case(    
-    notIntegratedUnder8Days == 1, "In flight",
-    integratedUnder8Days == 1, "Integrated on time",
-    integratedOver8Days == 1, "Integrated after 8 days",
-    notIntegratedOver8Days == 1, "Not integrated after 8 days")
-
-|eventstats count by integrationStatus
-
-|table integrationStatus count
-
-```
 | stats
     count(eval(notIntegratedUnder8Days == 1)) as in_flight,
     count(eval(integratedUnder8Days == 1)) as integrated_on_time,
