@@ -19,7 +19,8 @@ from tests.test_base import TestBase, EventType
 
 
 class TestIntegrationEightDaysGraph(TestBase):
-    def test_records_not_integrated_within_8_days_count(self):
+    @pytest.mark.parametrize("overall_status", ["READY_TO_BE_INTEGRATED", "NOT_READY_TO_BE_INTEGRATED"])
+    def test_records_not_integrated_within_8_days_count(self, overall_status):
         # Arrange
         index_name, index = self.create_index()
 
@@ -78,18 +79,19 @@ class TestIntegrationEightDaysGraph(TestBase):
                 sourcetype="myevent",
             )
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversation_id,
-                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                    )
-                ),
-                sourcetype="myevent",
-            )
+            if overall_status == "READY_TO_BE_INTEGRATED":
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=conversation_id,
+                            registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
 
             # Act
             test_query = self.generate_splunk_query_from_report(
@@ -115,12 +117,20 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
 
-            expected_values = {
-                "In flight": "1",
-                "Integrated on time": "0",
-                "Integrated after 8 days": "0",
-                "Not integrated after 8 days": "0",
-            }
+            if overall_status == "READY_TO_BE_INTEGRATED":
+                expected_values = {
+                    "In flight": "1",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
+            else:
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
@@ -428,7 +438,8 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_records_not_integrated_after_8_days_count(self):
+    @pytest.mark.parametrize("overall_status", ["READY_TO_BE_INTEGRATED", "NOT_READY_TO_BE_INTEGRATED"])
+    def test_records_not_integrated_after_8_days_count(self, overall_status):
         # Arrange
         index_name, index = self.create_index()
 
@@ -487,18 +498,19 @@ class TestIntegrationEightDaysGraph(TestBase):
                 sourcetype="myevent",
             )
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=conversation_id,
-                        registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
-                        sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                    )
-                ),
-                sourcetype="myevent",
-            )
+            if overall_status == "READY_TO_BE_INTEGRATED":
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=conversation_id,
+                            registration_event_datetime=registration_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
 
             # Act
             test_query = self.generate_splunk_query_from_report(
@@ -523,13 +535,20 @@ class TestIntegrationEightDaysGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-
-            expected_values = {
-                "In flight": "0",
-                "Integrated on time": "0",
-                "Integrated after 8 days": "0",
-                "Not integrated after 8 days": "1",
-            }
+            if overall_status == "READY_TO_BE_INTEGRATED":
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "1",
+                }
+            else:
+                expected_values = {
+                    "In flight": "0",
+                    "Integrated on time": "0",
+                    "Integrated after 8 days": "0",
+                    "Not integrated after 8 days": "0",
+                }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
