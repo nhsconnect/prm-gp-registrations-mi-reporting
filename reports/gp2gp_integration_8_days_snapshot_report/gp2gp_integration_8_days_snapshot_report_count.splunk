@@ -5,8 +5,6 @@ gp2gp_integration_8_days_snapshot_report_base %}
 
 {{ gp2gp_integration_8_days_snapshot_report_base() }}
 
-| WHERE isTransferCompatible==1
-
 | stats
     count(eval(notIntegratedUnder8Days == 1 AND outcome == "Awaiting integration")) as in_flight,
     count(eval(integratedUnder8Days == 1 AND outcome == "Successful integration")) as integrated_on_time,
