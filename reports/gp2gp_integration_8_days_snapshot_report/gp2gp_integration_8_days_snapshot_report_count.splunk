@@ -11,13 +11,11 @@ gp2gp_integration_8_days_snapshot_report_base %}
     count(eval(integratedOver8Days == 1 AND outcome == "Successful integration")) as integrated_after_8_days,
     count(eval(notIntegratedOver8Days == 1 AND outcome == "Awaiting integration")) as not_integrated_after_8_days
 
-| eval label=mvappend("In flight", "Integrated on time", "Integrated after 8 days", "Not integrated after 8 days")
-| eval count=mvappend(in_flight, integrated_on_time, integrated_after_8_days, not_integrated_after_8_days)
+| eval integration_status = mvappend("In flight", "Integrated on time", "Integrated after 8 days", "Not integrated after 8 days")
+| eval count = mvappend(in_flight, integrated_on_time, integrated_after_8_days, not_integrated_after_8_days)
 
-| eval soft_zip = mvzip(label, count)
+| eval soft_zip = mvzip(integration_status, count)
 | mvexpand soft_zip
  
-| rex field=soft_zip "(?<label>.*),(?<count>.*)"
-| table label, count
-
-    
+| rex field=soft_zip "(?<integration_status>.*),(?<count>.*)"
+| table integration_status, count
