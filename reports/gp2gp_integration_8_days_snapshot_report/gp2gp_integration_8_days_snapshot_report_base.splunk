@@ -11,7 +11,6 @@ calculate_outcome,
 calculate_registration_status,
 generate_report_start_and_end_time,
 filter_conversations_by_start_and_end_times_and_cutoff,
-calculate_integration_sla_status,
 has_errors 
 %}
 
@@ -40,7 +39,6 @@ has_errors
 
 {{ has_errors() }}
 {{ calculate_registration_status() }}
-{{ calculate_integration_sla_status() }}
 {{ calculate_outcome() }}
 
 {% endmacro %}

@@ -5,17 +5,25 @@ gp2gp_integration_8_days_snapshot_report_base %}
 
 {{ gp2gp_integration_8_days_snapshot_report_base() }}
 
+| eval integrationStatus = case(
+    registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,"integratedAndUnder8Days",
+    registrationStatus == "INTEGRATION", "integratedAndOver8Days",
+    registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "notIntegratedAndUnder8Days",
+    registrationStatus == "READY_TO_INTEGRATE", "notIntegratedAndOver8Days",
+    1=1, "Unknown"
+   )
+
 | stats
-    count(eval(notIntegratedUnder8Days == 1 AND outcome == "Awaiting integration")) as in_flight,
-    count(eval(integratedUnder8Days == 1 AND outcome == "Successful integration")) as integrated_on_time,
-    count(eval(integratedOver8Days == 1 AND outcome == "Successful integration")) as integrated_after_8_days,
-    count(eval(notIntegratedOver8Days == 1 AND outcome == "Awaiting integration")) as not_integrated_after_8_days
+    count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
+    count(eval(integrationStatus == "integratedAndUnder8Days" AND outcome == "Successful integration")) as integrated_on_time,
+    count(eval(integrationStatus == "integratedAndOver8Days" AND outcome == "Successful integration")) as integrated_after_8_days,
+    count(eval(integrationStatus == "notIntegratedAndOver8Days"AND outcome == "Awaiting integration")) as not_integrated_after_8_days
 
 | eval integration_status = mvappend("In flight", "Integrated on time", "Integrated after 8 days", "Not integrated after 8 days")
 | eval count = mvappend(in_flight, integrated_on_time, integrated_after_8_days, not_integrated_after_8_days)
 
 | eval soft_zip = mvzip(integration_status, count)
 | mvexpand soft_zip
- 
+
 | rex field=soft_zip "(?<integration_status>.*),(?<count>.*)"
 | table integration_status, count
