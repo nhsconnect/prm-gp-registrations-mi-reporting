@@ -5,26 +5,11 @@ gp2gp_integration_8_days_snapshot_report_base %}
 
 {{ gp2gp_integration_8_days_snapshot_report_base() }}
 
-| eval integrationStatus = case(
-    registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,"integratedAndUnder8Days",
-    registrationStatus == "INTEGRATION", "integratedAndOver8Days",
-    registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "notIntegratedAndUnder8Days",
-    registrationStatus == "READY_TO_INTEGRATE", "notIntegratedAndOver8Days",
-    1=1, "Unknown"
-   )
-
-| stats
-    count(eval(outcome == "Awaiting integration")) as total_awaiting_integration,
-    count(eval(outcome == "Successful integration")) as total_successful_integration,
-    count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
-    count(eval(integrationStatus == "integratedAndUnder8Days" AND outcome == "Successful integration")) as integrated_on_time,
-    count(eval(integrationStatus == "integratedAndOver8Days" AND outcome == "Successful integration")) as integrated_after_8_days,
-    count(eval(integrationStatus == "notIntegratedAndOver8Days"AND outcome == "Awaiting integration")) as not_integrated_after_8_days
-
 | eval in_flight_percent = round(in_flight/total_awaiting_integration*100, 2)
+| eval not_integrated_after_8_days_percent = round(not_integrated_after_8_days/total_awaiting_integration*100, 2)
+
 | eval integrated_on_time_percent = round(integrated_on_time/total_successful_integration*100, 2)
 | eval integrated_after_8_days_percent = round(integrated_after_8_days/total_successful_integration*100, 2)
-| eval not_integrated_after_8_days_percent = round(not_integrated_after_8_days/total_awaiting_integration*100, 2)
 
 | eval integration_status = mvappend("In flight", "Integrated on time", "Integrated after 8 days", "Not integrated after 8 days")
 | eval percent = mvappend(in_flight_percent, integrated_on_time_percent, integrated_after_8_days_percent, not_integrated_after_8_days_percent)
