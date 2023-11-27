@@ -54,7 +54,8 @@ has_errors
     count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
     count(eval(integrationStatus == "notIntegratedAndOver8Days"AND outcome == "Awaiting integration")) as not_integrated_after_8_days,
     count(eval(outcome == "Awaiting integration")) as total_awaiting_integration,
-    count(eval(outcome == "Successful integration")) as total_successful_integration
+    count(eval(outcome == "Successful integration")) as total_successful_integration,
+    count(eval(outcome != "Not eligible for electronic transfer")) as total_number_of_eligible_transfers
 
 {% endmacro %}
 

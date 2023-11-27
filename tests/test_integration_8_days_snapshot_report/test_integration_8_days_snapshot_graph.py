@@ -15,6 +15,7 @@ from helpers.splunk import (
     create_sample_event,
     set_variables_on_query,
     create_integration_payload,
+    create_transfer_compatibility_payload,
 )
 from tests.test_base import TestBase, EventType
 
@@ -373,7 +374,7 @@ class TestIntegrationEightDaysGraph(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_records_integration_8_days_snapshot_report_percentage(self):
+    def test_records_integration_8_days_snapshot_report_overall_percentage(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -390,40 +391,32 @@ class TestIntegrationEightDaysGraph(TestBase):
 
         integration_outcome_list = [
             "INTEGRATED",
-            "REJECTED",
+            "INTEGRATED_AND_SUPPRESSED",
+            "REJECTED"
         ]
 
         try:
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id="integration_on_time",
-                        registration_event_datetime=on_time_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_RESPONSES.value,
-                        sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                    )
-                ),
-                sourcetype="myevent",
-            )
-
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id="integration_on_time",
-                        registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.EHR_INTEGRATIONS.value,
-                        sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                        payload=create_integration_payload(
-                            outcome="INTEGRATED"
-                        )
-
-                    )),
-                sourcetype="myevent"
-            )
-
             for idx, registration_time in enumerate(registration_event_time_list):
+                # Eligible for transfer
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'eligible_for_transfer_{idx}',
+                            registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                            payload=create_transfer_compatibility_payload(
+                                internalTransfer=False,
+                                transferCompatible=True,
+                                reason="test1"
+                            )
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
+
+                # Awaiting Integration
                 index.submit(
                     json.dumps(
                         create_sample_event(
@@ -450,6 +443,7 @@ class TestIntegrationEightDaysGraph(TestBase):
                     sourcetype="myevent",
                 )
 
+                # Integration outcomes
                 for outcome in integration_outcome_list:
                     index.submit(
                         json.dumps(
@@ -482,7 +476,7 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Act
             test_query = self.generate_splunk_query_from_report(
-                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_percentage"
+                "gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_overall_percentage"
             )
 
             test_query = set_variables_on_query(
@@ -504,10 +498,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
             expected_values = {
-                "In flight": "50.00",
-                "Integrated on time": "66.67",
-                "Integrated after 8 days": "33.33",
-                "Not integrated after 8 days": "50.00",
+                "In flight": "10.00",
+                "Integrated on time": "20.00",
+                "Integrated after 8 days": "20.00",
+                "Not integrated after 8 days": "10.00",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
