@@ -618,3 +618,119 @@ class TestIntegrationEightDaysGraph(TestBase):
 
         finally:
             self.delete_index(index_name)
+
+    def test_records_integration_8_days_snapshot_report_successful_integration_percentage(self):
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+        on_time_event_datetime = datetime_utc_now() - timedelta(days=7)
+        late_event_datetime = datetime_utc_now() - timedelta(days=9)
+
+        registration_event_time_list = [on_time_event_datetime, late_event_datetime]
+        ehr_integrated_datetime = datetime_utc_now()
+
+        successful_integration_outcome_list = [
+            "INTEGRATED",
+            "INTEGRATED_AND_SUPPRESSED",
+            "SUPPRESSED_AND_REACTIVATED",
+            "FILED_AS_ATTACHMENT",
+            "INTERNAL_TRANSFER"
+        ]
+
+        try:
+            for idx, registration_time in enumerate(registration_event_time_list):
+                # Eligible for transfer
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'eligible_for_transfer_{idx}',
+                            registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                            payload=create_transfer_compatibility_payload(
+                                internalTransfer=False,
+                                transferCompatible=True,
+                                reason="test1"
+                            )
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
+
+                # Successful integrations
+                for outcome in successful_integration_outcome_list:
+                    index.submit(
+                        json.dumps(
+                            create_sample_event(
+                                conversation_id=f'integration_on_{idx}_with_{outcome}',
+                                registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                event_type=EventType.EHR_RESPONSES.value,
+                                sendingSupplierName="EMIS",
+                                requestingSupplierName="TPP",
+                            )
+                        ),
+                        sourcetype="myevent",
+                    )
+
+                    index.submit(
+                        json.dumps(
+                            create_sample_event(
+                                conversation_id=f'integration_on_{idx}_with_{outcome}',
+                                registration_event_datetime=ehr_integrated_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                event_type=EventType.EHR_INTEGRATIONS.value,
+                                sendingSupplierName="EMIS",
+                                requestingSupplierName="TPP",
+                                payload=create_integration_payload(
+                                    outcome=outcome
+                                )
+
+                            )),
+                        sourcetype="myevent"
+                    )
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_integration_8_days_snapshot_report"
+                "/gp2gp_integration_8_days_snapshot_report_successful_integration_percentage"
+            )
+
+            test_query = set_variables_on_query(
+                test_query,
+                {
+                    "$index$": index_name,
+                    "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    "$cutoff$": cutoff,
+                },
+            )
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service
+            )
+            self.LOG.info(f"telemetry: {telemetry}")
+
+            # Assert
+            expected_values = {
+                "Integrated on time": "50.00",
+                "Integrated after 8 days": "50.00",
+            }
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(
+                    f'.[{idx}] | select( .successful_integration_status=="{key}") | select (.percent=="{value}")'
+                )
+                assert jq.first(
+                    f'.[{idx}] | select( .successful_integration_status=="{key}") | select (.percent=="{value}")',
+                    telemetry,
+                )
+
+        finally:
+            self.delete_index(index_name)
