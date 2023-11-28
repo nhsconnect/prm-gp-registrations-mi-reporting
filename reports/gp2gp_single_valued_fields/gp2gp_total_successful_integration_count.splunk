@@ -5,5 +5,5 @@ gp2gp_single_valued_fields_base %}
 
 {{ gp2gp_single_valued_fields_base() }}
 
-| stats count(eval(outcome == "Successful integration")) as total_successfully_integrated
-| table total_successfully_integrated
+| stats count(eval(outcome == "Successful integration")) as total_successful_integration
+| table total_successful_integration

@@ -367,7 +367,7 @@ class TestSingleValuedFieldOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_single_valued_field_total_successfully_integrated(self):
+    def test_gp2gp_single_valued_field_total_successful_integration(self):
         # Arrange
         index_name, index = self.create_index()
 
@@ -415,7 +415,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             # Act
             test_query = self.generate_splunk_query_from_report(
                 'gp2gp_single_valued_fields/'
-                'gp2gp_total_successfully_integrated_count')
+                'gp2gp_total_successful_integration_count')
 
             test_query = set_variables_on_query(test_query, {
                 "$index$": index_name,
@@ -431,7 +431,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"total_successfully_integrated": "5"}
+            expected_values = {"total_successful_integration": "5"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
