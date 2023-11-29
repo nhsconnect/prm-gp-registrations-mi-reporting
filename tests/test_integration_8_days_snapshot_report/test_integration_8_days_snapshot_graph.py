@@ -317,9 +317,36 @@ class TestIntegrationEightDaysGraph(TestBase):
         late_event_datetime = datetime_utc_now() - timedelta(days=9)
         registration_event_datetime_list = [on_time_event_datetime, late_event_datetime]
 
+        # Awaiting integration and over 8 days
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id="not_integrated_and_overtime_id",
+                    registration_event_datetime=late_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    event_type=EventType.EHR_RESPONSES.value,
+                    sendingSupplierName="EMIS",
+                    requestingSupplierName="TPP",
+                )
+            ),
+            sourcetype="myevent",
+        )
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id="not_integrated_and_overtime_id",
+                    registration_event_datetime=late_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                    sendingSupplierName="EMIS",
+                    requestingSupplierName="TPP",
+                )
+            ),
+            sourcetype="myevent",
+        )
+
+        # Generate more events
         try:
             for idx, registration_time in enumerate(registration_event_datetime_list):
-
                 # Eligible for transfer only
                 index.submit(
                     json.dumps(
@@ -391,8 +418,8 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
             expected_values = {
-                "In flight": "50.00",
-                "Not integrated after 8 days": "50.00",
+                "In flight": "33.33",
+                "Not integrated after 8 days": "66.67",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
@@ -430,6 +457,34 @@ class TestIntegrationEightDaysGraph(TestBase):
             "INTERNAL_TRANSFER"
         ]
 
+        # Successful integration within 8 days
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id="integrated_on_time_id",
+                    registration_event_datetime=on_time_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    event_type=EventType.EHR_RESPONSES.value,
+                    sendingSupplierName="EMIS",
+                    requestingSupplierName="TPP",
+                )
+            ),
+            sourcetype="myevent",
+        )
+
+        index.submit(
+            json.dumps(
+                create_sample_event(
+                    conversation_id="integrated_on_time_id",
+                    registration_event_datetime=ehr_integration_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                    event_type=EventType.EHR_INTEGRATIONS.value,
+                    sendingSupplierName="EMIS",
+                    requestingSupplierName="TPP",
+                    payload=create_integration_payload(outcome="INTEGRATED")
+                )),
+            sourcetype="myevent"
+        )
+
+        # Generate more events
         try:
             for idx, registration_time in enumerate(registration_event_datetime_list):
 
@@ -508,8 +563,8 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
             expected_values = {
-                "Integrated on time": "50.00",
-                "Integrated after 8 days": "50.00",
+                "Integrated on time": "54.55",
+                "Integrated after 8 days": "45.45",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
