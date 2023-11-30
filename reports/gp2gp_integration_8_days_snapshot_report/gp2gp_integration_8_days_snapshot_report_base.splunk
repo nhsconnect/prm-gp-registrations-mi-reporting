@@ -48,7 +48,7 @@ has_errors
     registrationStatus == "READY_TO_INTEGRATE", "notIntegratedAndOver8Days",
     1=1, "Unknown")
 
-| stats
+| eventstats
     count(eval(integrationStatus == "integratedAndUnder8Days" AND outcome == "Successful integration")) as integrated_on_time,
     count(eval(integrationStatus == "integratedAndOver8Days" AND outcome == "Successful integration")) as integrated_after_8_days,
     count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
