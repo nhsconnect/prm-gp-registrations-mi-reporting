@@ -26,6 +26,10 @@ has_errors %}
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
+| spath output=errorCode path=payload.error.errorCode
+| spath output=errorDescription path=payload.error.errorDescription
+| spath output=failurePoint path=payload.error.failurePoint
+| spath output=integrationOutcome path=payload.integration.outcome
 
 {{ calculate_transfer_compatibility() }}
 {{ calculate_internal_transfers() }}
@@ -37,6 +41,8 @@ has_errors %}
 {{ calculate_registration_status() }}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
+
+| where outcome = "Technical failure"
 
 
 {% endmacro %}
