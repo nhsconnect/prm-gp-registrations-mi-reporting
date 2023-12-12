@@ -1,0 +1,18 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_snapshot_report/gp2gp_technical_failures_snapshot_report_base.splunk' import
+gp2gp_technical_failures_snapshot_report_base %}
+
+
+{{ gp2gp_technical_failures_snapshot_report_base() }}
+
+| eval failure_point = case( isnotnull(failurePoint), failurePoint,
+                        integrationOutcome == "FAILED_TO_INTEGRATE", "EHR_INTEGRATION",
+                        1=1, "UNKNOWN"
+                       )
+
+| where case ( "$errorGraphColumn$" ==  "Integration failure", integrationOutcome = "FAILED_TO_INTEGRATE",
+               "$errorGraphColumn$" ==  "Unknown", failure_point = "UNKNOWN",
+               1=1, errorCode = "$errorGraphColumn$")
+
+| chart count by failure_point
