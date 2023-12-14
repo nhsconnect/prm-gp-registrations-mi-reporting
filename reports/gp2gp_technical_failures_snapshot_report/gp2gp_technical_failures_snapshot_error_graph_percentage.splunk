@@ -11,7 +11,12 @@ gp2gp_technical_failures_snapshot_report_base %}
           1=1, errorCode
           )
 
-| chart count by technical_failure_reason
-| eventstats sum(count) as total_technical_failures
-| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "technical_failure_reason", <<FIELD>>, round('<<FIELD>>'*100/ total_technical_failures, 2))]
+| eventstats count(eval(outcome="Technical failure")) as total_technical_failures
+
+| stats
+    first(total_technical_failures) as total_technical_failures
+    count by technical_failure_reason
+| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "technical_failure_reason", <<FIELD>>,
+                                  "<<FIELD>>" == "total_technical_failures", <<FIELD>>,
+                                  1=1, round('<<FIELD>>'*100/ total_technical_failures, 2))]
 | fields - total_technical_failures
