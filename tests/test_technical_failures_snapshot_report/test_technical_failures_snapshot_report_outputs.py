@@ -227,6 +227,102 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
+    def test_gp2gp_technical_failures_snapshot_report_error_graph_count_2_errors_1_conv(self):
+
+        # reporting window
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=28)
+        cutoff = "0"
+
+        try:
+            # Arrange
+            index_name, index = self.create_index()
+
+            # technical_failure 1
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:01:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="06",
+                            errorDescription="Not at surgery",
+                            failurePoint=EventType.EHR_REQUESTS.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:02:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:03:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="07",
+                            errorDescription="fake error",
+                            failurePoint=EventType.EHR_RESPONSES.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_technical_failures_snapshot_report'
+                '/gp2gp_technical_failures_snapshot_error_graph_count')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            # has to be this order as "chart" command arranges columns in alphabetical order
+            expected_values = {"0": {"technical_failure_reason": "06",
+                                     "count": "1"},
+                               "1": {"technical_failure_reason": "07",
+                                     "count": "1"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
 
     def test_gp2gp_technical_failures_snapshot_report_error_graph_percentage(self):
 
@@ -423,6 +519,103 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
                                      "count": "10.00"},
                                "3": {"technical_failure_reason": "Integration failure",
                                      "count": "40.00"},
+                               }
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_technical_failures_snapshot_report_error_graph_percentage_2_errors_1_conv(self):
+
+        # reporting window
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=28)
+        cutoff = "0"
+
+        try:
+            # Arrange
+            index_name, index = self.create_index()
+
+            # technical_failure 1
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:01:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="06",
+                            errorDescription="Not at surgery",
+                            failurePoint=EventType.EHR_REQUESTS.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:02:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_technical_failure_1',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:03:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="07",
+                            errorDescription="fake error",
+                            failurePoint=EventType.EHR_RESPONSES.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_technical_failures_snapshot_report'
+                '/gp2gp_technical_failures_snapshot_error_graph_percentage')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            # has to be this order as "chart" command arranges columns in alphabetical order
+            expected_values = {"0": {"technical_failure_reason": "06",
+                                     "count": "100.00"},
+                               "1": {"technical_failure_reason": "07",
+                                     "count": "100.00"},
                                }
 
             for row, row_values in expected_values.items():
