@@ -1,0 +1,9 @@
+index="$index$"
+
+{% from 'gp2gp_single_valued_fields/gp2gp_single_valued_fields_base.splunk' import
+gp2gp_single_valued_fields_base %}
+
+{{ gp2gp_single_valued_fields_base() }}
+
+| stats count(eval(outcome == "Awaiting integration")) as total_awaiting_integration
+| table total_awaiting_integration

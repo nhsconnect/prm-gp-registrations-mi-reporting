@@ -1,0 +1,21 @@
+index="$index$"
+
+{% from 'gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_base.splunk' import
+gp2gp_integration_8_days_snapshot_report_base %}
+
+{{ gp2gp_integration_8_days_snapshot_report_base() }}
+
+| eval percentage_in_flight = round((in_flight/total_number_of_eligible_transfers) * 100,2)
+| eval percentage_integrated_on_time = round((integrated_on_time/total_number_of_eligible_transfers) * 100, 2)
+| eval percentage_integrated_after_8_days = round((integrated_after_8_days/total_number_of_eligible_transfers) * 100, 2)
+| eval percentage_not_integrated_after_8_days = round((not_integrated_after_8_days/total_number_of_eligible_transfers) * 100, 2)
+
+| eval integration_status = mvappend("In flight", "Integrated on time", "Integrated after 8 days", "Not integrated after 8 days")
+| eval percent = mvappend(percentage_in_flight, percentage_integrated_on_time, percentage_integrated_after_8_days, percentage_not_integrated_after_8_days)
+
+| eval soft_zip = mvzip(integration_status, percent)
+| mvexpand soft_zip
+
+| rex field=soft_zip "(?<integration_status>.*),(?<percent>.*)"
+| table integration_status, percent
+

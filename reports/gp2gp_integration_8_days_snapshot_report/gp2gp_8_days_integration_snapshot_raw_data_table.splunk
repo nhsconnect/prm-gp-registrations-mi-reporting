@@ -1,0 +1,34 @@
+index="$index$"
+
+{% from 'gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_report_base.splunk' import
+gp2gp_integration_8_days_snapshot_report_base %}
+
+{{ gp2gp_integration_8_days_snapshot_report_base() }}
+
+| WHERE outcome == "Awaiting integration" OR outcome == "Successful integration"
+
+| eval conversation_id = conversationId
+| eval reporting_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+| where case("$column$" == "In flight", integrationStatus == "notIntegratedAndUnder8Days"
+                                        and outcome == "Awaiting integration",
+             "$column$" == "Integrated on time", integrationStatus == "integratedAndUnder8Days"
+                                        and outcome == "Successful integration",
+             "$column$" == "Integrated after 8 days", integrationStatus == "integratedAndOver8Days"
+                                        and outcome == "Successful integration",
+             "$column$" == "Not integrated after 8 days", integrationStatus == "notIntegratedAndOver8Days"
+                                        and outcome == "Awaiting integration",
+
+             1=1, 1=0)
+
+| table
+    conversation_id,
+    reporting_supplier_name,
+    requesting_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code
