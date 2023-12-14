@@ -1,0 +1,64 @@
+{% macro gp2gp_integration_8_days_snapshot_report_base () %}
+
+{% from 'functions.splunk' import
+calculate_transfer_compatibility,
+filter_non_transfers,
+calculate_internal_transfers,
+exclude_internal_transfers,
+set_time_to_registration_datetime,
+filter_reporting_window,
+calculate_outcome,
+calculate_registration_status,
+generate_report_start_and_end_time,
+filter_conversations_by_start_and_end_times_and_cutoff,
+has_errors 
+%}
+
+{{ set_time_to_registration_datetime() }}
+
+{{ generate_report_start_and_end_time() }}
+{{ filter_conversations_by_start_and_end_times_and_cutoff() }}
+
+| spath output=transferCompatible path=payload.transferCompatibilityStatus.transferCompatible
+| spath output=integration_outcome path=payload{}.integration.outcome
+
+| eval ehrResponseEventDateTime = if(eventType="EHR_RESPONSES",_time, null())
+| eval ehrRequestEventDateTime = if(eventType="EHR_REQUESTS",_time, null())
+| eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
+| eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
+| eval ehrIntegrationEventDateTime = if(eventType="EHR_INTEGRATIONS",_time, null())
+
+{{ calculate_transfer_compatibility() }}
+{{ calculate_internal_transfers() }}
+{{ exclude_internal_transfers() }}
+ 
+| transaction conversationId keeporphans=t
+
+| eval isIntegrated = if(eventType="EHR_INTEGRATIONS", 1, 0)
+| eval readyToIntegrate = if(eventType="READY_TO_INTEGRATE_STATUSES", 1, 0)
+
+{{ has_errors() }}
+{{ calculate_registration_status() }}
+{{ calculate_outcome() }}
+
+| eval integrationStatus = case(
+    registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,"integratedAndUnder8Days",
+    registrationStatus == "INTEGRATION", "integratedAndOver8Days",
+    registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "notIntegratedAndUnder8Days",
+    registrationStatus == "READY_TO_INTEGRATE", "notIntegratedAndOver8Days",
+    1=1, "Unknown")
+
+| eventstats
+    count(eval(integrationStatus == "integratedAndUnder8Days" AND outcome == "Successful integration")) as integrated_on_time,
+    count(eval(integrationStatus == "integratedAndOver8Days" AND outcome == "Successful integration")) as integrated_after_8_days,
+    count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
+    count(eval(integrationStatus == "notIntegratedAndOver8Days"AND outcome == "Awaiting integration")) as not_integrated_after_8_days,
+    count(eval(outcome == "Awaiting integration")) as total_awaiting_integration,
+    count(eval(outcome == "Successful integration")) as total_successful_integration,
+    count(eval(outcome != "Not eligible for electronic transfer")) as total_number_of_eligible_transfers
+
+{% endmacro %}
+
+index="$index$"
+
+{{ gp2gp_integration_8_days_snapshot_report_base() }}
