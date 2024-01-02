@@ -1,0 +1,40 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_snapshot_report/gp2gp_technical_failures_snapshot_report_base.splunk' import
+gp2gp_technical_failures_snapshot_report_base %}
+
+
+{{ gp2gp_technical_failures_snapshot_report_base() }}
+
+| eval conversation_id = conversationId
+| eval report_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+| eval failure_point = case( isnotnull(failurePoint), failurePoint,
+                        integrationOutcome == "FAILED_TO_INTEGRATE", "EHR_INTEGRATION",
+                        1=1, "UNKNOWN"
+                       )
+
+| eval broken_24h_sla = totalTransferTimeOutsideSla24Hours
+| eval broken_ehr_sending_sla = totalEhrSendingOutsideSla
+| eval broken_ehr_requesting_sla = totalEhrRequestingOutsideSla
+| eval error_code = errorCode
+| eval error_desc = errorDescription
+
+| table conversation_id,
+        report_supplier_name,
+        requesting_supplier_name,
+        sending_supplier_name,
+        reporting_practice_ods_code,
+        requesting_practice_ods_code,
+        sending_practice_ods_code,
+        error_code,
+        failure_point,
+        error_desc,
+        broken_24h_sla,
+        broken_ehr_sending_sla,
+        broken_ehr_requesting_sla
