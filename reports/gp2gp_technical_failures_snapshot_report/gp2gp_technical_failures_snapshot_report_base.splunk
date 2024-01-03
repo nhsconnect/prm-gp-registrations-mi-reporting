@@ -31,6 +31,12 @@ has_errors %}
 | spath output=failurePoint path=payload.error.failurePoint
 | spath output=integrationOutcome path=payload.integration.outcome
 
+| eval failure_point = case( isnotnull(failurePoint), failurePoint,
+                             1=1, "UNKNOWN"
+                             )
+| eval error_code = if(isnotnull(errorCode), errorCode, "UNKNOWN")
+| eval error_code_failure_point_mv = mvzip(error_code, failure_point)
+
 {{ calculate_transfer_compatibility() }}
 {{ calculate_internal_transfers() }}
 {{ exclude_internal_transfers() }}

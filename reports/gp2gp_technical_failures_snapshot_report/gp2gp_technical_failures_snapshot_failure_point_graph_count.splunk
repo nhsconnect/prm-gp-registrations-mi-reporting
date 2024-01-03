@@ -6,13 +6,13 @@ gp2gp_technical_failures_snapshot_report_base %}
 
 {{ gp2gp_technical_failures_snapshot_report_base() }}
 
-| eval failure_point = case( isnotnull(failurePoint), failurePoint,
-                        integrationOutcome == "FAILED_TO_INTEGRATE", "EHR_INTEGRATION",
-                        1=1, "UNKNOWN"
-                       )
+| mvexpand error_code_failure_point_mv
+| eval error_code=mvindex(split(error_code_failure_point_mv, ","),0),
+       failure_point=mvindex(split(error_code_failure_point_mv, ","),1)
 
-| where case ( "$errorGraphColumn$" ==  "Integration failure", integrationOutcome = "FAILED_TO_INTEGRATE",
-               "$errorGraphColumn$" ==  "Unknown", failure_point = "UNKNOWN",
-               1=1, errorCode = "$errorGraphColumn$")
+
+| where case ( "$errorGraphColumn$" ==  "Integration failure", failure_point = "EHR_INTEGRATION",
+               "$errorGraphColumn$" ==  "Unknown", error_code = "UNKNOWN",
+               1=1, error_code = "$errorGraphColumn$")
 
 | chart count by failure_point
