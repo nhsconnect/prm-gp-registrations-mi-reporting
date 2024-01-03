@@ -112,6 +112,121 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
+    def test_gp2gp_technical_failures_raw_data_table_output_multiple_errors_1_conv(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+
+
+        try:
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_multiple_errors",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_multiple_errors",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="31",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_multiple_errors",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_multiple_errors",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_RESPONSE"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_technical_failures_snapshot_report/"
+                "gp2gp_technical_failures_snapshot_raw_data_table")
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff
+                # "$column$": "Successfully integrated"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            expected_vals = {"0": {"error_code": "09",
+                                   "failure_point": "EHR_RESPONSE",
+                                   },
+                             "1": {"error_code": "31",
+                                   "failure_point": "EHR_INTEGRATIONS",
+                                   }
+                             }
+
+            # Assert
+            for idx, vals in expected_vals.items():
+                assert jq.all(
+                    f".[{idx}] "
+                    + f'| select( .conversation_id == "test_multiple_errors")'
+                    + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                    + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                    + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                    + f'| select( .reporting_practice_ods_code == "A00029")'
+                    + f'| select( .requesting_practice_ods_code == "A00029")'
+                    + f'| select( .sending_practice_ods_code == "B00157")'
+                    + f'| select( .error_code == "{vals["error_code"]}")'
+                    + f'| select( .failure_point == "{vals["failure_point"]}")'
+                    + f'| select( .error_desc == "random error")'
+                    + f'| select( .broken_24h_sla == "0")'
+                    + f'| select( .broken_ehr_sending_sla == "0")'
+                    + f'| select( .broken_ehr_requesting_sla == "0")'
+                    , telemetry
+                )
+
+        finally:
+            self.delete_index(index_name)
 
     @pytest.mark.parametrize("sla_status",
                              ["broken_ehr_requesting_sla",

@@ -36,6 +36,7 @@ has_errors %}
                              )
 | eval error_code = if(isnotnull(errorCode), errorCode, "UNKNOWN")
 | eval error_code_failure_point_mv = mvzip(error_code, failure_point)
+| eval error_code_failure_point_error_desc_mv = mvzip(errorCode, mvzip(failurePoint, errorDescription))
 
 {{ calculate_transfer_compatibility() }}
 {{ calculate_internal_transfers() }}
