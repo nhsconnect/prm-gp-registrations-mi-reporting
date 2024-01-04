@@ -24,6 +24,7 @@ gp2gp_technical_failures_snapshot_report_base %}
 | eval broken_ehr_requesting_sla = totalEhrRequestingOutsideSla
 
 | where case ("$errorGraphColumn$" == "none", 0=1,
+              "$errorGraphColumn$" == "Integration failure", failure_point=="EHR_INTEGRATION",
               1=1, "$errorGraphColumn$" == error_code
               )
 | where case ("$failurePointGraphColumn$" == "none", 1=1,
