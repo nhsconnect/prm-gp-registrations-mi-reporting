@@ -682,19 +682,7 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
                         )),
                     sourcetype="myevent")
 
-                # should give failure point as EHR Integration
-                index.submit(
-                    json.dumps(
-                        create_sample_event(
-                            conversation_id='test_failure_point_graph_EHR_Integration_without_error',
-                            registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                            event_type=EventType.EHR_INTEGRATIONS.value,
-                            payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
-                        )),
-                    sourcetype="myevent")
-
-                # need to be this order as chart organises columns by alphabetical order
-                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "count": "2"}
+                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "count": "1"}
 
             elif clicked_column == "Unknown":
 

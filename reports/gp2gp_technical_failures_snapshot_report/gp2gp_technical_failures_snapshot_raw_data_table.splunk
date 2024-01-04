@@ -23,6 +23,13 @@ gp2gp_technical_failures_snapshot_report_base %}
 | eval broken_ehr_sending_sla = totalEhrSendingOutsideSla
 | eval broken_ehr_requesting_sla = totalEhrRequestingOutsideSla
 
+| where case ("$errorGraphColumn$" == "none", 0=1,
+              1=1, "$errorGraphColumn$" == error_code
+              )
+| where case ("$failurePointGraphColumn$" == "none", 1=1,
+              1=1, "$failurePointGraphColumn$" == failure_point
+              )
+
 | table conversation_id,
         report_supplier_name,
         requesting_supplier_name,

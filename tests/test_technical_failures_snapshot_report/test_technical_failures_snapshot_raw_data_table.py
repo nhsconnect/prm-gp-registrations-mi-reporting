@@ -10,10 +10,22 @@ from helpers.datetime_helper import create_date_time, generate_report_start_date
     generate_report_end_date
 
 
-
 class TestTechnicalFailuresRawDataTableOutputs(TestBase):
 
-    def test_gp2gp_technical_failures_raw_data_table_output(self):
+    @pytest.mark.parametrize("error_type, failure_point", [("06", "EHR Ready to Integrate"),
+                                                           ("06", "EHR Requested"),
+                                                           ("06", "EHR Response"),
+                                                           ("07", "Endpoint Lookup"),
+                                                           ("07", "Other"),
+                                                           ("07", "Patient General Update"),
+                                                           ("09", "Patient Trace"),
+                                                           ("09", "EHR Ready to Integrate"),
+                                                           ("09", "EHR Requested"),
+                                                           ("Integration failure", "EHR Response"),
+                                                           ("Integration failure", "Endpoint Lookup"),
+                                                           ("Integration failure", "Other"),
+                                                           ])
+    def test_gp2gp_technical_failures_raw_data_table_outputs(self, error_type, failure_point):
 
         # Arrange
         index_name, index = self.create_index()
@@ -23,50 +35,34 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
         report_end = generate_report_end_date()
         cutoff = "0"
 
-        error_type_and_failure_point = [
-            ("06", "EHR Ready to Integrate"),
-            ("06", "EHR Requested"),
-            ("06", "EHR Response"),
-            ("07", "Endpoint Lookup"),
-            ("07", "Other"),
-            ("07", "Patient General Update"),
-            ("09", "Patient Trace"),
-            ("09", "EHR Ready to Integrate"),
-            ("09", "EHR Requested"),
-            ("Integration failure", "EHR Response"),
-            ("Integration failure", "Endpoint Lookup"),
-            ("Integration failure", "Other"),
-        ]
-
         try:
-            for (error_type, failure_point) in error_type_and_failure_point:
 
-                # create event
-                index.submit(
-                    json.dumps(
-                        create_sample_event(
-                            conversation_id="test_"+error_type+"_"+failure_point.replace(" ", "_"),
-                            registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                            event_type=EventType.EHR_INTEGRATIONS.value,
-                            payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
-                        )),
-                    sourcetype="myevent")
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_" + error_type + "_" + failure_point.replace(" ", "_"),
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
 
-                # create error
-                index.submit(
-                    json.dumps(
-                        create_sample_event(
-                            conversation_id="test_"+error_type+"_"+failure_point.replace(" ", "_"),
-                            registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
-                            event_type=EventType.ERRORS.value,
-                            payload=create_error_payload(
-                                errorCode=error_type,
-                                errorDescription="random error",
-                                failurePoint=failure_point
-                            )
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_" + error_type + "_" + failure_point.replace(" ", "_"),
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode=error_type,
+                            errorDescription="random error",
+                            failurePoint=failure_point
+                        )
 
-                        )),
-                    sourcetype="myevent")
+                    )),
+                sourcetype="myevent")
 
             # Act
             test_query = self.generate_splunk_query_from_report(
@@ -77,8 +73,9 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
                 "$index$": index_name,
                 "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                "$cutoff$": cutoff
-                # "$column$": "Successfully integrated"
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": error_type,
+                "$failurePointGraphColumn$": failure_point
             })
 
             sleep(2)
@@ -88,31 +85,33 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            conversation_ids = ["test_"+error_type+"_"+failure_point.replace(" ", "_") for (error_type, failure_point)
-                                in error_type_and_failure_point]
-            for idx in range(len(conversation_ids)):
-                assert jq.first(
-                    f".[{idx}] "
-                    + f'| select( .conversation_id == "{conversation_ids[idx]}")'
-                    + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
-                    + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
-                    + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
-                    + f'| select( .reporting_practice_ods_code == "A00029")'
-                    + f'| select( .requesting_practice_ods_code == "A00029")'
-                    + f'| select( .sending_practice_ods_code == "B00157")'
-                    + f'| select( .error_code == "{error_type_and_failure_point[idx][0]}")'
-                    + f'| select( .failure_point == "{error_type_and_failure_point[idx][1]}")'
-                    + f'| select( .error_desc == "random error")'
-                    + f'| select( .broken_24h_sla == "0")'
-                    + f'| select( .broken_ehr_sending_sla == "0")'
-                    + f'| select( .broken_ehr_requesting_sla == "0")'
-                    , telemetry
-                )
+            conversation_id = "test_" + error_type + "_" + failure_point.replace(" ", "_")
+
+            assert jq.first(
+                f".[0] "
+                + f'| select( .conversation_id == "{conversation_id}")'
+                + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
+                + f'| select( .requesting_practice_ods_code == "A00029")'
+                + f'| select( .sending_practice_ods_code == "B00157")'
+                + f'| select( .error_code == "{error_type}")'
+                + f'| select( .failure_point == "{failure_point}")'
+                + f'| select( .error_desc == "random error")'
+                + f'| select( .broken_24h_sla == "0")'
+                + f'| select( .broken_ehr_sending_sla == "0")'
+                + f'| select( .broken_ehr_requesting_sla == "0")'
+                , telemetry
+            )
 
         finally:
             self.delete_index(index_name)
 
-    def test_gp2gp_technical_failures_raw_data_table_output_multiple_errors_1_conv(self):
+    @pytest.mark.parametrize("error_type, failure_point", [("09", "EHR_RESPONSE"),
+                                                           ("31", "EHR_INTEGRATIONS"),
+                                                           ])
+    def test_gp2gp_technical_failures_raw_data_table_output_multiple_errors_1_conv(self, error_type, failure_point):
 
         # Arrange
         index_name, index = self.create_index()
@@ -121,8 +120,6 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
         report_start = generate_report_start_date()
         report_end = generate_report_end_date()
         cutoff = "0"
-
-
 
         try:
             # create event
@@ -187,8 +184,9 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
                 "$index$": index_name,
                 "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                "$cutoff$": cutoff
-                # "$column$": "Successfully integrated"
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": error_type,
+                "$failurePointGraphColumn$": failure_point
             })
 
             sleep(2)
@@ -197,33 +195,24 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
                 self.savedsearch(test_query), self.splunk_service)
             self.LOG.info(f'telemetry: {telemetry}')
 
-            expected_vals = {"0": {"error_code": "09",
-                                   "failure_point": "EHR_RESPONSE",
-                                   },
-                             "1": {"error_code": "31",
-                                   "failure_point": "EHR_INTEGRATIONS",
-                                   }
-                             }
-
             # Assert
-            for idx, vals in expected_vals.items():
-                assert jq.all(
-                    f".[{idx}] "
-                    + f'| select( .conversation_id == "test_multiple_errors")'
-                    + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
-                    + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
-                    + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
-                    + f'| select( .reporting_practice_ods_code == "A00029")'
-                    + f'| select( .requesting_practice_ods_code == "A00029")'
-                    + f'| select( .sending_practice_ods_code == "B00157")'
-                    + f'| select( .error_code == "{vals["error_code"]}")'
-                    + f'| select( .failure_point == "{vals["failure_point"]}")'
-                    + f'| select( .error_desc == "random error")'
-                    + f'| select( .broken_24h_sla == "0")'
-                    + f'| select( .broken_ehr_sending_sla == "0")'
-                    + f'| select( .broken_ehr_requesting_sla == "0")'
-                    , telemetry
-                )
+            assert jq.all(
+                f".[0] "
+                + f'| select( .conversation_id == "test_multiple_errors")'
+                + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
+                + f'| select( .requesting_practice_ods_code == "A00029")'
+                + f'| select( .sending_practice_ods_code == "B00157")'
+                + f'| select( .error_code == "{error_type}")'
+                + f'| select( .failure_point == "{failure_point}")'
+                + f'| select( .error_desc == "random error")'
+                + f'| select( .broken_24h_sla == "0")'
+                + f'| select( .broken_ehr_sending_sla == "0")'
+                + f'| select( .broken_ehr_requesting_sla == "0")'
+                , telemetry
+            )
 
         finally:
             self.delete_index(index_name)
@@ -247,7 +236,7 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
         try:
             error_type = "07"
             failure_point = "Other"
-            conversation_id = "test_"+sla_status
+            conversation_id = "test_" + sla_status
 
             # create event
 
@@ -318,8 +307,9 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
                 "$index$": index_name,
                 "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                "$cutoff$": cutoff
-                # "$column$": "Successfully integrated"
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": error_type,
+                "$failurePointGraphColumn$": failure_point
             })
 
             sleep(2)
@@ -357,6 +347,326 @@ class TestTechnicalFailuresRawDataTableOutputs(TestBase):
                 + f'| select( .broken_24h_sla == "{broken_24h_sla_value}")'
                 + f'| select( .broken_ehr_sending_sla == "{broken_ehr_sending_sla_value}")'
                 + f'| select( .broken_ehr_requesting_sla == "{broken_ehr_requesting_sla_value}")'
+                , telemetry
+            )
+
+        finally:
+            self.delete_index(index_name)
+
+    @pytest.mark.parametrize("failure_point_graph_column", ["none", "EHR_INTEGRATIONS"])
+    def test_gp2gp_technical_failures_raw_data_table_1_conv_1_error(self, failure_point_graph_column):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+        try:
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_RESPONSE"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_technical_failures_snapshot_report/"
+                "gp2gp_technical_failures_snapshot_raw_data_table")
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": "09",
+                "$failurePointGraphColumn$": failure_point_graph_column
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            if failure_point_graph_column == "EHR_INTEGRATIONS":
+                failure_points = ["EHR_INTEGRATIONS"]
+            else:
+                failure_points = ["EHR_INTEGRATIONS", "EHR_RESPONSE"]
+
+            for idx, failure_point in enumerate(failure_points):
+                assert jq.all(
+                    f".[{idx}] "
+                    + f'| select( .conversation_id == "test_1")'
+                    + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                    + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                    + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                    + f'| select( .reporting_practice_ods_code == "A00029")'
+                    + f'| select( .requesting_practice_ods_code == "A00029")'
+                    + f'| select( .sending_practice_ods_code == "B00157")'
+                    + f'| select( .error_code == "09")'
+                    + f'| select( .failure_point == "{failure_point}")'
+                    + f'| select( .error_desc == "random error")'
+                    + f'| select( .broken_24h_sla == "0")'
+                    + f'| select( .broken_ehr_sending_sla == "0")'
+                    + f'| select( .broken_ehr_requesting_sla == "0")'
+                    , telemetry
+                )
+
+        finally:
+            self.delete_index(index_name)
+
+    def test_gp2gp_technical_failures_raw_data_table_2_conv_1_error_1_failure_point(self):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+        try:
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_2",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_2",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_technical_failures_snapshot_report/"
+                "gp2gp_technical_failures_snapshot_raw_data_table")
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": "09",
+                "$failurePointGraphColumn$": "EHR_INTEGRATIONS"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            conversation_ids = ["test_1", "test_2"]
+
+            for idx, conversation_id in enumerate(conversation_ids):
+                assert jq.all(
+                    f".[{idx}] "
+                    + f'| select( .conversation_id == "{conversation_id}")'
+                    + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                    + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                    + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                    + f'| select( .reporting_practice_ods_code == "A00029")'
+                    + f'| select( .requesting_practice_ods_code == "A00029")'
+                    + f'| select( .sending_practice_ods_code == "B00157")'
+                    + f'| select( .error_code == "09")'
+                    + f'| select( .failure_point == "EHR_INTEGRATIONS")'
+                    + f'| select( .error_desc == "random error")'
+                    + f'| select( .broken_24h_sla == "0")'
+                    + f'| select( .broken_ehr_sending_sla == "0")'
+                    + f'| select( .broken_ehr_requesting_sla == "0")'
+                    , telemetry
+                )
+
+        finally:
+            self.delete_index(index_name)
+
+    @pytest.mark.parametrize("error_graph_column", ["09", "12"])
+    def test_gp2gp_technical_failures_raw_data_table_1_conv_2_error_1_failure_point(self, error_graph_column):
+
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = generate_report_start_date()
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+        try:
+            # create event
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="09",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # create error
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id="test_1",
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="12",
+                            errorDescription="random error",
+                            failurePoint="EHR_INTEGRATIONS"
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_technical_failures_snapshot_report/"
+                "gp2gp_technical_failures_snapshot_raw_data_table")
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff,
+                "$errorGraphColumn$": error_graph_column,
+                "$failurePointGraphColumn$": "EHR_INTEGRATIONS"
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            assert jq.all(
+                f".[0] "
+                + f'| select( .conversation_id == "test_1")'
+                + f'| select( .report_supplier_name == "TEST_SYSTEM_SUPPLIER")'
+                + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
+                + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
+                + f'| select( .requesting_practice_ods_code == "A00029")'
+                + f'| select( .sending_practice_ods_code == "B00157")'
+                + f'| select( .error_code == "{error_graph_column}")'
+                + f'| select( .failure_point == "EHR_INTEGRATIONS")'
+                + f'| select( .error_desc == "random error")'
+                + f'| select( .broken_24h_sla == "0")'
+                + f'| select( .broken_ehr_sending_sla == "0")'
+                + f'| select( .broken_ehr_requesting_sla == "0")'
                 , telemetry
             )
 
