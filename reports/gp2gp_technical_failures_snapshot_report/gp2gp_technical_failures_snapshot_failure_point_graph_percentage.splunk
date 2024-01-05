@@ -1,0 +1,22 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_snapshot_report/gp2gp_technical_failures_snapshot_report_base.splunk' import
+gp2gp_technical_failures_snapshot_report_base %}
+
+
+{{ gp2gp_technical_failures_snapshot_report_base() }}
+
+| mvexpand error_code_failure_point_mv
+| eval error_code=mvindex(split(error_code_failure_point_mv, ","),0),
+       failure_point=mvindex(split(error_code_failure_point_mv, ","),1)
+
+
+| where case ( "$errorGraphColumn$" ==  "Integration failure", failure_point = "EHR_INTEGRATION",
+               "$errorGraphColumn$" ==  "Unknown", error_code = "UNKNOWN",
+               1=1, error_code = "$errorGraphColumn$")
+
+| chart count by failure_point
+| addtotals row=true
+| eventstats sum(Total) as total_events
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "failure_point", <<FIELD>>, round('<<FIELD>>'*100/ total_events, 2))]
+| fields - Total, total_events

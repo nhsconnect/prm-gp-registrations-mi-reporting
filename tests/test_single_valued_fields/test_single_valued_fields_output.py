@@ -207,7 +207,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#1',
+                        conversation_id='test_total_technical_failures_#1',
                         registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
@@ -217,7 +217,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#2',
+                        conversation_id='test_total_technical_failures_#2',
                         registration_event_datetime=create_date_time(date=report_start, time="10:00:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
@@ -226,7 +226,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#3',
+                        conversation_id='test_total_technical_failures_#3',
                         registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
                         event_type=EventType.ERRORS.value,
                         payload=create_error_payload(
@@ -241,7 +241,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_records_transferred_#4',
+                        conversation_id='test_total_technical_failures_#4',
                         registration_event_datetime=create_date_time(date=report_start, time="12:00:00"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
@@ -275,6 +275,7 @@ class TestSingleValuedFieldOutputs(TestBase):
 
         finally:
             self.delete_index(index_name)
+
 
     def test_gp2gp_single_valued_field_total_awaiting_integration(self):
         # Arrange
@@ -432,6 +433,181 @@ class TestSingleValuedFieldOutputs(TestBase):
 
             # Assert
             expected_values = {"total_successful_integration": "5"}
+
+            for idx, (key, value) in enumerate(expected_values.items()):
+                self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')
+                assert jq.first(
+                    f'.[{idx}] | select( .{key}=="{value}")', telemetry)
+
+        finally:
+            self.delete_index(index_name)
+            
+    def test_gp2gp_single_valued_field_total_technical_failures(self):
+
+        # reporting window
+        report_start = datetime.today().date().replace(day=1)
+        report_end = datetime.today().date().replace(day=28)
+        cutoff = "0"
+
+        try:
+            # Arrange
+            index_name, index = self.create_index()
+
+            # technical_failure
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#1',
+                        registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
+                        event_type=EventType.EHR_INTEGRATIONS.value,
+                        payload=create_integration_payload(outcome="FAILED_TO_INTEGRATE")
+                    )),
+                sourcetype="myevent")
+
+            # awaiting_integration
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#2',
+                        registration_event_datetime=create_date_time(date=report_start, time="10:00:00"),
+                        event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
+                    )),
+                sourcetype="myevent")
+
+            # technical_failure
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#3',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#3',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:01:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="99",
+                            errorDescription="Error",
+                            failurePoint=EventType.EHR_REQUESTS.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # in_progress
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#4',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:10:00"),
+                        event_type=EventType.EHR_REQUESTS.value
+                    )),
+                sourcetype="myevent")
+
+            # technical_failure
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#5',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#5',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:01:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="99",
+                            errorDescription="Error",
+                            failurePoint=EventType.EHR_RESPONSES.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # in_progress
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#6',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:10:00"),
+                        event_type=EventType.EHR_RESPONSES.value
+                    )),
+                sourcetype="myevent")
+
+            # technical_failure
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#7',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True
+                        )
+                    )),
+                sourcetype="myevent")
+
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#7',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:01:00"),
+                        event_type=EventType.ERRORS.value,
+                        payload=create_error_payload(
+                            errorCode="99",
+                            errorDescription="Error",
+                            failurePoint=EventType.EHR_RESPONSES.value
+                        )
+
+                    )),
+                sourcetype="myevent")
+
+            # in_progress
+            index.submit(
+                json.dumps(
+                    create_sample_event(
+                        conversation_id='test_total_records_transferred_#8',
+                        registration_event_datetime=create_date_time(date=report_start, time="11:10:00"),
+                        event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                        payload=create_transfer_compatibility_payload(
+                            internalTransfer=False,
+                            transferCompatible=True
+                        )
+                    )),
+                sourcetype="myevent")
+
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                'gp2gp_single_valued_fields/'
+                'gp2gp_total_technical_failures')
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
+                "$cutoff$": cutoff
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = {"total_number_of_technical_failures": "4"}
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(f'.[{idx}] | select( .label=="{key}") | select (.count=="{value}")')

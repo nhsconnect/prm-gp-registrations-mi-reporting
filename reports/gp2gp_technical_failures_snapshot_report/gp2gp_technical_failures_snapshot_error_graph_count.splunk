@@ -1,0 +1,16 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_snapshot_report/gp2gp_technical_failures_snapshot_report_base.splunk' import
+gp2gp_technical_failures_snapshot_report_base %}
+
+
+{{ gp2gp_technical_failures_snapshot_report_base() }}
+
+
+
+| eval technical_failure_reason =
+    case (integrationOutcome = "FAILED_TO_INTEGRATE", "Integration failure",
+          1=1, errorCode
+          )
+
+| chart count by technical_failure_reason
