@@ -1,16 +1,16 @@
 import json
 import uuid
-
-import pytest
 from datetime import timedelta
 from time import sleep
+
 import jq
+import pytest
+
+from helpers.datetime_helper import generate_report_end_date, datetime_utc_now
 from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
     create_integration_payload
 from tests.test_base import TestBase, EventType
-from helpers.datetime_helper import create_date_time, generate_report_start_date, \
-    generate_report_end_date, datetime_utc_now
 
 
 class TestIntegrationEightDaysRawDataTableOutputs(TestBase):
@@ -28,7 +28,7 @@ class TestIntegrationEightDaysRawDataTableOutputs(TestBase):
         index_name, index = self.create_index()
 
         # reporting window
-        report_start = generate_report_start_date()
+        report_start = datetime_utc_now() - timedelta(days=30)
         report_end = generate_report_end_date()
         cutoff = "0"
 

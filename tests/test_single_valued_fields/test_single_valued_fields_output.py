@@ -207,7 +207,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_technical_failures_#1',
+                        conversation_id='test_total_transfers_#1',
                         registration_event_datetime=create_date_time(date=report_start, time="09:00:00"),
                         event_type=EventType.EHR_INTEGRATIONS.value,
                         payload=create_integration_payload(outcome="INTEGRATED")
@@ -217,7 +217,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_technical_failures_#2',
+                        conversation_id='test_total_transfers_#2',
                         registration_event_datetime=create_date_time(date=report_start, time="10:00:00"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value
                     )),
@@ -226,7 +226,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_technical_failures_#3',
+                        conversation_id='test_total_transfers_#3',
                         registration_event_datetime=create_date_time(date=report_start, time="11:00:00"),
                         event_type=EventType.ERRORS.value,
                         payload=create_error_payload(
@@ -241,7 +241,7 @@ class TestSingleValuedFieldOutputs(TestBase):
             index.submit(
                 json.dumps(
                     create_sample_event(
-                        conversation_id='test_total_technical_failures_#4',
+                        conversation_id='test_total_transfers_#4',
                         registration_event_datetime=create_date_time(date=report_start, time="12:00:00"),
                         event_type=EventType.EHR_REQUESTS.value
                     )),
@@ -275,7 +275,6 @@ class TestSingleValuedFieldOutputs(TestBase):
 
         finally:
             self.delete_index(index_name)
-
 
     def test_gp2gp_single_valued_field_total_awaiting_integration(self):
         # Arrange
@@ -441,8 +440,9 @@ class TestSingleValuedFieldOutputs(TestBase):
 
         finally:
             self.delete_index(index_name)
-            
+
     def test_gp2gp_single_valued_field_total_technical_failures(self):
+        index_name, index = self.create_index()
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
@@ -451,7 +451,6 @@ class TestSingleValuedFieldOutputs(TestBase):
 
         try:
             # Arrange
-            index_name, index = self.create_index()
 
             # technical_failure
             index.submit(
@@ -586,7 +585,6 @@ class TestSingleValuedFieldOutputs(TestBase):
                         )
                     )),
                 sourcetype="myevent")
-
 
             # Act
             test_query = self.generate_splunk_query_from_report(
