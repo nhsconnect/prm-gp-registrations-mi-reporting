@@ -276,7 +276,6 @@ class TestSingleValuedFieldOutputs(TestBase):
         finally:
             self.delete_index(index_name)
 
-
     def test_gp2gp_single_valued_field_total_awaiting_integration(self):
         # Arrange
         index_name, index = self.create_index()
@@ -452,7 +451,6 @@ class TestSingleValuedFieldOutputs(TestBase):
 
         try:
             # Arrange
-            index_name, index = self.create_index()
 
             # technical_failure
             index.submit(
