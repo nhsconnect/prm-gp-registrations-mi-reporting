@@ -1,0 +1,22 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_snapshot_report/gp2gp_technical_failures_snapshot_report_base.splunk' import
+gp2gp_technical_failures_snapshot_report_base %}
+
+
+{{ gp2gp_technical_failures_snapshot_report_base() }}
+
+| eval technical_failure_reason =
+    case (integrationOutcome = "FAILED_TO_INTEGRATE", "Integration failure",
+          1=1, errorCode
+          )
+
+| eventstats count(eval(outcome="Technical failure")) as total_technical_failures
+
+| chart
+    first(total_technical_failures) as total_technical_failures
+    count by technical_failure_reason
+| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "technical_failure_reason", <<FIELD>>,
+                                  "<<FIELD>>" == "total_technical_failures", <<FIELD>>,
+                                  1=1, round('<<FIELD>>'*100/ total_technical_failures, 2))]
+| fields - total_technical_failures
