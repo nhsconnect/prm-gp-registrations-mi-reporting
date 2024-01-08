@@ -1,0 +1,17 @@
+index="$index$"
+
+{% from 'gp2gp_errors_snapshot_report/gp2gp_errors_snapshot_report_base.splunk' import
+gp2gp_errors_snapshot_report_base %}
+
+
+{{ gp2gp_errors_snapshot_report_base() }}
+
+| eventstats count(errorCode) as total_num_errors
+
+| chart
+    first(total_num_errors) as total_num_errors
+    count by errorCode
+| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "errorCode", <<FIELD>>,
+                                  "<<FIELD>>" == "total_num_errors", <<FIELD>>,
+                                  1=1, round('<<FIELD>>'*100/ total_num_errors, 2))]
+| fields - total_num_errors
