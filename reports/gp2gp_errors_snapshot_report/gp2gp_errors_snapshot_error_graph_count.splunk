@@ -1,0 +1,9 @@
+index="$index$"
+
+{% from 'gp2gp_errors_snapshot_report/gp2gp_errors_snapshot_report_base.splunk' import
+gp2gp_errors_snapshot_report_base %}
+
+
+{{ gp2gp_errors_snapshot_report_base() }}
+
+| chart count by errorCode
