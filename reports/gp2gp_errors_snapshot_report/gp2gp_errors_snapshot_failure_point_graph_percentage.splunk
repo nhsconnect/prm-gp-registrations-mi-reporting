@@ -1,0 +1,23 @@
+index="$index$"
+
+{% from 'gp2gp_errors_snapshot_report/gp2gp_errors_snapshot_report_base.splunk' import
+gp2gp_errors_snapshot_report_base %}
+
+
+{{ gp2gp_errors_snapshot_report_base() }}
+
+| mvexpand error_code_failure_point_mv
+| eval error_code=mvindex(split(error_code_failure_point_mv, ","),0),
+       failure_point=mvindex(split(error_code_failure_point_mv, ","),1)
+
+| where error_code = "$errorGraphColumn$"
+
+| eventstats count(error_code) as total_num_selected_error
+
+| chart
+    first(total_num_selected_error) as total_num_selected_error
+    count by failure_point
+| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "failure_point", <<FIELD>>,
+                                  "<<FIELD>>" == "total_num_selected_error", <<FIELD>>,
+                                  1=1, round('<<FIELD>>'*100/ total_num_selected_error, 2))]
+| fields - total_num_selected_error
