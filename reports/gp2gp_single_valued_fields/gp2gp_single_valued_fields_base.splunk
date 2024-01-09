@@ -26,6 +26,8 @@ has_errors %}
 | eval transCompatStatEventDateTime = if(eventType="TRANSFER_COMPATIBILITY_STATUSES",_time, null())
 | eval ehrReadyToIntegrateEventDateTime = if(eventType="READY_TO_INTEGRATE_STATUSES",_time, null())
 
+| spath output=errorCode path=payload.error.errorCode
+
 
 {{ calculate_transfer_compatibility() }}
 {{ calculate_internal_transfers() }}
