@@ -1,0 +1,40 @@
+index="$index$"
+
+{% from 'gp2gp_errors_snapshot_report/gp2gp_errors_snapshot_report_base.splunk' import
+gp2gp_errors_snapshot_report_base %}
+
+
+{{ gp2gp_errors_snapshot_report_base() }}
+
+| eval conversation_id = conversationId
+| eval report_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+| mvexpand error_code_failure_point_error_desc_mv
+| eval error_code = mvindex(split(error_code_failure_point_error_desc_mv, ","),0),
+       failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),1),
+       other_failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),2),
+       error_desc = mvindex(split(error_code_failure_point_error_desc_mv, ","),3)
+
+| where case ("$errorGraphColumn$" == "none", 0=1,
+              1=1, "$errorGraphColumn$" == error_code
+              )
+| where case ("$failurePointGraphColumn$" == "none", 1=1,
+              1=1, "$failurePointGraphColumn$" == failure_point
+              )
+
+| table conversation_id,
+        report_supplier_name,
+        requesting_supplier_name,
+        sending_supplier_name,
+        reporting_practice_ods_code,
+        requesting_practice_ods_code,
+        sending_practice_ods_code,
+        error_code,
+        failure_point,
+        other_failure_point,
+        error_desc,
