@@ -17,7 +17,8 @@ gp2gp_technical_failures_snapshot_report_base %}
 | mvexpand error_code_failure_point_error_desc_mv
 | eval error_code = mvindex(split(error_code_failure_point_error_desc_mv, ","),0),
        failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),1),
-       error_desc = mvindex(split(error_code_failure_point_error_desc_mv, ","),2)
+       other_failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),2),
+       error_desc = mvindex(split(error_code_failure_point_error_desc_mv, ","),3)
 
 | eval broken_24h_sla = totalTransferTimeOutsideSla24Hours
 | eval broken_ehr_sending_sla = totalEhrSendingOutsideSla
@@ -40,6 +41,7 @@ gp2gp_technical_failures_snapshot_report_base %}
         sending_practice_ods_code,
         error_code,
         failure_point,
+        other_failure_point,
         error_desc,
         broken_24h_sla,
         broken_ehr_sending_sla,

@@ -29,14 +29,16 @@ has_errors %}
 | spath output=errorCode path=payload.error.errorCode
 | spath output=errorDescription path=payload.error.errorDescription
 | spath output=failurePoint path=payload.error.failurePoint
+| spath output=otherFailurePoint path=payload.error.otherFailurePoint
 | spath output=integrationOutcome path=payload.integration.outcome
 
 | eval failure_point = case( isnotnull(failurePoint), failurePoint,
                              1=1, "UNKNOWN"
                              )
 | eval error_code = if(isnotnull(errorCode), errorCode, "UNKNOWN")
+| eval other_failure_point = case( isnotnull(otherFailurePoint), otherFailurePoint, 1=1, "N/A")
 | eval error_code_failure_point_mv = mvzip(error_code, failure_point)
-| eval error_code_failure_point_error_desc_mv = mvzip(errorCode, mvzip(failurePoint, errorDescription))
+| eval error_code_failure_point_error_desc_mv = mvzip(errorCode, mvzip(failurePoint, mvzip(other_failure_point, errorDescription)))
 
 {{ calculate_transfer_compatibility() }}
 {{ calculate_internal_transfers() }}
