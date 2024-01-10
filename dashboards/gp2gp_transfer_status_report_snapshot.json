@@ -14,13 +14,13 @@
     "ds_30YiHQq9": {
       "type": "ds.search",
       "options": {
-        "query": "| savedsearch gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "| savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
         }
       },
-      "name": "gp2gp_transfer_status_report_snapshot_total_eligible_for_transfer"
+      "name": "gp2gp_total_eligible_transfers_count"
     },
     "ds_yg6oqZuY": {
       "type": "ds.search",
@@ -65,6 +65,17 @@
         }
       },
       "name": "gp2gp_transfer_status_report_snapshot_successfully_integrated_percentagecopy 1"
+    },
+    "ds_pmgB7CcW": {
+      "type": "ds.search",
+      "options": {
+        "query": "| savedsearch gp2gp_total_registration_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_total_registration_count"
     }
   },
   "visualizations": {
@@ -156,7 +167,7 @@
       },
       "showProgressBar": false,
       "showLastUpdated": false,
-      "title": "Total Eligible for Electronic Transfer",
+      "title": "Total eligible for electronic transfer",
       "options": {
         "backgroundColor": "#FFFFFF",
         "majorColor": "#000000",
@@ -168,7 +179,7 @@
     "viz_2Atq7Q2K": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "### Transfer Status Snapshot Report  \n#### Counts",
+        "markdown": "## Transfer status snapshot report\n### Counts",
         "fontColor": "#231f20",
         "fontSize": "extraLarge"
       }
@@ -184,7 +195,7 @@
     "viz_pIixC4Pe": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Percentage of transfer statuses\nGraph showing the percentage of transfers at each stage based on the reporting window",
+        "markdown": "#### Percentage of transfer statuses\nGraph showing the percentage of transfers at each stage based on the reporting window. Percentage is taken with regards to total number of registrations.",
         "backgroundColor": "#ECF1F2",
         "fontColor": "#000000"
       }
@@ -244,7 +255,15 @@
         "fontSize": "extraLarge",
         "backgroundColor": "#003087"
       },
-      "eventHandlers": []
+      "eventHandlers": [
+        {
+          "type": "drilldown.customUrl",
+          "options": {
+            "url": "https://nhsdptl.splunkcloud.com/en-GB/app/nhsd_gp2gp_all_sh_all_viz/gp2gp_integration_8_days_snapshot_dashboard",
+            "newTab": true
+          }
+        }
+      ]
     },
     "viz_iiOkODD5": {
       "type": "splunk.markdown",
@@ -273,7 +292,16 @@
         "fontSize": "extraLarge",
         "backgroundColor": "#003087"
       },
-      "eventHandlers": []
+      "eventHandlers": [
+        {
+          "type": "drilldown.linkToDashboard",
+          "options": {
+            "app": "nhsd_gp2gp_all_sh_all_viz",
+            "dashboard": "gp2gp_technical_failures_snapshot_dashboard",
+            "newTab": true
+          }
+        }
+      ]
     },
     "viz_dXs6cmTG": {
       "type": "splunk.markdown",
@@ -284,6 +312,18 @@
         "backgroundColor": "#003087"
       },
       "eventHandlers": []
+    },
+    "viz_qvkypW8W": {
+      "type": "splunk.singlevalue",
+      "dataSources": {
+        "primary": "ds_pmgB7CcW"
+      },
+      "title": "Total number of registrations",
+      "options": {
+        "majorFontSize": 50,
+        "majorColor": "#000000",
+        "trendDisplay": "off"
+      }
     }
   },
   "inputs": {
@@ -339,10 +379,10 @@
         "item": "viz_table_1",
         "type": "block",
         "position": {
-          "x": 20,
-          "y": 90,
+          "x": 240,
+          "y": 120,
           "w": 270,
-          "h": 80
+          "h": 90
         }
       },
       {
@@ -463,6 +503,16 @@
           "y": 1140,
           "w": 390,
           "h": 40
+        }
+      },
+      {
+        "item": "viz_qvkypW8W",
+        "type": "block",
+        "position": {
+          "x": 10,
+          "y": 120,
+          "w": 230,
+          "h": 90
         }
       }
     ],
