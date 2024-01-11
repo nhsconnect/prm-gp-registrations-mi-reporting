@@ -1,0 +1,169 @@
+import json
+from datetime import timedelta
+from time import sleep
+
+import jq
+import pytest
+
+from helpers.datetime_helper import datetime_utc_now, generate_report_end_date
+from helpers.splunk \
+    import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
+    create_integration_payload
+from tests.test_base import TestBase, EventType
+
+
+class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
+    @pytest.mark.parametrize("time_period", ["month"])
+    def test_gp2gp_integration_8_days_report_trending_count(self, time_period):
+        # Arrange
+        index_name, index = self.create_index()
+
+        # reporting window
+        report_start = datetime_utc_now() - timedelta(days=30)
+        report_end = generate_report_end_date()
+        cutoff = "0"
+
+        # Calculate event date times
+        on_time_event_datetime = datetime_utc_now() - timedelta(days=7)
+        late_event_datetime = datetime_utc_now() - timedelta(days=9)
+
+        try:
+            # Generate events
+            integration_outcomes = ["INTEGRATED", "INTEGRATED_AND_SUPPRESSED"]
+            registration_event_datetime_list = [on_time_event_datetime, late_event_datetime]
+
+            for idx, registration_time in enumerate(registration_event_datetime_list):
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'ready_to_integrate_{idx}',
+                            registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.EHR_RESPONSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
+
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'ready_to_integrate_{idx}',
+                            registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
+
+                for outcome in integration_outcomes:
+                    index.submit(
+                        json.dumps(
+                            create_sample_event(
+                                conversation_id=f'integration_on_{idx}_with_{outcome}',
+                                registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                event_type=EventType.EHR_RESPONSES.value,
+                                sendingSupplierName="EMIS",
+                                requestingSupplierName="TPP",
+                            )
+                        ),
+                        sourcetype="myevent",
+                    )
+
+                    index.submit(
+                        json.dumps(
+                            create_sample_event(
+                                conversation_id=f'integration_on_{idx}_with_{outcome}',
+                                registration_event_datetime=datetime_utc_now().strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                event_type=EventType.EHR_INTEGRATIONS.value,
+                                sendingSupplierName="EMIS",
+                                requestingSupplierName="TPP",
+                                payload=create_integration_payload(outcome=outcome)
+
+                            )),
+                        sourcetype="myevent"
+                    )
+
+            # Calculate expected output based on dynamic datetime & start of the month
+            current_month_start = datetime_utc_now().replace(day=1)
+
+            if current_month_start < on_time_event_datetime and current_month_start < late_event_datetime:
+                # Events and 8-day integration window fall within the current month
+                expected_output = {
+                    "0":
+                        {
+                            "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                            "In flight": "1",
+                            "Integrated on time": "2",
+                            "Integrated after 8 days": "2",
+                            "Not integrated after 8 days": "1"
+                        },
+                }
+            elif late_event_datetime < on_time_event_datetime < current_month_start:
+                # Events were created in the previous month but 8-day window includes beginning of current month
+                expected_output = {
+                    "0":
+                        {
+                            "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                            "In flight": "1",
+                            "Integrated on time": "2",
+                            "Integrated after 8 days": "2",
+                            "Not integrated after 8 days": "1"
+                        },
+                }
+            elif late_event_datetime < current_month_start < on_time_event_datetime:
+                # Some events created before the current month and some within the current month
+                expected_output = {
+                    "0":
+                        {
+                            "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                            "In flight": "0",
+                            "Integrated on time": "0",
+                            "Integrated after 8 days": "2",
+                            "Not integrated after 8 days": "1"
+                        },
+                    "1":
+                        {
+                            "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                            "In flight": "1",
+                            "Integrated on time": "2",
+                            "Integrated after 8 days": "0",
+                            "Not integrated after 8 days": "0"
+                        },
+                }
+
+            # Act
+            test_query = self.generate_splunk_query_from_report(
+                "gp2gp_integration_8_days_trending_report/gp2gp_integration_8_days_trending_report_count"
+            )
+
+            test_query = set_variables_on_query(test_query, {
+                "$index$": index_name,
+                "$start_time$": report_start.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                "$cutoff$": cutoff,
+                "$time_period$": time_period
+            })
+
+            sleep(2)
+
+            telemetry = get_telemetry_from_splunk(
+                self.savedsearch(test_query), self.splunk_service)
+            self.LOG.info(f'telemetry: {telemetry}')
+
+            # Assert
+            expected_values = expected_output
+
+            for row, row_values in expected_values.items():
+                row_values_as_jq_str = ' '.join(
+                    [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
+                )
+                self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
+                assert jq.first(
+                    f'.[{row}] {row_values_as_jq_str} ', telemetry)
+
+        finally:
+            self.delete_index(index_name)
