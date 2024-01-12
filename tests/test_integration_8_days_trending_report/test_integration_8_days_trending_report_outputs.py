@@ -13,7 +13,7 @@ from tests.test_base import TestBase, EventType
 
 
 class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
-    @pytest.mark.parametrize("time_period", ["month"])
+    @pytest.mark.parametrize("time_period", ["month", "week", "day"])
     def test_gp2gp_integration_8_days_report_trending_count(self, time_period):
         # Arrange
         index_name, index = self.create_index()
@@ -87,54 +87,6 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                         sourcetype="myevent"
                     )
 
-            # Calculate expected output based on dynamic datetime & start of the month
-            current_month_start = datetime_utc_now().replace(day=1)
-
-            if current_month_start < on_time_event_datetime and current_month_start < late_event_datetime:
-                # Events and 8-day integration window fall within the current month
-                expected_output = {
-                    "0":
-                        {
-                            "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
-                            "In flight": "1",
-                            "Integrated on time": "2",
-                            "Integrated after 8 days": "2",
-                            "Not integrated after 8 days": "1"
-                        },
-                }
-            elif late_event_datetime < on_time_event_datetime < current_month_start:
-                # Events were created in the previous month but 8-day window includes beginning of current month
-                expected_output = {
-                    "0":
-                        {
-                            "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
-                            "In flight": "1",
-                            "Integrated on time": "2",
-                            "Integrated after 8 days": "2",
-                            "Not integrated after 8 days": "1"
-                        },
-                }
-            elif late_event_datetime < current_month_start < on_time_event_datetime:
-                # Some events created before the current month and some within the current month
-                expected_output = {
-                    "0":
-                        {
-                            "time_period": f'{late_event_datetime.strftime("%y-%m")}',
-                            "In flight": "0",
-                            "Integrated on time": "0",
-                            "Integrated after 8 days": "2",
-                            "Not integrated after 8 days": "1"
-                        },
-                    "1":
-                        {
-                            "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
-                            "In flight": "1",
-                            "Integrated on time": "2",
-                            "Integrated after 8 days": "0",
-                            "Not integrated after 8 days": "0"
-                        },
-                }
-
             # Act
             test_query = self.generate_splunk_query_from_report(
                 "gp2gp_integration_8_days_trending_report/gp2gp_integration_8_days_trending_report_count"
@@ -155,6 +107,110 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
+            expected_output = {}
+            # Calculate expected output based on dynamic datetime used in test set up
+            if time_period == "month":
+                current_month_start = datetime_utc_now().replace(day=1)
+
+                if current_month_start < on_time_event_datetime and current_month_start < late_event_datetime:
+                    # Events and 8-day integration window fall within the current month
+                    expected_output = {
+                        "0":
+                            {
+                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "In flight": "1",
+                                "Integrated on time": "2",
+                                "Integrated after 8 days": "2",
+                                "Not integrated after 8 days": "1"
+                            },
+                    }
+                elif late_event_datetime < on_time_event_datetime < current_month_start:
+                    # Events were created in the previous month but 8-day window includes beginning of current month
+                    expected_output = {
+                        "0":
+                            {
+                                "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                                "In flight": "1",
+                                "Integrated on time": "2",
+                                "Integrated after 8 days": "2",
+                                "Not integrated after 8 days": "1"
+                            },
+                    }
+                elif late_event_datetime < current_month_start < on_time_event_datetime:
+                    # Late events created before the current month and on time within the current month
+                    expected_output = {
+                        "0":
+                            {
+                                "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                                "In flight": "0",
+                                "Integrated on time": "0",
+                                "Integrated after 8 days": "2",
+                                "Not integrated after 8 days": "1"
+                            },
+                        "1":
+                            {
+                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "In flight": "1",
+                                "Integrated on time": "2",
+                                "Integrated after 8 days": "0",
+                                "Not integrated after 8 days": "0"
+                            },
+                    }
+            elif time_period == "week":
+                late_event_week_start = late_event_datetime.isocalendar().week
+                on_time_event_week_start = on_time_event_datetime.isocalendar().week
+
+                if late_event_week_start == on_time_event_week_start:
+                    # Events fall into the same week
+                    expected_output = {
+                        "0":
+                            {
+                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "In flight": "1",
+                                "Integrated on time": "2",
+                                "Integrated after 8 days": "2",
+                                "Not integrated after 8 days": "1"
+                            }
+                    }
+                else:
+                    expected_output = {
+                        "0":
+                            {
+                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "In flight": "0",
+                                "Integrated on time": "0",
+                                "Integrated after 8 days": "2",
+                                "Not integrated after 8 days": "1"
+                            },
+                        "1":
+                            {
+                                "time_period": f'{on_time_event_datetime.strftime("%y-%m-%W")}',
+                                "In flight": "1",
+                                "Integrated on time": "2",
+                                "Integrated after 8 days": "0",
+                                "Not integrated after 8 days": "0"
+                            }
+                    }
+            elif time_period == "day":
+                expected_output = {
+                    "0":
+                        {
+                            "time_period": f'{late_event_datetime.strftime("%y-%m-%d")}',
+                            "In flight": "0",
+                            "Integrated on time": "0",
+                            "Integrated after 8 days": "2",
+                            "Not integrated after 8 days": "1"
+                        },
+                    "1":
+                        {
+                            "time_period": f'{on_time_event_datetime.strftime("%y-%m-%d")}',
+                            "In flight": "1",
+                            "Integrated on time": "2",
+                            "Integrated after 8 days": "0",
+                            "Not integrated after 8 days": "0"
+                        },
+                }
+
             expected_values = expected_output
 
             for row, row_values in expected_values.items():
