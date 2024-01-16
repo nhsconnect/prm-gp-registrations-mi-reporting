@@ -41,6 +41,8 @@ has_errors
 {{ calculate_registration_status() }}
 {{ calculate_outcome() }}
 
+| where outcome != "Not eligible for electronic transfer"
+
 | eval integrationStatus = case(
     outcome == "Successful integration" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d"), "Integrated on time",
     outcome == "Successful integration", "Integrated after 8 days",
