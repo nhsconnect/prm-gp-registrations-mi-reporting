@@ -138,17 +138,17 @@ class TestIntegrationEightDaysGraph(TestBase):
             # Assert
             expected_values = {
                 "In flight": "1",
-                "Integrated on time": "5",
                 "Integrated after 8 days": "5",
+                "Integrated on time": "5",
                 "Not integrated after 8 days": "1",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .integration_status=="{key}") | select (.count=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .integration_status=="{key}") | select (.count=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")',
                     telemetry,
                 )
 
@@ -285,17 +285,17 @@ class TestIntegrationEightDaysGraph(TestBase):
             # Assert
             expected_values = {
                 "In flight": "5.56",
-                "Integrated on time": "27.78",
                 "Integrated after 8 days": "27.78",
+                "Integrated on time": "27.78",
                 "Not integrated after 8 days": "5.56",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .integration_status=="{key}") | select (.percent=="{value}")'
+                    f'.[{idx}] | select( .label=="{key}") | select (.percentage=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .integration_status=="{key}") | select (.percent=="{value}")',
+                    f'.[{idx}] | select( .label=="{key}") | select (.percentage=="{value}")',
                     telemetry,
                 )
 
@@ -423,10 +423,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .awaiting_integration_status=="{key}") | select (.percent=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .awaiting_integration_status=="{key}") | select (.percent=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")',
                     telemetry,
                 )
 
@@ -562,16 +562,16 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             # Assert
             expected_values = {
-                "Integrated on time": "54.55",
                 "Integrated after 8 days": "45.45",
+                "Integrated on time": "54.55",
             }
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .successful_integration_status=="{key}") | select (.percent=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .successful_integration_status=="{key}") | select (.percent=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")',
                     telemetry,
                 )
 

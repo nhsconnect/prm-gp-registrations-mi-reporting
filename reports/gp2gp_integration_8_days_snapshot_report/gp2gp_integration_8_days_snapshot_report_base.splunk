@@ -41,21 +41,13 @@ has_errors
 {{ calculate_registration_status() }}
 {{ calculate_outcome() }}
 
-| eval integrationStatus = case(
-    registrationStatus == "INTEGRATION" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d") ,"integratedAndUnder8Days",
-    registrationStatus == "INTEGRATION", "integratedAndOver8Days",
-    registrationStatus == "READY_TO_INTEGRATE" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "notIntegratedAndUnder8Days",
-    registrationStatus == "READY_TO_INTEGRATE", "notIntegratedAndOver8Days",
-    1=1, "Unknown")
+| where outcome != "Not eligible for electronic transfer"
 
-| eventstats
-    count(eval(integrationStatus == "integratedAndUnder8Days" AND outcome == "Successful integration")) as integrated_on_time,
-    count(eval(integrationStatus == "integratedAndOver8Days" AND outcome == "Successful integration")) as integrated_after_8_days,
-    count(eval(integrationStatus == "notIntegratedAndUnder8Days" AND outcome == "Awaiting integration")) as in_flight,
-    count(eval(integrationStatus == "notIntegratedAndOver8Days"AND outcome == "Awaiting integration")) as not_integrated_after_8_days,
-    count(eval(outcome == "Awaiting integration")) as total_awaiting_integration,
-    count(eval(outcome == "Successful integration")) as total_successful_integration,
-    count(eval(outcome != "Not eligible for electronic transfer")) as total_number_of_eligible_transfers
+| eval integrationStatus = case(
+    outcome == "Successful integration" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d"), "Integrated on time",
+    outcome == "Successful integration", "Integrated after 8 days",
+    outcome == "Awaiting integration" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "In flight",
+    outcome == "Awaiting integration", "Not integrated after 8 days")
 
 {% endmacro %}
 
