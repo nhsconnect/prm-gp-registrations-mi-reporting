@@ -1,0 +1,48 @@
+index="$index$"
+
+{% from 'gp2gp_in_progress_sla_trending_report/gp2gp_in_progress_sla_trending_report_base.splunk' import
+gp2gp_in_progress_sla_trending_report_base %}
+
+{{ gp2gp_in_progress_sla_trending_report_base() }}
+
+| where (totalTransferTimeOutsideSla24Hours==0 and totalEhrSendingOutsideSla==0 and totalEhrRequestingOutsideSla==0
+            and outcome=="In progress")
+        or (totalTransferTimeOutsideSla24Hours==1 and outcome!="Technical failure")
+        or (totalEhrSendingOutsideSla==1 and outcome!="Technical failure")
+        or (totalEhrRequestingOutsideSla==1 and outcome!="Technical failure")
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
+                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          )
+
+| eval sla_status = case( totalTransferTimeOutsideSla24Hours==0
+                              and totalEhrSendingOutsideSla==0
+                              and totalEhrRequestingOutsideSla==0
+                              and outcome=="In progress", "IF",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrSendingOutsideSla==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrS + BEhrR",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrSendingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrS",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrR",
+                          totalEhrSendingOutsideSla==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrS + BEhrR",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and outcome!="Technical failure", "B24",
+                          totalEhrSendingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrS",
+                          totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrR"
+                        )
+
+| chart count by time_period, sla_status
+| addtotals fieldname="total_per_month"
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
+| fields - total_per_month
