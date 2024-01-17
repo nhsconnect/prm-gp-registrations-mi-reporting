@@ -107,7 +107,7 @@ class TestIntegrationEightDaysRawDataTableOutputs(TestBase):
                 )
             # Act
             test_query = self.generate_splunk_query_from_report(
-                'gp2gp_integration_8_days_snapshot_report/gp2gp_8_days_integration_snapshot_raw_data_table'
+                'gp2gp_integration_8_days_snapshot_report/gp2gp_integration_8_days_snapshot_raw_data_table'
             )
 
             test_query = set_variables_on_query(test_query, {
@@ -133,8 +133,7 @@ class TestIntegrationEightDaysRawDataTableOutputs(TestBase):
                 + f'| select( .requesting_supplier_name == "TPP") '
                 + f'| select( .reporting_practice_ods_code == "A00029") '
                 + f'| select( .requesting_practice_ods_code == "A00029") '
-                + f'| select( .sending_practice_ods_code == "B00157") '
-                , telemetry
+                + f'| select( .sending_practice_ods_code == "B00157") ', telemetry
             )
 
         finally:
