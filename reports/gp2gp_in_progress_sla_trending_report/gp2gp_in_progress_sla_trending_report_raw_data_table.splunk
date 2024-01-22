@@ -1,0 +1,54 @@
+index="$index$"
+
+{% from 'gp2gp_in_progress_sla_trending_report/gp2gp_in_progress_sla_trending_report_base.splunk' import
+gp2gp_in_progress_sla_trending_report_base %}
+
+{{ gp2gp_in_progress_sla_trending_report_base() }}
+
+| eval conversation_id = conversationId
+| eval reporting_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+
+
+| where case(  "$line$" == "IF", (totalTransferTimeOutsideSla24Hours==0 and totalEhrSendingOutsideSla==0 and totalEhrRequestingOutsideSla==0 and outcome=="In progress"),
+                "$line$" == "B24 + BEhrS + BEhrR", (totalTransferTimeOutsideSla24Hours==1 and totalEhrSendingOutsideSla==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$line$" == "B24 + BEhrS", (totalTransferTimeOutsideSla24Hours==1 and totalEhrSendingOutsideSla==1 and outcome!="Technical failure"),
+                "$line$" == "B24 + BEhrR", (totalTransferTimeOutsideSla24Hours==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$line$" == "BEhrS + BEhrR", (totalEhrSendingOutsideSla==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$line$" == "B24", (totalTransferTimeOutsideSla24Hours==1 and outcome!="Technical failure"),
+                "$line$" == "BEhrS", (totalEhrSendingOutsideSla==1 and outcome!="Technical failure"),
+                "$line$" == "BEhrR", (totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                1=1, 1=0
+            )
+
+| eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "week", relative_time(strptime(substr("$column$",1,2)+"-01-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "day", relative_time(strptime("$column$"+"T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h")
+                                     )
+
+| eval weeks_str = if("$time_period$" = "week", substr("$column$",7,8), 0)
+| eval weeks_int = if("$time_period$" = "week", tonumber(weeks_str), 0)
+| eval weeks_in_seconds = if("$time_period$" = "week", (weeks_int-1) * 604800, 0)
+| eval time_window_start_epoch = if( "$time_period$" = "week", time_window_start_epoch + weeks_in_seconds, time_window_start_epoch)
+
+
+| eval time_window_end_epoch = case( "$time_period$" = "month", relative_time(time_window_start_epoch, "+1mon"),
+                                       "$time_period$" = "week", relative_time(time_window_start_epoch, "+1w"),
+                                       "$time_period$" = "day", relative_time(time_window_start_epoch, "+1d")
+                                     )
+
+| where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
+
+| table
+    conversation_id,
+    reporting_supplier_name,
+    requesting_supplier_name,
+    sending_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code
