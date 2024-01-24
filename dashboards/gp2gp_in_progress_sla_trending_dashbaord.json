@@ -143,6 +143,25 @@
         "primary": "ds_M7LG4EPh_ds_bA8S89J3"
       },
       "title": "Total eligible for electronic transfer"
+    },
+    "viz_Xfbx5G9l": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "**Go to: 'In-progress SLA snapshot dashboard'**",
+        "backgroundColor": "#003087",
+        "fontColor": "#ffffff",
+        "fontSize": "extraLarge"
+      },
+      "eventHandlers": [
+        {
+          "type": "drilldown.linkToDashboard",
+          "options": {
+            "app": "nhsd_gp2gp_all_sh_all_viz",
+            "dashboard": "gp2gp_in_progress_sla_snapshot_dashboard",
+            "newTab": true
+          }
+        }
+      ]
     }
   },
   "dataSources": {
@@ -290,7 +309,7 @@
           }
         ],
         "token": "time_period",
-        "defaultValue": "month"
+        "selectFirstSearchResult": true
       },
       "title": "Time period",
       "type": "input.dropdown"
@@ -350,7 +369,7 @@
         "type": "block",
         "position": {
           "x": 30,
-          "y": 810,
+          "y": 800,
           "w": 1130,
           "h": 210
         }
@@ -383,6 +402,16 @@
           "y": 110,
           "w": 260,
           "h": 90
+        }
+      },
+      {
+        "item": "viz_Xfbx5G9l",
+        "type": "block",
+        "position": {
+          "x": 800,
+          "y": 30,
+          "w": 390,
+          "h": 30
         }
       }
     ],
