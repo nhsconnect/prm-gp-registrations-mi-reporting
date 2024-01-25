@@ -10,7 +10,7 @@ gp2gp_errors_snapshot_report_base %}
 
 | chart
     first(total_num_errors) as total_num_errors
-    count by errorCode
+    count as percentage by errorCode
 | foreach * [eval <<FIELD>>= case("<<FIELD>>" == "errorCode", <<FIELD>>,
                                   "<<FIELD>>" == "total_num_errors", <<FIELD>>,
                                   1=1, round('<<FIELD>>'*100/ total_num_errors, 2))]
