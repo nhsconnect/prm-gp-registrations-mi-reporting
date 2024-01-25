@@ -14,5 +14,5 @@ gp2gp_integration_8_days_trending_report_base %}
 | chart count by time_period, integrationStatus
 | addtotals fieldname="total_per_month"
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
-| fields - total_per_month, "Unknown"
+| fields - total_per_month
 

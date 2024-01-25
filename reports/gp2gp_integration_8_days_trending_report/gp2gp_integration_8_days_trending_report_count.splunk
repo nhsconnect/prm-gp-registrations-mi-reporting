@@ -12,4 +12,3 @@ gp2gp_integration_8_days_trending_report_base %}
                           )
 
 | chart count by time_period, integrationStatus
-| fields - "Unknown"

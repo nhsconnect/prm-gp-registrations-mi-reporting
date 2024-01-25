@@ -48,7 +48,7 @@ has_errors
     outcome == "Successful integration", "Integrated after 8 days",
     outcome == "Awaiting integration" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "In flight",
     outcome == "Awaiting integration", "Not integrated after 8 days",
-    1=1, "Unknown")
+    1=1, "Others")
 
 {% endmacro %}
 

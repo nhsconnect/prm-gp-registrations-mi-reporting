@@ -33,6 +33,27 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
             registration_event_datetime_list = [on_time_event_datetime, late_event_datetime]
 
             for idx, registration_time in enumerate(registration_event_datetime_list):
+
+                # Eligible for transfer only
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'eligible_for_transfer_{idx}',
+                            registration_event_datetime=registration_time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                            payload=create_transfer_compatibility_payload(
+                                internalTransfer=False,
+                                transferCompatible=True,
+                                reason="testCountPerTimePeriod"
+                            )
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
+
+                # Awaiting Integration
                 index.submit(
                     json.dumps(
                         create_sample_event(
@@ -59,6 +80,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     sourcetype="myevent",
                 )
 
+                # Successful integration
                 for outcome in integration_outcomes:
                     index.submit(
                         json.dumps(
@@ -121,7 +143,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
-                                "Not integrated after 8 days": "1"
+                                "Not integrated after 8 days": "1",
+                                "Others": "2"
                             },
                     }
                 elif late_event_datetime < on_time_event_datetime < current_month_start:
@@ -133,7 +156,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
-                                "Not integrated after 8 days": "1"
+                                "Not integrated after 8 days": "1",
+                                "Others": "2"
                             },
                     }
                 elif late_event_datetime < current_month_start < on_time_event_datetime:
@@ -145,7 +169,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "0",
                                 "Integrated on time": "0",
                                 "Integrated after 8 days": "2",
-                                "Not integrated after 8 days": "1"
+                                "Not integrated after 8 days": "1",
+                                "Others": "1"
                             },
                         "1":
                             {
@@ -153,7 +178,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "0",
-                                "Not integrated after 8 days": "0"
+                                "Not integrated after 8 days": "0",
+                                "Others": "1"
                             },
                     }
             elif time_period == "week":
@@ -169,7 +195,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
-                                "Not integrated after 8 days": "1"
+                                "Not integrated after 8 days": "1",
+                                "Others": "2"
                             }
                     }
                 else:
@@ -180,7 +207,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "0",
                                 "Integrated on time": "0",
                                 "Integrated after 8 days": "2",
-                                "Not integrated after 8 days": "1"
+                                "Not integrated after 8 days": "1",
+                                "Others": "1"
                             },
                         "1":
                             {
@@ -188,7 +216,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "0",
-                                "Not integrated after 8 days": "0"
+                                "Not integrated after 8 days": "0",
+                                "Others": "1"
                             }
                     }
             elif time_period == "day":
@@ -199,7 +228,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             "In flight": "0",
                             "Integrated on time": "0",
                             "Integrated after 8 days": "2",
-                            "Not integrated after 8 days": "1"
+                            "Not integrated after 8 days": "1",
+                            "Others": "1"
                         },
                     "1":
                         {
@@ -207,7 +237,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             "In flight": "1",
                             "Integrated on time": "2",
                             "Integrated after 8 days": "0",
-                            "Not integrated after 8 days": "0"
+                            "Not integrated after 8 days": "0",
+                            "Others": "1"
                         },
                 }
 
@@ -353,7 +384,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
-                                "Not integrated after 8 days": "12.50"
+                                "Not integrated after 8 days": "12.50",
+                                "Others": "25.00"
                             },
                     }
                 elif late_event_datetime < on_time_event_datetime < current_month_start:
@@ -365,7 +397,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
-                                "Not integrated after 8 days": "12.50"
+                                "Not integrated after 8 days": "12.50",
+                                "Others": "25.00"
                             },
                     }
                 elif late_event_datetime < current_month_start < on_time_event_datetime:
@@ -378,7 +411,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "0.00",
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "50.00",
-                                "Not integrated after 8 days": "25.00"
+                                "Not integrated after 8 days": "25.00",
+                                "Others": "25.00"
                             },
                         "1":
                             {
@@ -386,7 +420,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "25.00",
                                 "Integrated on time": "50.00",
                                 "Integrated after 8 days": "0.00",
-                                "Not integrated after 8 days": "0.00"
+                                "Not integrated after 8 days": "0.00",
+                                "Others": "25.00"
                             },
                     }
             elif time_period == "week":
@@ -402,7 +437,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
-                                "Not integrated after 8 days": "12.50"
+                                "Not integrated after 8 days": "12.50",
+                                "Others": "25.00"
                             }
                     }
                 else:
@@ -415,7 +451,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "0.00",
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "50.00",
-                                "Not integrated after 8 days": "25.00"
+                                "Not integrated after 8 days": "25.00",
+                                "Others": "25.00"
                             },
                         "1":
                             {
@@ -423,7 +460,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                                 "In flight": "25.00",
                                 "Integrated on time": "50.00",
                                 "Integrated after 8 days": "0.00",
-                                "Not integrated after 8 days": "0.00"
+                                "Not integrated after 8 days": "0.00",
+                                "Others": "25.00"
                             }
                     }
             elif time_period == "day":
@@ -436,7 +474,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             "In flight": "0.00",
                             "Integrated on time": "0.00",
                             "Integrated after 8 days": "50.00",
-                            "Not integrated after 8 days": "25.00"
+                            "Not integrated after 8 days": "25.00",
+                            "Others": "25.00"
                         },
                     "1":
                         {
@@ -444,7 +483,8 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             "In flight": "25.00",
                             "Integrated on time": "50.00",
                             "Integrated after 8 days": "0.00",
-                            "Not integrated after 8 days": "0.00"
+                            "Not integrated after 8 days": "0.00",
+                            "Others": "25.00"
                         },
                 }
 
