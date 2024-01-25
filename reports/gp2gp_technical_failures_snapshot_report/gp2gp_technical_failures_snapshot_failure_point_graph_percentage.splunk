@@ -15,7 +15,7 @@ gp2gp_technical_failures_snapshot_report_base %}
                "$errorGraphColumn$" ==  "Unknown", error_code = "UNKNOWN",
                1=1, error_code = "$errorGraphColumn$")
 
-| chart count by failure_point
+| chart count as percentage by failure_point
 | addtotals row=true
 | eventstats sum(Total) as total_events
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "failure_point", <<FIELD>>, round('<<FIELD>>'*100/ total_events, 2))]

@@ -15,7 +15,7 @@ gp2gp_technical_failures_snapshot_report_base %}
 
 | chart
     first(total_technical_failures) as total_technical_failures
-    count by technical_failure_reason
+    count as percentage by technical_failure_reason
 | foreach * [eval <<FIELD>>= case("<<FIELD>>" == "technical_failure_reason", <<FIELD>>,
                                   "<<FIELD>>" == "total_technical_failures", <<FIELD>>,
                                   1=1, round('<<FIELD>>'*100/ total_technical_failures, 2))]
