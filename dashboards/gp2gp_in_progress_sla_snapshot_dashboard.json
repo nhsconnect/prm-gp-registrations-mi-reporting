@@ -87,7 +87,7 @@
 		"viz_ysvkHFbs": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "#### Count of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA ",
+				"markdown": "#### Count of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA \n\nClicking on this graph populates the table below with the corresponding conversations.",
 				"fontColor": "#000000",
 				"backgroundColor": "#ECF1F2",
 				"fontSize": "large"
@@ -96,7 +96,7 @@
 		"viz_VXusQloW": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "#### Percentage of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA\n\nPercentage is take with regard to the total number of records that are eligible for electronic transfer.\n",
+				"markdown": "#### Percentage of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA\n\nPercentage is take with regard to the total number of records that are eligible for electronic transfer.\n\nClicking on this graph populates the table below with the corresponding conversations.\n",
 				"fontColor": "#000000",
 				"backgroundColor": "#ECF1F2",
 				"fontSize": "large"
@@ -289,7 +289,7 @@
 				"type": "block",
 				"position": {
 					"x": 5,
-					"y": 460,
+					"y": 530,
 					"w": 590,
 					"h": 380
 				}
@@ -309,7 +309,7 @@
 				"type": "block",
 				"position": {
 					"x": 600,
-					"y": 460,
+					"y": 530,
 					"w": 590,
 					"h": 380
 				}
@@ -321,7 +321,7 @@
 					"x": 5,
 					"y": 220,
 					"w": 590,
-					"h": 240
+					"h": 310
 				}
 			},
 			{
@@ -331,7 +331,7 @@
 					"x": 600,
 					"y": 220,
 					"w": 590,
-					"h": 240
+					"h": 310
 				}
 			},
 			{
@@ -349,7 +349,7 @@
 				"type": "block",
 				"position": {
 					"x": 40,
-					"y": 900,
+					"y": 950,
 					"w": 1120,
 					"h": 610
 				}
