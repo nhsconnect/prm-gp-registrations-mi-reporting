@@ -12,17 +12,16 @@ gp2gp_in_progress_sla_snapshot_base %}
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
 
 
-| where case("$column$" == "In flight", totalTransferTimeOutsideSla24Hours==0
-                                        and totalEhrSendingOutsideSla==0
-                                        and totalEhrRequestingOutsideSla==0
-                                        and outcome=="In progress",
-             "$column$" == "Broken 24hr sla", totalTransferTimeOutsideSla24Hours==1
-                                              and outcome!="Technical failure",
-             "$column$" == "Broken ehr sending sla", totalEhrSendingOutsideSla==1
-                                                     and outcome!="Technical failure",
-             "$column$" == "Broken ehr requesting sla", totalEhrRequestingOutsideSla==1
-                                                        and outcome!="Technical failure",
-             1=1, 1=0)
+| where case(  "$column$" == "IF", (totalTransferTimeOutsideSla24Hours==0 and totalEhrSendingOutsideSla==0 and totalEhrRequestingOutsideSla==0 and outcome=="In progress"),
+                "$column$" == "B24 + BEhrS + BEhrR", (totalTransferTimeOutsideSla24Hours==1 and totalEhrSendingOutsideSla==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$column$" == "B24 + BEhrS", (totalTransferTimeOutsideSla24Hours==1 and totalEhrSendingOutsideSla==1 and outcome!="Technical failure"),
+                "$column$" == "B24 + BEhrR", (totalTransferTimeOutsideSla24Hours==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$column$" == "BEhrS + BEhrR", (totalEhrSendingOutsideSla==1 and totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                "$column$" == "B24", (totalTransferTimeOutsideSla24Hours==1 and outcome!="Technical failure"),
+                "$column$" == "BEhrS", (totalEhrSendingOutsideSla==1 and outcome!="Technical failure"),
+                "$column$" == "BEhrR", (totalEhrRequestingOutsideSla==1 and outcome!="Technical failure"),
+                1=1, 1=0
+            )
 
 | table 
     conversation_id,
