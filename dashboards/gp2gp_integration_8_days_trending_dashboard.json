@@ -67,7 +67,7 @@
         "viz_BFcyfN3O": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "# Count of transfers within the selected time period based on the eight-day integration window\n\nGraph showing the count of transfers within the selected time period that have been integrated or are awaiting integration. \n\nThe transfers are grouped based on whether they are within or after the 8-day integration window.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window\n\n`Others`: Eligible transfers that do not fall into the previous categories.\n\nN.B: We display the `Others` category in this graph to make reproducing calculations more straightforward and to aid the visual.",
+                "markdown": "# Count of transfers within the selected time period based on the eight-day integration window\n\nGraph showing the count of transfers within the selected time period that have been integrated or are awaiting integration. \n\nThe transfers are grouped based on whether they are within or after the 8-day integration window.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window\n\n`Others`: Eligible transfers that do not fall into the previous categories.\n\nN.B: We display the `Others` category in this graph to make reproducing calculations more straightforward and to aid the visual.\n\n### Interactive\n- You can click any node in this line graph to see its data in the table at the bottom of this dashboard.",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
             }
@@ -101,7 +101,7 @@
         "viz_ApFV7m6v": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "# Percentage of transfers within the selected time period based on the eight-day integration window\n\nGraph showing the percentage of transfers within the selected time period that have been integrated or are awaiting integration. \n\nPercentage calculations are based on the total number of eligible transfers within the selected time period, e.g. Month, Week or Day.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window\n\n`Others`: Eligible transfers that do not fall into the previous categories.\n\nN.B: We display the `Others` category in this graph to make reproducing calculations more straightforward and to aid the visual.",
+                "markdown": "# Percentage of transfers within the selected time period based on the eight-day integration window\n\nGraph showing the percentage of transfers within the selected time period that have been integrated or are awaiting integration. \n\nPercentage calculations are based on the total number of eligible transfers within the selected time period, e.g. Month, Week or Day.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window\n\n`Others`: Eligible transfers that do not fall into the previous categories.\n\nN.B: We display the `Others` category in this graph to make reproducing calculations more straightforward and to aid the visual.\n\n### Interactive\n- You can click any node in this line graph to see its data in the table at the bottom of this dashboard.",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
             }
@@ -109,7 +109,7 @@
         "viz_KAh0EyVe": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "# Percentage of records awaiting integration within the selected time period\n\nGraph showing the percentage of records awaiting integration for the selected time period.\n\nThe records are grouped based on whether they are within or after the 8-day integration window.\n\nPercentage calculations are based on the total number of records awaiting integration within a time period, e.g., for each displayed month, week, or day.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window",
+                "markdown": "# Percentage of records awaiting integration within the selected time period\n\nGraph showing the percentage of records awaiting integration for the selected time period.\n\nThe records are grouped based on whether they are within or after the 8-day integration window.\n\nPercentage calculations are based on the total number of records awaiting integration within a time period, e.g., for each displayed month, week, or day.\n\n`In flight`: awaiting integration within the 8-day window.\n\n`Not Integrated after 8 days`: awaiting integration after the 8-day window\n\n### Interactive\n- You can click any node in this line graph to see its data in the table at the bottom of this dashboard.",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
             }
@@ -117,7 +117,7 @@
         "viz_8FPOCMqe": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "# Percentage of successful integrations within the selected time period\n\nGraph showing the percentage of successful integrations for the selected time period.\n\nThe records are grouped based on whether they are within or after the 8-day integration window.\n\nPercentage calculations are based on the total number of records successfully integrated within a time period, e.g., for each displayed month, week, or day.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window",
+                "markdown": "# Percentage of successful integrations within the selected time period\n\nGraph showing the percentage of successful integrations for the selected time period.\n\nThe records are grouped based on whether they are within or after the 8-day integration window.\n\nPercentage calculations are based on the total number of records successfully integrated within a time period, e.g., for each displayed month, week, or day.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n### Interactive\n- You can click any node in this line graph to see its data in the table at the bottom of this dashboard.",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
             }
@@ -284,6 +284,12 @@
             "options": {},
             "dataSources": {
                 "primary": "ds_35W202aA"
+            }
+        },
+        "viz_UHE1s9wj": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "## Click on a node in a line graph above to see its data populated in this table."
             }
         }
     },
@@ -510,8 +516,8 @@
                 "item": "viz_AxHEVcBc",
                 "type": "block",
                 "position": {
-                    "x": 405,
-                    "y": 150,
+                    "x": 400,
+                    "y": 140,
                     "w": 260,
                     "h": 90
                 }
@@ -531,9 +537,9 @@
                 "type": "block",
                 "position": {
                     "x": 60,
-                    "y": 290,
+                    "y": 240,
                     "w": 1100,
-                    "h": 280
+                    "h": 330
                 }
             },
             {
@@ -541,7 +547,7 @@
                 "type": "block",
                 "position": {
                     "x": 1070,
-                    "y": 150,
+                    "y": 140,
                     "w": 260,
                     "h": 90
                 }
@@ -550,8 +556,8 @@
                 "item": "viz_aW8S9V53",
                 "type": "block",
                 "position": {
-                    "x": 1735,
-                    "y": 150,
+                    "x": 1730,
+                    "y": 140,
                     "w": 260,
                     "h": 90
                 }
@@ -561,9 +567,9 @@
                 "type": "block",
                 "position": {
                     "x": 1240,
-                    "y": 290,
+                    "y": 240,
                     "w": 1100,
-                    "h": 280
+                    "h": 330
                 }
             },
             {
@@ -571,9 +577,9 @@
                 "type": "block",
                 "position": {
                     "x": 60,
-                    "y": 1250,
+                    "y": 1280,
                     "w": 1100,
-                    "h": 180
+                    "h": 240
                 }
             },
             {
@@ -581,9 +587,9 @@
                 "type": "block",
                 "position": {
                     "x": 1240,
-                    "y": 1250,
+                    "y": 1280,
                     "w": 1100,
-                    "h": 180
+                    "h": 240
                 }
             },
             {
@@ -601,7 +607,7 @@
                 "type": "block",
                 "position": {
                     "x": 60,
-                    "y": 1430,
+                    "y": 1520,
                     "w": 1100,
                     "h": 610
                 }
@@ -611,7 +617,7 @@
                 "type": "block",
                 "position": {
                     "x": 1240,
-                    "y": 1430,
+                    "y": 1520,
                     "w": 1100,
                     "h": 610
                 }
@@ -631,9 +637,19 @@
                 "type": "block",
                 "position": {
                     "x": 200,
-                    "y": 2200,
+                    "y": 2260,
                     "w": 2000,
                     "h": 640
+                }
+            },
+            {
+                "item": "viz_UHE1s9wj",
+                "type": "block",
+                "position": {
+                    "x": 200,
+                    "y": 2230,
+                    "w": 2000,
+                    "h": 30
                 }
             }
         ],
