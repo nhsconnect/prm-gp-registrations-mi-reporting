@@ -6,7 +6,9 @@ gp2gp_in_progress_sla_snapshot_base %}
 {{ gp2gp_in_progress_sla_snapshot_base() }}
 
 | eval conversation_id = conversationId
+| eval report_supplier_name = reportingSystemSupplier
 | eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
 | eval reporting_practice_ods_code = reportingPracticeOdsCode
 | eval requesting_practice_ods_code = requestingPracticeOdsCode
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
@@ -23,9 +25,10 @@ gp2gp_in_progress_sla_snapshot_base %}
                 1=1, 1=0
             )
 
-| table 
-    conversation_id,
-    requesting_supplier_name,
-    reporting_practice_ods_code,
-    requesting_practice_ods_code,
-    sending_practice_ods_code
+| table conversation_id,
+        report_supplier_name,
+        requesting_supplier_name,
+        sending_supplier_name,
+        reporting_practice_ods_code,
+        requesting_practice_ods_code,
+        sending_practice_ods_code,
