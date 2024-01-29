@@ -77,7 +77,7 @@
 						"tokens": [
 							{
 								"token": "column",
-								"key": "row.label.value"
+								"key": "row.sla_status.value"
 							}
 						]
 					}
