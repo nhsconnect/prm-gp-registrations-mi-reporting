@@ -1,0 +1,14 @@
+index="$index$"
+
+{% from 'gp2gp_integration_8_days_trending_report/gp2gp_integration_8_days_trending_report_base.splunk' import
+gp2gp_integration_8_days_trending_report_base %}
+
+{{ gp2gp_integration_8_days_trending_report_base() }}
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
+                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          )
+
+| chart count by time_period, integrationStatus

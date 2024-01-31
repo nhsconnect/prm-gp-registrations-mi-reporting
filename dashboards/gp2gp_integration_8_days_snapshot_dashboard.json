@@ -48,7 +48,7 @@
 						"tokens": [
 							{
 								"token": "column",
-								"key": "row.integration_status.value"
+								"key": "row.integrationStatus.value"
 							}
 						]
 					}
@@ -117,7 +117,7 @@
 						"tokens": [
 							{
 								"token": "column",
-								"key": "row.integration_status.value"
+								"key": "row.label.value"
 							}
 						]
 					}
@@ -127,7 +127,7 @@
 		"viz_ApFV7m6v": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "#### Percentage of transfers within the eight-day integration window\nGraph showing the percentage of transfers that have been integrated or are awaiting integration within the eight-day time period.\n- **In flight**: awaiting integration and within 8 days\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
+				"markdown": "#### Percentage of transfers within the eight-day integration window\nGraph showing the percentage of transfers that have been integrated or are awaiting integration within the eight-day time period.\nPercentages are based on the **total eligible for electronic transfer**.\n\n- **In flight**: awaiting integration and within 8 days\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
 				"fontColor": "#000000",
 				"backgroundColor": "#ECF1F2"
 			}
@@ -160,7 +160,7 @@
 						"tokens": [
 							{
 								"token": "column",
-								"key": "row.awaiting_integration_status.value"
+								"key": "row.integrationStatus.value"
 							}
 						]
 					}
@@ -170,7 +170,7 @@
 		"viz_KAh0EyVe": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "#### Percentage of records awaiting integration within the eight-day integration window\nGraph showing the percentage of records ready to be integrated within or after eight days.\n\n- **In flight**: awaiting integration and within 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
+				"markdown": "#### Percentage of records awaiting integration within the eight-day integration window\nGraph showing the percentage of records ready to be integrated within or after eight days. Percentages are based on the **total records awaiting integration**.\n\n- **In flight**: awaiting integration and within 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
 				"fontColor": "#000000",
 				"backgroundColor": "#ECF1F2"
 			}
@@ -210,7 +210,7 @@
 						"tokens": [
 							{
 								"token": "column",
-								"key": "row.successful_integration_status.value"
+								"key": "row.integrationStatus.value"
 							}
 						]
 					}
@@ -220,7 +220,7 @@
 		"viz_8FPOCMqe": {
 			"type": "splunk.markdown",
 			"options": {
-				"markdown": "#### Percentage of successful integrations within the eight-day integration window\nGraph showing the percentage of records successfully integrated within or after eight days.\n\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days",
+				"markdown": "#### Percentage of successful integrations within the eight-day integration window\nGraph showing the percentage of records successfully integrated within or after eight days. Percentages are based on the **total records successfully integrated**.\n\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days",
 				"fontColor": "#000000",
 				"backgroundColor": "#ECF1F2"
 			}
@@ -231,6 +231,25 @@
 			"dataSources": {
 				"primary": "ds_XL0ZDbJy"
 			}
+		},
+		"viz_AW643WoV": {
+			"type": "splunk.markdown",
+			"options": {
+				"markdown": "**Go to: 'Integration 8 days trending dashboard'**\n",
+				"fontColor": "#ffffff",
+				"backgroundColor": "#003087",
+				"fontSize": "extraLarge"
+			},
+			"eventHandlers": [
+				{
+					"type": "drilldown.linkToDashboard",
+					"options": {
+						"app": "nhsd_gp2gp_all_sh_all_viz",
+						"dashboard": "gp2gp_integration_8_days_trending_dashboard",
+						"newTab": true
+					}
+				}
+			]
 		}
 	},
 	"dataSources": {
@@ -314,13 +333,13 @@
 		"ds_XL0ZDbJy": {
 			"type": "ds.search",
 			"options": {
-				"query": "| savedsearch gp2gp_8_days_integration_snapshot_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
+				"query": "| savedsearch gp2gp_integration_8_days_snapshot_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
 				"queryParameters": {
 					"earliest": "0",
 					"latest": ""
 				}
 			},
-			"name": "gp2gp_8_days_integration_snapshot_raw_data_table"
+			"name": "gp2gp_integration_8_days_snapshot_raw_data_table"
 		}
 	},
 	"defaults": {
@@ -510,6 +529,16 @@
 					"y": 1550,
 					"w": 1310,
 					"h": 610
+				}
+			},
+			{
+				"item": "viz_AW643WoV",
+				"type": "block",
+				"position": {
+					"x": 950,
+					"y": 30,
+					"w": 390,
+					"h": 30
 				}
 			}
 		],

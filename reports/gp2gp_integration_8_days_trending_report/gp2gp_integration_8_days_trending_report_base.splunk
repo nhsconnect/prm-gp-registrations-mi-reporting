@@ -1,4 +1,4 @@
-{% macro gp2gp_integration_8_days_snapshot_report_base () %}
+{% macro gp2gp_integration_8_days_trending_report_base () %}
 
 {% from 'functions.splunk' import
 calculate_transfer_compatibility,
@@ -47,10 +47,11 @@ has_errors
     outcome == "Successful integration" AND ehrIntegrationEventDateTime < relative_time(ehrResponseEventDateTime, "+8d"), "Integrated on time",
     outcome == "Successful integration", "Integrated after 8 days",
     outcome == "Awaiting integration" AND now() < relative_time(ehrResponseEventDateTime, "+8d"), "In flight",
-    outcome == "Awaiting integration", "Not integrated after 8 days")
+    outcome == "Awaiting integration", "Not integrated after 8 days",
+    1=1, "Others")
 
 {% endmacro %}
 
 index="$index$"
 
-{{ gp2gp_integration_8_days_snapshot_report_base() }}
+{{ gp2gp_integration_8_days_trending_report_base() }}
