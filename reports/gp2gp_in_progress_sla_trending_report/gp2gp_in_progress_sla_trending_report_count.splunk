@@ -28,10 +28,8 @@ gp2gp_in_progress_sla_trending_report_base %}
                               and outcome!="Technical failure", "BEhrS",
                           totalEhrRequestingOutsideSla==1
                               and outcome!="Technical failure", "BEhrR",
-                          1=1, "none"
+                          1=1, "other"
                         )
-
-| where sla_status != "none"
 
 | eval time_period = case(
                           "$time_period$"=="month", strftime(_time,"%y-%m"),
