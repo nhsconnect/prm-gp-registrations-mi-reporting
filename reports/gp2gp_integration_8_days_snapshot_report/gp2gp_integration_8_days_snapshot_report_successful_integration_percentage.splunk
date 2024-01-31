@@ -5,14 +5,11 @@ gp2gp_integration_8_days_snapshot_report_base %}
 
 {{ gp2gp_integration_8_days_snapshot_report_base() }}
 
-| eval integrated_under_8_days_percent = round((integrated_on_time/total_successful_integration) * 100, 2)
-| eval integrated_after_8_days_percent = round((integrated_after_8_days/total_successful_integration) * 100, 2)
+| where outcome == "Successful integration"
 
-| eval successful_integration_status = mvappend("Integrated on time", "Integrated after 8 days")
-| eval percent = mvappend(integrated_under_8_days_percent, integrated_after_8_days_percent)
+| chart count by integrationStatus
 
-| eval soft_zip = mvzip(successful_integration_status, percent)
-| mvexpand soft_zip
-
-| rex field=soft_zip "(?<successful_integration_status>.*),(?<percent>.*)"
-| table successful_integration_status, percent
+| addtotals row=true
+| eventstats sum(Total) as total_successful_integration
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "integrationStatus", <<FIELD>>, round('<<FIELD>>'*100/total_successful_integration, 2))]
+| fields - Total, total_successful_integration
