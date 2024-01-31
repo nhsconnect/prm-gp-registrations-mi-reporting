@@ -600,6 +600,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                       "B24 + BEhrR": "1",
                       "BEhrS + BEhrR": "1",
                       "B24 + BEhrS + BEhrR": "1",
+                      "other": "1",
                       },
             }
 
@@ -1052,7 +1053,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                     sourcetype="myevent",
                 )
 
-            for idx in range(3):
+            for idx in range(2):
                 broken_24hr_sla_conversation_id = "test_broken_all_sla"+str(idx)
 
                 index.submit(
@@ -1182,7 +1183,6 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            total = 20
             time_period_month_str = datetime_utc_now().strftime("%y-%m")
             expected_values = {
                 "0": {"time_period": time_period_month_str,
@@ -1193,7 +1193,8 @@ class TestTrendingInProgressSlaGraph(TestBase):
                       "B24 + BEhrS": "20.00",
                       "B24 + BEhrR": "10.00",
                       "BEhrS + BEhrR": "20.00",
-                      "B24 + BEhrS + BEhrR": "15.00",
+                      "B24 + BEhrS + BEhrR": "10.00",
+                      "other": "5.00"
                       },
             }
 

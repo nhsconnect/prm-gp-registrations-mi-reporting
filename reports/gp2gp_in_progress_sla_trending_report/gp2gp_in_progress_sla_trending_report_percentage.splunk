@@ -5,12 +5,6 @@ gp2gp_in_progress_sla_trending_report_base %}
 
 {{ gp2gp_in_progress_sla_trending_report_base() }}
 
-| where (totalTransferTimeOutsideSla24Hours==0 and totalEhrSendingOutsideSla==0 and totalEhrRequestingOutsideSla==0
-            and outcome=="In progress")
-        or (totalTransferTimeOutsideSla24Hours==1 and outcome!="Technical failure")
-        or (totalEhrSendingOutsideSla==1 and outcome!="Technical failure")
-        or (totalEhrRequestingOutsideSla==1 and outcome!="Technical failure")
-
 | eval time_period = case(
                           "$time_period$"=="month", strftime(_time,"%y-%m"),
                           "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
@@ -39,7 +33,8 @@ gp2gp_in_progress_sla_trending_report_base %}
                           totalEhrSendingOutsideSla==1
                               and outcome!="Technical failure", "BEhrS",
                           totalEhrRequestingOutsideSla==1
-                              and outcome!="Technical failure", "BEhrR"
+                              and outcome!="Technical failure", "BEhrR",
+                          1=1, "other"
                         )
 
 | chart count by time_period, sla_status
