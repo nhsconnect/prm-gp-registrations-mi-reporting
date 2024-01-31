@@ -5,39 +5,39 @@ gp2gp_in_progress_sla_snapshot_base %}
 
 {{ gp2gp_in_progress_sla_snapshot_base() }}
 
-| eventstats count(eval(outcome!="Not eligible for electronic transfer")) as total_number_of_eligible_transfers
+| eventstats count(conversationId) as total_number_of_eligible_transfers
 
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==0
-                        and totalEhrSendingOutsideSla==0
-                        and totalEhrRequestingOutsideSla==0
-                        and outcome=="In progress"
-                        )) as "in_flight_count"
-| eventstats count(eval(totalTransferTimeOutsideSla24Hours==1
-                        and outcome!="Technical failure"
-                        )) as "broken_24hr_sla_count"
-| eventstats count(eval(totalEhrSendingOutsideSla==1
-                        and outcome!="Technical failure"
-                        )) as "broken_ehr_sending_sla_count"
-| eventstats count(eval(totalEhrRequestingOutsideSla==1
-                        and outcome!="Technical failure"
-                        )) as "broken_ehr_requesting_sla_count"
+| eval sla_status = case( totalTransferTimeOutsideSla24Hours==0
+                              and totalEhrSendingOutsideSla==0
+                              and totalEhrRequestingOutsideSla==0
+                              and outcome=="In progress", "IF",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrSendingOutsideSla==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrS + BEhrR",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrSendingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrS",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "B24 + BEhrR",
+                          totalEhrSendingOutsideSla==1
+                              and totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrS + BEhrR",
+                          totalTransferTimeOutsideSla24Hours==1
+                              and outcome!="Technical failure", "B24",
+                          totalEhrSendingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrS",
+                          totalEhrRequestingOutsideSla==1
+                              and outcome!="Technical failure", "BEhrR",
+                          1=1, "none"
+                        )
 
-| eval in_flight_percentage = round((in_flight_count/total_number_of_eligible_transfers) * 100,2)
-| eval broken_24hr_sla_percentage =  round((broken_24hr_sla_count/total_number_of_eligible_transfers) * 100,2)
-| eval broken_ehr_sending_sla_percentage = round((broken_ehr_sending_sla_count/total_number_of_eligible_transfers) * 100,2)
-| eval broken_ehr_requesting_sla_percentage = round((broken_ehr_requesting_sla_count/total_number_of_eligible_transfers) * 100,2)
+| where sla_status != "none"
 
-| stats 
-    first(in_flight_percentage) as in_flight_percentage, 
-    first(broken_24hr_sla_percentage) as broken_24hr_sla_percentage, 
-    first(broken_ehr_sending_sla_percentage) as broken_ehr_sending_sla_percentage, 
-    first(broken_ehr_requesting_sla_percentage) as broken_ehr_requesting_sla_percentage
-
-| eval label=mvappend("In flight", "Broken 24hr sla", "Broken ehr sending sla", "Broken ehr requesting sla")
-| eval count=mvappend(in_flight_percentage, broken_24hr_sla_percentage, broken_ehr_sending_sla_percentage, broken_ehr_requesting_sla_percentage)
-
-| eval soft_zip = mvzip(label, count)
-| mvexpand soft_zip
- 
-| rex field=soft_zip "(?<label>.*),(?<count>.*)"
-| table label, count
+| chart first(total_number_of_eligible_transfers) as total_number_of_eligible_transfers
+        count as percentage by sla_status
+| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "sla_status", <<FIELD>>,
+                                  "<<FIELD>>" == "total_number_of_eligible_transfers", <<FIELD>>,
+                                  1=1, round('<<FIELD>>'*100/ total_number_of_eligible_transfers, 2))]
+| fields - total_number_of_eligible_transfers
