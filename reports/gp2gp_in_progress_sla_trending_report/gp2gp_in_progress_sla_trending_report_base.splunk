@@ -45,7 +45,7 @@ has_errors
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-| where outcome!="Not eligible for electronic transfer" or outcome!="Unknown"
+| where outcome!="Not eligible for electronic transfer"
 
 {% endmacro %}
 
