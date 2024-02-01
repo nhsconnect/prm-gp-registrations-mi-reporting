@@ -1,22 +1,19 @@
-import os
 import json
-import pytest
 from time import sleep
-from splunklib import client
 import jq
 from helpers.splunk \
     import get_telemetry_from_splunk, create_sample_event, set_variables_on_query, \
-    create_integration_payload, create_transfer_compatibility_payload
+    create_transfer_compatibility_payload
 from tests.test_base import TestBase, EventType
-from datetime import datetime, timedelta
-from helpers.datetime_helper import datetime_utc_now, create_date_time, generate_report_start_date, \
+from datetime import datetime
+from helpers.datetime_helper import create_date_time, generate_report_start_date, \
     generate_report_end_date
 
 
 class TestTransferStatusReportSnapshotOutputs(TestBase):
 
     def test_gp2gp_transfer_status_report_snapshot_counts(self):
-        '''This test just tests the "counts output" is calling the base query correctly.'''
+        """This test just tests the "counts output" is calling the base query correctly."""
 
         # Arrange
         index_name, index = self.create_index()
@@ -112,7 +109,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
             self.delete_index(index_name)
 
     def test_gp2gp_transfer_status_report_snapshot_percentages(self):
-        '''This test just tests the "percentages output" is calling the base query correctly.'''
+        """This test just tests the "percentages output" is calling the base query correctly."""
 
         # Arrange
         index_name, index = self.create_index()
@@ -194,7 +191,7 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
 
             # Assert
             expected_values = {"0": {"outcome": "In progress",
-                                     "count": "100.00"}}
+                                     "percentage": "100.00"}}
 
             for row, row_values in expected_values.items():
                 row_values_as_jq_str = ' '.join(
@@ -203,7 +200,6 @@ class TestTransferStatusReportSnapshotOutputs(TestBase):
                 self.LOG.info(f'.[{row}] {row_values_as_jq_str} ')
                 assert jq.first(
                     f'.[{row}] {row_values_as_jq_str} ', telemetry)
-
 
         finally:
             self.delete_index(index_name)
