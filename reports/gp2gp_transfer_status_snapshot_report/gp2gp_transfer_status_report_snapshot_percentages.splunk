@@ -5,7 +5,7 @@ gp2gp_transfer_status_report_snapshot_base %}
 
 
 {{ gp2gp_transfer_status_report_snapshot_base() }}
-| chart count by outcome
+| chart count as percentage by outcome
 | addtotals row=true
 | eventstats sum(Total) as total_eligible_for_electronic_transfer
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "outcome", <<FIELD>>, round('<<FIELD>>'*100/ total_eligible_for_electronic_transfer, 2))]
