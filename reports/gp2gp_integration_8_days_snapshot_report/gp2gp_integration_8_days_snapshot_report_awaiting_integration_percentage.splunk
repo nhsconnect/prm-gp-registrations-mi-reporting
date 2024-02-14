@@ -7,7 +7,7 @@ gp2gp_integration_8_days_snapshot_report_base %}
 
 | where outcome == "Awaiting integration"
 
-| chart count by integrationStatus
+| chart count as percentage by integrationStatus
 
 | addtotals row=true
 | eventstats sum(Total) as total_awaiting_integration

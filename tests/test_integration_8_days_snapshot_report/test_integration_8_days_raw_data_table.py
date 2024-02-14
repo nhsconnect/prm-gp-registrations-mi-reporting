@@ -131,6 +131,7 @@ class TestIntegrationEightDaysRawDataTableOutputs(TestBase):
                 + f'| select( .conversation_id == "{random_conversation_id}") '
                 + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER") '
                 + f'| select( .requesting_supplier_name == "TPP") '
+                + f'| select( .sending_supplier_name == "EMIS") '
                 + f'| select( .reporting_practice_ods_code == "A00029") '
                 + f'| select( .requesting_practice_ods_code == "A00029") '
                 + f'| select( .sending_practice_ods_code == "B00157") ', telemetry
