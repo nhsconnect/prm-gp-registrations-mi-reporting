@@ -8,6 +8,7 @@ gp2gp_integration_8_days_snapshot_report_base %}
 | eval conversation_id = conversationId
 | eval reporting_supplier_name = reportingSystemSupplier
 | eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
 | eval reporting_practice_ods_code = reportingPracticeOdsCode
 | eval requesting_practice_ods_code = requestingPracticeOdsCode
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
@@ -22,6 +23,7 @@ gp2gp_integration_8_days_snapshot_report_base %}
     conversation_id,
     reporting_supplier_name,
     requesting_supplier_name,
+    sending_supplier_name,
     reporting_practice_ods_code,
     requesting_practice_ods_code,
     sending_practice_ods_code

@@ -23,12 +23,12 @@ gp2gp_integration_8_days_snapshot_report_base %}
     first(integrated_on_time_percentage) as integrated_on_time,
     first(not_integrated_after_8_days_percentage) as not_integrated_after_8_days
 
-| eval label = mvappend("In flight", "Integrated after 8 days", "Integrated on time", "Not integrated after 8 days")
+| eval integrationStatus = mvappend("In flight", "Integrated after 8 days", "Integrated on time", "Not integrated after 8 days")
 | eval percentage = mvappend(in_flight, integrated_after_8_days, integrated_on_time, not_integrated_after_8_days)
 
-| eval soft_zip = mvzip(label, percentage)
+| eval soft_zip = mvzip(integrationStatus, percentage)
 | mvexpand soft_zip
 
-| rex field=soft_zip "(?<label>.*),(?<percentage>.*)"
-| table label, percentage
+| rex field=soft_zip "(?<integrationStatus>.*),(?<percentage>.*)"
+| table integrationStatus, percentage
 
