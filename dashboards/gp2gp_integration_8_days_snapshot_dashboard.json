@@ -1,552 +1,552 @@
 {
-	"visualizations": {
-		"viz_vBczMda2": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "## Integration 8 days snapshot report\n### Counts",
-				"fontSize": "extraLarge"
-			}
-		},
-		"viz_AxHEVcBc": {
-			"type": "splunk.singlevalue",
-			"dataSources": {
-				"primary": "ds_IexbNVNe"
-			},
-			"title": "Total eligible for electronic transfer",
-			"options": {
-				"trendDisplay": "off",
-				"sparklineDisplay": "off",
-				"majorColor": "#000000",
-				"majorFontSize": 50
-			}
-		},
-		"viz_R5hRN3mD": {
-			"type": "splunk.column",
-			"options": {
-				"backgroundColor": "#ECF1F2",
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"legendDisplay": "off",
-				"xAxisTitleVisibility": "hide",
-				"xAxisMajorTickVisibility": "hide",
-				"yAxisTitleText": "Count",
-				"yAxisLabelVisibility": "show"
-			},
-			"dataSources": {
-				"primary": "ds_yd1bRDxt"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.integrationStatus.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_BFcyfN3O": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Count of transfers within the eight-day integration window\nGraph showing the count of transfers that have been integrated or are awaiting integration within the eight-day time period.\n\n- **In flight**: awaiting integration and within 8 days\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2"
-			}
-		},
-		"viz_Qg6uBt6h": {
-			"type": "splunk.singlevalue",
-			"dataSources": {
-				"primary": "ds_tiObCNOc_ds_IexbNVNe"
-			},
-			"title": "Total records awaiting integration",
-			"options": {
-				"trendDisplay": "off",
-				"sparklineDisplay": "off",
-				"majorColor": "#000000",
-				"majorFontSize": 50
-			}
-		},
-		"viz_aW8S9V53": {
-			"type": "splunk.singlevalue",
-			"dataSources": {
-				"primary": "ds_7RBfo42b_ds_tiObCNOc_ds_IexbNVNe"
-			},
-			"title": "Total records successfully integrated",
-			"options": {
-				"trendDisplay": "off",
-				"sparklineDisplay": "off",
-				"majorColor": "#000000",
-				"majorFontSize": 50
-			}
-		},
-		"viz_A2njQ8N0": {
-			"type": "splunk.column",
-			"options": {
-				"backgroundColor": "#ECF1F2",
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"legendDisplay": "off",
-				"xAxisTitleVisibility": "hide",
-				"xAxisMajorTickVisibility": "hide",
-				"yAxisTitleText": "Percentage",
-				"yAxisLabelVisibility": "show"
-			},
-			"dataSources": {
-				"primary": "ds_hmhjsSne_ds_yd1bRDxt"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.label.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_ApFV7m6v": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Percentage of transfers within the eight-day integration window\nGraph showing the percentage of transfers that have been integrated or are awaiting integration within the eight-day time period.\nPercentages are based on the **total eligible for electronic transfer**.\n\n- **In flight**: awaiting integration and within 8 days\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2"
-			}
-		},
-		"viz_6Ul6UE3l": {
-			"type": "splunk.column",
-			"options": {
-				"backgroundColor": "#ECF1F2",
-				"seriesColors": [
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692",
-					"#003087",
-					"#7C2855"
-				],
-				"legendDisplay": "off",
-				"xAxisTitleVisibility": "hide",
-				"xAxisMajorTickVisibility": "hide",
-				"yAxisTitleText": "Percentage",
-				"yAxisLabelVisibility": "show"
-			},
-			"dataSources": {
-				"primary": "ds_1ER2w7WD_ds_yd1bRDxt"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.integrationStatus.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_KAh0EyVe": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Percentage of records awaiting integration within the eight-day integration window\nGraph showing the percentage of records ready to be integrated within or after eight days. Percentages are based on the **total records awaiting integration**.\n\n- **In flight**: awaiting integration and within 8 days\n- **Not Integrated after 8 days**: awaiting integration and over 8 days",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2"
-			}
-		},
-		"viz_vWG4qflL": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "### Counts",
-				"fontSize": "extraLarge"
-			}
-		},
-		"viz_yS64p27p": {
-			"type": "splunk.column",
-			"options": {
-				"backgroundColor": "#ECF1F2",
-				"seriesColors": [
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692",
-					"#003087",
-					"#7C2855",
-					"#D5281B"
-				],
-				"legendDisplay": "off",
-				"xAxisTitleVisibility": "hide",
-				"xAxisMajorTickVisibility": "hide",
-				"yAxisTitleText": "Percentage",
-				"yAxisLabelVisibility": "show"
-			},
-			"dataSources": {
-				"primary": "ds_U99LTd52_ds_1ER2w7WD_ds_yd1bRDxt"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.integrationStatus.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_8FPOCMqe": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Percentage of successful integrations within the eight-day integration window\nGraph showing the percentage of records successfully integrated within or after eight days. Percentages are based on the **total records successfully integrated**.\n\n- **Integrated on time**: successful integration within 8 days\n- **Integrated after 8 days**: successful integration after 8 days",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2"
-			}
-		},
-		"viz_fftYrrJR": {
-			"type": "splunk.table",
-			"options": {},
-			"dataSources": {
-				"primary": "ds_XL0ZDbJy"
-			}
-		},
-		"viz_AW643WoV": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "**Go to: 'Integration 8 days trending dashboard'**\n",
-				"fontColor": "#ffffff",
-				"backgroundColor": "#003087",
-				"fontSize": "extraLarge"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.linkToDashboard",
-					"options": {
-						"app": "nhsd_gp2gp_all_sh_all_viz",
-						"dashboard": "gp2gp_integration_8_days_trending_dashboard",
-						"newTab": true
-					}
-				}
-			]
-		}
-	},
-	"dataSources": {
-		"ds_IexbNVNe": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_total_eligible_transfers_count"
-		},
-		"ds_yd1bRDxt": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_integration_8_days_snapshot_report_count"
-		},
-		"ds_tiObCNOc_ds_IexbNVNe": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_total_awaiting_integration_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_total_awaiting_integration_count"
-		},
-		"ds_7RBfo42b_ds_tiObCNOc_ds_IexbNVNe": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_total_successful_integration_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_total_successful_integration_count"
-		},
-		"ds_hmhjsSne_ds_yd1bRDxt": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_overall_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_integration_8_days_snapshot_report_overall_percentage"
-		},
-		"ds_1ER2w7WD_ds_yd1bRDxt": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_awaiting_integration_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_integration_8_days_snapshot_report_awaiting_integration_percentage copy 1"
-		},
-		"ds_U99LTd52_ds_1ER2w7WD_ds_yd1bRDxt": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_successful_integration_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_integration_8_days_snapshot_report_successful_integration_percentage copy 2"
-		},
-		"ds_XL0ZDbJy": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_integration_8_days_snapshot_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_integration_8_days_snapshot_raw_data_table"
-		}
-	},
-	"defaults": {
-		"dataSources": {
-			"ds.search": {
-				"options": {
-					"queryParameters": {
-						"latest": "$global_time.latest$",
-						"earliest": "$global_time.earliest$"
-					}
-				}
-			}
-		},
-		"tokens": {
-			"default": {
-				"column": {
-					"value": "None"
-				}
-			}
-		}
-	},
-	"inputs": {
-		"input_global_trp": {
-			"type": "input.timerange",
-			"options": {
-				"token": "time_range",
-				"defaultValue": "0,"
-			},
-			"title": "Time Range"
-		},
-		"input_J10tAvKo": {
-			"options": {
-				"defaultValue": 0,
-				"token": "cutoff",
-				"min": 0,
-				"max": 14
-			},
-			"title": "Cutoff (days)",
-			"type": "input.number"
-		}
-	},
-	"layout": {
-		"type": "absolute",
-		"options": {
-			"height": 2200,
-			"display": "auto",
-			"showTitleAndDescription": false,
-			"backgroundColor": "#ffffff",
-			"width": 1400
-		},
-		"structure": [
-			{
-				"item": "viz_vBczMda2",
-				"type": "block",
-				"position": {
-					"x": 10,
-					"y": 10,
-					"w": 920,
-					"h": 100
-				}
-			},
-			{
-				"item": "viz_AxHEVcBc",
-				"type": "block",
-				"position": {
-					"x": 10,
-					"y": 110,
-					"w": 260,
-					"h": 90
-				}
-			},
-			{
-				"item": "viz_R5hRN3mD",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 380,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_BFcyfN3O",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 220,
-					"w": 590,
-					"h": 160
-				}
-			},
-			{
-				"item": "viz_Qg6uBt6h",
-				"type": "block",
-				"position": {
-					"x": 170,
-					"y": 880,
-					"w": 260,
-					"h": 90
-				}
-			},
-			{
-				"item": "viz_aW8S9V53",
-				"type": "block",
-				"position": {
-					"x": 765,
-					"y": 880,
-					"w": 260,
-					"h": 90
-				}
-			},
-			{
-				"item": "viz_A2njQ8N0",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 380,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_ApFV7m6v",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 220,
-					"w": 590,
-					"h": 160
-				}
-			},
-			{
-				"item": "viz_6Ul6UE3l",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 1100,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_KAh0EyVe",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 980,
-					"w": 590,
-					"h": 120
-				}
-			},
-			{
-				"item": "viz_vWG4qflL",
-				"type": "block",
-				"position": {
-					"x": 10,
-					"y": 840,
-					"w": 920,
-					"h": 100
-				}
-			},
-			{
-				"item": "viz_yS64p27p",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 1100,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_8FPOCMqe",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 980,
-					"w": 590,
-					"h": 120
-				}
-			},
-			{
-				"item": "viz_fftYrrJR",
-				"type": "block",
-				"position": {
-					"x": 30,
-					"y": 1550,
-					"w": 1310,
-					"h": 610
-				}
-			},
-			{
-				"item": "viz_AW643WoV",
-				"type": "block",
-				"position": {
-					"x": 950,
-					"y": 30,
-					"w": 390,
-					"h": 30
-				}
-			}
-		],
-		"globalInputs": [
-			"input_global_trp",
-			"input_J10tAvKo"
-		]
-	},
-	"description": "",
-	"title": "gp2gp_integration_8_days_snapshot_dashboard"
+    "visualizations": {
+        "viz_vBczMda2": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "## Integration 8 days snapshot report\n### Counts",
+                "fontSize": "extraLarge"
+            }
+        },
+        "viz_AxHEVcBc": {
+            "type": "splunk.singlevalue",
+            "dataSources": {
+                "primary": "ds_IexbNVNe"
+            },
+            "title": "Total records eligible for electronic transfer",
+            "options": {
+                "trendDisplay": "off",
+                "sparklineDisplay": "off",
+                "majorColor": "#000000",
+                "majorFontSize": 50
+            }
+        },
+        "viz_R5hRN3mD": {
+            "type": "splunk.column",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "legendDisplay": "off",
+                "xAxisMajorTickVisibility": "hide",
+                "yAxisTitleText": "Count",
+                "yAxisLabelVisibility": "show",
+                "xAxisTitleText": "Integration status"
+            },
+            "dataSources": {
+                "primary": "ds_yd1bRDxt"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.integrationStatus.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_BFcyfN3O": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Count of integrations based on the eight-day integration window\nGraph showing the count of transfers that have been integrated or are awaiting integration.\n\nThe transfers are grouped based on whether they are within or after the 8-day integration window.\n\n`In flight`: awaiting integration and within the 8-day integration window.\n\n`Integrated on time`: successful integration within the 8-day integration window\n\n`Integrated after 8 days`: successful integration after the 8-day integration window\n\n`Not Integrated after 8 days`: awaiting integration and over the 8-day integration window\n\n**Click any column in this graph to see its raw data in the table at the bottom of this dashboard.**",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_Qg6uBt6h": {
+            "type": "splunk.singlevalue",
+            "dataSources": {
+                "primary": "ds_tiObCNOc_ds_IexbNVNe"
+            },
+            "title": "Total records awaiting integration",
+            "options": {
+                "trendDisplay": "off",
+                "sparklineDisplay": "off",
+                "majorColor": "#000000",
+                "majorFontSize": 50
+            }
+        },
+        "viz_aW8S9V53": {
+            "type": "splunk.singlevalue",
+            "dataSources": {
+                "primary": "ds_7RBfo42b_ds_tiObCNOc_ds_IexbNVNe"
+            },
+            "title": "Total records successfully integrated",
+            "options": {
+                "trendDisplay": "off",
+                "sparklineDisplay": "off",
+                "majorColor": "#000000",
+                "majorFontSize": 50
+            }
+        },
+        "viz_A2njQ8N0": {
+            "type": "splunk.column",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "legendDisplay": "off",
+                "xAxisMajorTickVisibility": "hide",
+                "yAxisTitleText": "Percentage",
+                "yAxisLabelVisibility": "show",
+                "xAxisTitleText": "Integration status"
+            },
+            "dataSources": {
+                "primary": "ds_hmhjsSne_ds_yd1bRDxt"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.label.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_ApFV7m6v": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Percentage of integrations based on the eight-day integration window\nGraph showing the percentage of transfers that have been integrated or are awaiting integration.\n\nThe transfers are split based on whether they are within or after the 8-day integration window.\n\nPercentage calculations are based on the total count of records eligible for electronic transfer.\n\n`In flight`: awaiting integration and within the 8-day integration window.\n\n`Integrated on time`: successful integration within the 8-day integration window\n\n`Integrated after 8 days`: successful integration after the 8-day integration window\n\n`Not Integrated after 8 days`: awaiting integration and over the 8-day integration window\n\n**Click any column in this graph to see its raw data in the table at the bottom of this dashboard.**",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_6Ul6UE3l": {
+            "type": "splunk.column",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "legendDisplay": "off",
+                "xAxisMajorTickVisibility": "hide",
+                "yAxisTitleText": "Percentage",
+                "yAxisLabelVisibility": "show",
+                "xAxisTitleText": "Integration status"
+            },
+            "dataSources": {
+                "primary": "ds_1ER2w7WD_ds_yd1bRDxt"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.integrationStatus.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_KAh0EyVe": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Percentage of records awaiting integration within the eight-day integration window\nGraph showing the percentage of records ready to be integrated within or after eight days. \n\nPercentages are based on the total records awaiting integration.\n\n`In flight`: awaiting integration and within the 8-day integration window.\n\n`Not Integrated after 8 days`: awaiting integration and over the 8-day integration window\n\n**Click any column in this graph to see its raw data in the table at the bottom of this dashboard.**",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_vWG4qflL": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Counts",
+                "fontSize": "extraLarge"
+            }
+        },
+        "viz_yS64p27p": {
+            "type": "splunk.column",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "legendDisplay": "off",
+                "xAxisMajorTickVisibility": "hide",
+                "yAxisTitleText": "Percentage",
+                "yAxisLabelVisibility": "show",
+                "xAxisTitleText": "Integration status"
+            },
+            "dataSources": {
+                "primary": "ds_U99LTd52_ds_1ER2w7WD_ds_yd1bRDxt"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.integrationStatus.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_8FPOCMqe": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Percentage of successful integrations within the eight-day integration window\nGraph showing the percentage of records successfully integrated within or after eight days. \n\nPercentages are based on the total records successfully integrated.\n\n`Integrated on time`: successful integration within the 8-day window\n\n`Integrated after 8 days`: successful integration after the 8-day window\n\n**Click any column in this graph to see its raw data in the table at the bottom of this dashboard.**",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_fftYrrJR": {
+            "type": "splunk.table",
+            "options": {},
+            "dataSources": {
+                "primary": "ds_XL0ZDbJy"
+            }
+        },
+        "viz_AW643WoV": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "**Go to: 'Integration 8 days trending dashboard'**\n",
+                "fontColor": "#ffffff",
+                "backgroundColor": "#003087",
+                "fontSize": "extraLarge"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.linkToDashboard",
+                    "options": {
+                        "app": "nhsd_gp2gp_all_sh_all_viz",
+                        "dashboard": "gp2gp_integration_8_days_trending_dashboard",
+                        "newTab": true
+                    }
+                }
+            ]
+        }
+    },
+    "dataSources": {
+        "ds_IexbNVNe": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_total_eligible_transfers_count"
+        },
+        "ds_yd1bRDxt": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_integration_8_days_snapshot_report_count"
+        },
+        "ds_tiObCNOc_ds_IexbNVNe": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_total_awaiting_integration_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_total_awaiting_integration_count"
+        },
+        "ds_7RBfo42b_ds_tiObCNOc_ds_IexbNVNe": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_total_successful_integration_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_total_successful_integration_count"
+        },
+        "ds_hmhjsSne_ds_yd1bRDxt": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_overall_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_integration_8_days_snapshot_report_overall_percentage"
+        },
+        "ds_1ER2w7WD_ds_yd1bRDxt": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_awaiting_integration_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_integration_8_days_snapshot_report_awaiting_integration_percentage copy 1"
+        },
+        "ds_U99LTd52_ds_1ER2w7WD_ds_yd1bRDxt": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_integration_8_days_snapshot_report_successful_integration_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_integration_8_days_snapshot_report_successful_integration_percentage copy 2"
+        },
+        "ds_XL0ZDbJy": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_integration_8_days_snapshot_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_integration_8_days_snapshot_raw_data_table"
+        }
+    },
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "latest": "$global_time.latest$",
+                        "earliest": "$global_time.earliest$"
+                    }
+                }
+            }
+        },
+        "tokens": {
+            "default": {
+                "column": {
+                    "value": "None"
+                }
+            }
+        }
+    },
+    "inputs": {
+        "input_global_trp": {
+            "type": "input.timerange",
+            "options": {
+                "token": "time_range",
+                "defaultValue": "0,"
+            },
+            "title": "Time Range"
+        },
+        "input_J10tAvKo": {
+            "options": {
+                "defaultValue": 0,
+                "token": "cutoff",
+                "min": 0,
+                "max": 14
+            },
+            "title": "Cutoff (days)",
+            "type": "input.number"
+        }
+    },
+    "layout": {
+        "type": "absolute",
+        "options": {
+            "height": 2300,
+            "display": "auto",
+            "showTitleAndDescription": false,
+            "backgroundColor": "#ffffff",
+            "width": 1600
+        },
+        "structure": [
+            {
+                "item": "viz_vBczMda2",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 10,
+                    "w": 920,
+                    "h": 100
+                }
+            },
+            {
+                "item": "viz_AxHEVcBc",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 110,
+                    "w": 300,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_R5hRN3mD",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 470,
+                    "w": 745,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_BFcyfN3O",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 220,
+                    "w": 745,
+                    "h": 250
+                }
+            },
+            {
+                "item": "viz_Qg6uBt6h",
+                "type": "block",
+                "position": {
+                    "x": 263,
+                    "y": 960,
+                    "w": 260,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_aW8S9V53",
+                "type": "block",
+                "position": {
+                    "x": 1063,
+                    "y": 960,
+                    "w": 260,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_A2njQ8N0",
+                "type": "block",
+                "position": {
+                    "x": 820,
+                    "y": 470,
+                    "w": 745,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_ApFV7m6v",
+                "type": "block",
+                "position": {
+                    "x": 820,
+                    "y": 220,
+                    "w": 745,
+                    "h": 250
+                }
+            },
+            {
+                "item": "viz_6Ul6UE3l",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 1240,
+                    "w": 745,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_KAh0EyVe",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 1060,
+                    "w": 745,
+                    "h": 180
+                }
+            },
+            {
+                "item": "viz_vWG4qflL",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 920,
+                    "w": 920,
+                    "h": 100
+                }
+            },
+            {
+                "item": "viz_yS64p27p",
+                "type": "block",
+                "position": {
+                    "x": 820,
+                    "y": 1240,
+                    "w": 745,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_8FPOCMqe",
+                "type": "block",
+                "position": {
+                    "x": 820,
+                    "y": 1060,
+                    "w": 745,
+                    "h": 180
+                }
+            },
+            {
+                "item": "viz_fftYrrJR",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 1660,
+                    "w": 1560,
+                    "h": 620
+                }
+            },
+            {
+                "item": "viz_AW643WoV",
+                "type": "block",
+                "position": {
+                    "x": 1150,
+                    "y": 30,
+                    "w": 390,
+                    "h": 30
+                }
+            }
+        ],
+        "globalInputs": [
+            "input_global_trp",
+            "input_J10tAvKo"
+        ]
+    },
+    "description": "",
+    "title": "gp2gp_integration_8_days_snapshot_dashboard"
 }
