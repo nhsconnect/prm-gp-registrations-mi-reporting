@@ -292,10 +292,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .label=="{key}") | select (.percentage=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .label=="{key}") | select (.percentage=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")',
                     telemetry,
                 )
 
@@ -423,10 +423,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")',
                     telemetry,
                 )
 
@@ -568,10 +568,10 @@ class TestIntegrationEightDaysGraph(TestBase):
 
             for idx, (key, value) in enumerate(expected_values.items()):
                 self.LOG.info(
-                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")'
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")'
                 )
                 assert jq.first(
-                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.count=="{value}")',
+                    f'.[{idx}] | select( .integrationStatus=="{key}") | select (.percentage=="{value}")',
                     telemetry,
                 )
 
