@@ -1,0 +1,21 @@
+index="$index$"
+
+{% from 'gp2gp_rejected_trending_report/gp2gp_rejected_report_trending_base.splunk' import
+gp2gp_rejected_trending_report_base %}
+
+
+{{ gp2gp_rejected_trending_report_base() }}
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
+                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          )
+| eval column = case(outcome = "Rejected", "Rejected",
+                     1=1, "Not rejected")
+
+| chart count by time_period, column
+| addtotals row=true
+| eventstats sum(Total) as total_eligible_for_electronic_transfer
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", <<FIELD>>, round('<<FIELD>>'*100/ total_eligible_for_electronic_transfer, 2))]
+| fields - Total, total_eligible_for_electronic_transfer
