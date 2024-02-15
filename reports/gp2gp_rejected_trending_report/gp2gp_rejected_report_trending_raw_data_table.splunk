@@ -14,11 +14,7 @@ gp2gp_rejected_trending_report_base %}
 | eval requesting_practice_ods_code = requestingPracticeOdsCode
 | eval sending_practice_ods_code =  sendingPracticeOdsCode
 
-
-
-| where case(  "$line$" == "Rejected", outcome == "Rejected",
-               "$line$" == "Not Rejected, outcome != "Rejected"
-            )
+| where if( "$line$" == "Rejected", outcome=="Rejected", outcome!="Rejected")
 
 | eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
                                        "$time_period$" = "week", relative_time(strptime(substr("$column$",1,2)+"-01-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
