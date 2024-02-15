@@ -15,7 +15,6 @@ gp2gp_rejected_trending_report_base %}
                      1=1, "Not rejected")
 
 | chart count by time_period, column
-| addtotals row=true
-| eventstats sum(Total) as total_eligible_for_electronic_transfer
-| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", <<FIELD>>, round('<<FIELD>>'*100/ total_eligible_for_electronic_transfer, 2))]
-| fields - Total, total_eligible_for_electronic_transfer
+| addtotals fieldname="total_per_month"
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
+| fields - total_per_month
