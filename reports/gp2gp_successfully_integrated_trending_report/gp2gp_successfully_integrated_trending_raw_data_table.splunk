@@ -1,0 +1,45 @@
+index="$index$"
+
+{% from 'gp2gp_integration_8_days_trending_report/gp2gp_integration_8_days_trending_report_base.splunk' import
+gp2gp_integration_8_days_trending_report_base %}
+
+{{ gp2gp_integration_8_days_trending_report_base() }}
+
+| eval conversation_id = conversationId
+| eval reporting_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+| where case("$line$" == "Successfully integrated", outcome == "Successful integration",
+             "$line$" == "Not successfully integrated", outcome != "Successful integration",
+             1=1, 1=0)
+
+| eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "week", relative_time(strptime(substr("$column$",1,2)+"-01-01T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "day", relative_time(strptime("$column$"+"T00:00:00","%y-%m-%dT%H:%M:%S"), tz_hours+"h")
+                                     )
+
+| eval weeks_str = if("$time_period$" = "week", substr("$column$",7,8), 0)
+| eval weeks_int = if("$time_period$" = "week", tonumber(weeks_str), 0)
+| eval weeks_in_seconds = if("$time_period$" = "week", (weeks_int-1) * 604800, 0)
+| eval time_window_start_epoch = if( "$time_period$" = "week", time_window_start_epoch + weeks_in_seconds, time_window_start_epoch)
+
+
+| eval time_window_end_epoch = case( "$time_period$" = "month", relative_time(time_window_start_epoch, "+1mon"),
+                                       "$time_period$" = "week", relative_time(time_window_start_epoch, "+1w"),
+                                       "$time_period$" = "day", relative_time(time_window_start_epoch, "+1d")
+                                     )
+
+| where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
+
+| table
+    conversation_id,
+    reporting_supplier_name,
+    requesting_supplier_name,
+    sending_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code
