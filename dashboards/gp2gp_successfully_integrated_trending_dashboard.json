@@ -1,247 +1,309 @@
 {
-  "dataSources": {
-    "ds_uGaAnEM4": {
-      "type": "ds.search",
-      "options": {
-        "query": "|  savedsearch gp2gp_successfully_integrated_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "gp2gp_successfully_integrated_trending_report_count"
-    },
-    "ds_RN4dPMq2": {
-      "type": "ds.search",
-      "options": {
-        "query": "|  savedsearch gp2gp_successfully_integrated_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "gp2gp_successfully_integrated_trending_report_percentage"
-    },
-    "ds_M5PzE81U": {
-      "type": "ds.search",
-      "options": {
-        "query": "|  savedsearch gp2gp_transfer_status_trending_report_total_eligible_for_transfer index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=$time_period$",
-        "queryParameters": {
-          "earliest": "0",
-          "latest": ""
-        }
-      },
-      "name": "gp2gp_transfer_status_trending_report_total_eligible_for_transfer"
-    }
-  },
-  "visualizations": {
-    "viz_wjCvnsg0": {
-      "type": "splunk.column",
-      "dataSources": {
-        "primary": "ds_uGaAnEM4"
-      },
-      "showProgressBar": false,
-      "showLastUpdated": false,
-      "options": {
-        "dataValuesDisplay": "all",
-        "yAxisTitleText": "Count",
-        "backgroundColor": "#ECF1F2",
-        "seriesColors": [
-          "#003087",
-          "#7C2855",
-          "#D5281B",
-          "#FFB81C",
-          "#CCE3F5",
-          "#768692"
-        ],
-        "legendDisplay": "bottom",
-        "legendTruncation": "ellipsisOff"
-      },
-      "title": ""
-    },
-    "viz_YuNkyEC4": {
-      "type": "splunk.column",
-      "dataSources": {
-        "primary": "ds_RN4dPMq2"
-      },
-      "options": {
-        "yAxisTitleText": "Percentage",
-        "dataValuesDisplay": "all",
-        "seriesColors": [
-          "#003087",
-          "#7C2855",
-          "#D5281B",
-          "#FFB81C",
-          "#CCE3F5",
-          "#768692"
-        ],
-        "backgroundColor": "#ECF1F2",
-        "legendDisplay": "bottom",
-        "legendTruncation": "ellipsisOff"
-      },
-      "title": ""
-    },
-    "viz_TsaIC6Wx": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "## Successfully integrated trending report\n### Counts",
-        "fontColor": "#000000",
-        "fontSize": "extraLarge"
-      }
-    },
-    "viz_qZdZJD2c": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "#### Count of successful integrations\nGraph showing the count of successful and not successful integrations.",
-        "backgroundColor": "#ECF1F2",
-        "fontColor": "#000000"
-      }
-    },
-    "viz_T9Gc4FkE": {
-      "type": "splunk.markdown",
-      "options": {
-        "markdown": "#### Percentage of successful integrations\nGraph showing the percentage of successful and not successful integrations. The percentage is taken with respect to the total number of records eligible for electronic transfer.",
-        "backgroundColor": "#ECF1F2",
-        "fontColor": "#000000"
-      }
-    },
-    "viz_MzUrGP16": {
-      "type": "splunk.singlevalue",
-      "dataSources": {
-        "primary": "ds_M5PzE81U"
-      },
-      "title": "Total eligible for electronic transfer"
-    }
-  },
-  "inputs": {
-    "input_uKjxpglv": {
-      "options": {
-        "defaultValue": "-1mon@mon,@mon",
-        "token": "time_range"
-      },
-      "title": "Time Range",
-      "type": "input.timerange"
-    },
-    "input_s1JNn01c": {
-      "options": {
-        "defaultValue": 0,
-        "token": "cutoff",
-        "min": 0,
-        "max": 14
-      },
-      "title": "Cutoff (days)",
-      "type": "input.number"
-    },
-    "input_hKwKMe7q": {
-      "options": {
-        "items": [
-          {
-            "label": "Day",
-            "value": "day"
-          },
-          {
-            "label": "Week",
-            "value": "week"
-          },
-          {
-            "label": "Month",
-            "value": "month"
-          }
-        ],
-        "defaultValue": "month",
-        "token": "time_period"
-      },
-      "title": "Time Period",
-      "type": "input.dropdown"
-    }
-  },
-  "layout": {
-    "type": "absolute",
-    "options": {
-      "display": "auto-scale",
-      "backgroundColor": "#ffffff",
-      "height": 1200
-    },
-    "structure": [
-      {
-        "item": "viz_wjCvnsg0",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 280,
-          "w": 1180,
-          "h": 300
-        }
-      },
-      {
-        "item": "viz_YuNkyEC4",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 690,
-          "w": 1180,
-          "h": 250
-        }
-      },
-      {
-        "item": "viz_TsaIC6Wx",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 10,
-          "w": 710,
-          "h": 100
-        }
-      },
-      {
-        "item": "viz_qZdZJD2c",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 210,
-          "w": 1180,
-          "h": 70
-        }
-      },
-      {
-        "item": "viz_T9Gc4FkE",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 620,
-          "w": 1180,
-          "h": 70
-        }
-      },
-      {
-        "item": "viz_MzUrGP16",
-        "type": "block",
-        "position": {
-          "x": 10,
-          "y": 110,
-          "w": 250,
-          "h": 90
-        }
-      }
-    ],
-    "globalInputs": [
-      "input_uKjxpglv",
-      "input_s1JNn01c",
-      "input_hKwKMe7q"
-    ]
-  },
-  "title": "gp2gp_successfully_integrated_trending_dashboard",
-  "description": "",
-  "defaults": {
     "dataSources": {
-      "ds.search": {
-        "options": {
-          "queryParameters": {
-            "latest": "$global_time.latest$",
-            "earliest": "$global_time.earliest$"
-          }
+        "ds_uGaAnEM4": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_successfully_integrated_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_successfully_integrated_trending_report_count"
+        },
+        "ds_RN4dPMq2": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_successfully_integrated_trending_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_successfully_integrated_trending_report_percentage"
+        },
+        "ds_M5PzE81U": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=$time_period$",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_total_eligible_transfers_count"
+        },
+        "ds_PuS9mqpB": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_successfully_integrated_trending_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\" column=\"$column$\" line=\"$line$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_successfully_integrated_trending_raw_data_table"
         }
-      }
+    },
+    "visualizations": {
+        "viz_wjCvnsg0": {
+            "type": "splunk.line",
+            "dataSources": {
+                "primary": "ds_uGaAnEM4"
+            },
+            "showProgressBar": false,
+            "showLastUpdated": false,
+            "options": {
+                "yAxisTitleText": "Count",
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff"
+            },
+            "title": "",
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_YuNkyEC4": {
+            "type": "splunk.line",
+            "dataSources": {
+                "primary": "ds_RN4dPMq2"
+            },
+            "options": {
+                "yAxisTitleText": "Percentage",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "backgroundColor": "#ECF1F2",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff"
+            },
+            "title": "",
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_TsaIC6Wx": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "## Successfully integrated trending report\n### Counts",
+                "fontColor": "#000000",
+                "fontSize": "extraLarge"
+            }
+        },
+        "viz_qZdZJD2c": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Count of successful integrations\nGraph showing the count of successful and not successful integrations.\n\nClick any node in this line graph to see its data in the table at the bottom of this dashboard.",
+                "backgroundColor": "#ECF1F2",
+                "fontColor": "#000000"
+            }
+        },
+        "viz_T9Gc4FkE": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Percentage of successful integrations\nGraph showing the percentage of successful and not successful integrations. The percentage is taken with respect to the total number of records eligible for electronic transfer.\n\nClick any node in this line graph to see its data in the table at the bottom of this dashboard.",
+                "backgroundColor": "#ECF1F2",
+                "fontColor": "#000000"
+            }
+        },
+        "viz_MzUrGP16": {
+            "type": "splunk.singlevalue",
+            "dataSources": {
+                "primary": "ds_M5PzE81U"
+            },
+            "title": "Total eligible for electronic transfer"
+        },
+        "viz_AXRii35w": {
+            "type": "splunk.table",
+            "options": {},
+            "dataSources": {
+                "primary": "ds_PuS9mqpB"
+            }
+        }
+    },
+    "inputs": {
+        "input_uKjxpglv": {
+            "options": {
+                "defaultValue": "0,",
+                "token": "time_range"
+            },
+            "title": "Time Range",
+            "type": "input.timerange"
+        },
+        "input_s1JNn01c": {
+            "options": {
+                "defaultValue": 0,
+                "token": "cutoff",
+                "min": 0,
+                "max": 14
+            },
+            "title": "Cutoff (days)",
+            "type": "input.number"
+        },
+        "input_hKwKMe7q": {
+            "options": {
+                "items": [
+                    {
+                        "label": "Day",
+                        "value": "day"
+                    },
+                    {
+                        "label": "Week",
+                        "value": "week"
+                    },
+                    {
+                        "label": "Month",
+                        "value": "month"
+                    }
+                ],
+                "defaultValue": "month",
+                "token": "time_period"
+            },
+            "title": "Time Period",
+            "type": "input.dropdown"
+        }
+    },
+    "layout": {
+        "type": "absolute",
+        "options": {
+            "display": "auto-scale",
+            "backgroundColor": "#ffffff",
+            "height": 1800,
+            "width": 1270,
+            "showTitleAndDescription": false
+        },
+        "structure": [
+            {
+                "item": "viz_wjCvnsg0",
+                "type": "block",
+                "position": {
+                    "x": 45,
+                    "y": 290,
+                    "w": 1180,
+                    "h": 300
+                }
+            },
+            {
+                "item": "viz_YuNkyEC4",
+                "type": "block",
+                "position": {
+                    "x": 45,
+                    "y": 700,
+                    "w": 1180,
+                    "h": 250
+                }
+            },
+            {
+                "item": "viz_TsaIC6Wx",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 10,
+                    "w": 710,
+                    "h": 100
+                }
+            },
+            {
+                "item": "viz_qZdZJD2c",
+                "type": "block",
+                "position": {
+                    "x": 45,
+                    "y": 210,
+                    "w": 1180,
+                    "h": 80
+                }
+            },
+            {
+                "item": "viz_T9Gc4FkE",
+                "type": "block",
+                "position": {
+                    "x": 45,
+                    "y": 620,
+                    "w": 1180,
+                    "h": 80
+                }
+            },
+            {
+                "item": "viz_MzUrGP16",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 110,
+                    "w": 250,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_AXRii35w",
+                "type": "block",
+                "position": {
+                    "x": 25,
+                    "y": 990,
+                    "w": 1220,
+                    "h": 690
+                }
+            }
+        ],
+        "globalInputs": [
+            "input_uKjxpglv",
+            "input_s1JNn01c",
+            "input_hKwKMe7q"
+        ]
+    },
+    "title": "gp2gp_successfully_integrated_trending_dashboard",
+    "description": "",
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "latest": "$global_time.latest$",
+                        "earliest": "$global_time.earliest$"
+                    }
+                }
+            }
+        }
     }
-  }
 }
