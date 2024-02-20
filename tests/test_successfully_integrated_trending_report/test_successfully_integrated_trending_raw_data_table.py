@@ -156,6 +156,11 @@ class TestSuccessfullyIntegratedTrendingRawDataTable(TestBase):
         current_event_outcome = "INTEGRATED" if line == "Successfully integrated" else "REJECTED"
         other_event_outcome = "REJECTED" if line == "Successfully integrated" else "INTEGRATED"
 
+        self.LOG.info(
+            f"expected integration outcome for {line}: {current_event_outcome}"
+            f" while other events are {other_event_outcome}"
+        )
+
         try:
             for i in range(expected_number_of_events):
                 index.submit(

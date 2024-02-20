@@ -1,9 +1,9 @@
 index="$index$"
 
-{% from 'gp2gp_integration_8_days_trending_report/gp2gp_integration_8_days_trending_report_base.splunk' import
-gp2gp_integration_8_days_trending_report_base %}
+{% from 'gp2gp_successfully_integrated_trending_report/gp2gp_successfully_integrated_trending_report_base.splunk' import
+gp2gp_successfully_integrated_trending_report_base %}
 
-{{ gp2gp_integration_8_days_trending_report_base() }}
+{{ gp2gp_successfully_integrated_trending_report_base() }}
 
 | eval conversation_id = conversationId
 | eval reporting_supplier_name = reportingSystemSupplier
