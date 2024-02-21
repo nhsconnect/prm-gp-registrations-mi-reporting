@@ -1,0 +1,28 @@
+index="$index$"
+
+{% from 'gp2gp_placeholder_trending_report/gp2gp_placeholder_trending_report_base.splunk' import
+gp2gp_placeholder_report_trending_base %}
+
+{{ gp2gp_placeholder_report_trending_base() }}
+
+
+| WHERE numPlaceholders > 0
+| spath output=placeholders path=payload.ehr.placeholders{}
+
+
+| eval numPlaceholdersPerTransfer = case(
+    numPlaceholders >=1 AND numPlaceholders <=5, "1-5 placeholders",
+    numPlaceholders >=6 AND numPlaceholders <=10, "6-10 placeholders",
+    numPlaceholders >=11 AND numPlaceholders <=15, "11-15 placeholders",
+    numPlaceholders >=16 AND numPlaceholders <=20, "16-20 placeholders",
+    numPlaceholders >=21, "21+ placeholders")
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
+                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          )
+
+| chart count by time_period, numPlaceholdersPerTransfer
+
+| fields time_period, "1-5 placeholders", "6-10 placeholders", "11-15 placeholders", "16-20 placeholders", "21+ placeholders"
