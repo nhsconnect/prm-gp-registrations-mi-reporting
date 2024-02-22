@@ -16,7 +16,7 @@ from tests.test_base import TestBase, EventType
 class TestPlaceholderTrendingBreakdownGraph(TestBase):
 
     @pytest.mark.parametrize("time_period, expected_output", [
-        ("month", {"0": {"time_period": "23-02",
+        ("month", {"0": {"time_period": "2023-02",
                          "1-5 placeholders": "2",
                          "6-10 placeholders": "1",
                          "11-15 placeholders": "1",
@@ -24,14 +24,14 @@ class TestPlaceholderTrendingBreakdownGraph(TestBase):
                          "21+ placeholders": "1"}
                    }
          ),
-        ("week", {"0": {"time_period": "23-02-05",
+        ("week", {"0": {"time_period": "2023-Wk05",
                         "1-5 placeholders": "1",
                         "6-10 placeholders": "1",
                         "11-15 placeholders": "1",
                         "16-20 placeholders": "1",
                         "21+ placeholders": "0"
                         },
-                  "1": {"time_period": "23-02-06",
+                  "1": {"time_period": "2023-Wk06",
                         "1-5 placeholders": "1",
                         "6-10 placeholders": "0",
                         "11-15 placeholders": "0",
@@ -40,42 +40,42 @@ class TestPlaceholderTrendingBreakdownGraph(TestBase):
                         }
                   }
          ),
-        ("day", {"0": {"time_period": "23-02-02",
+        ("day", {"0": {"time_period": "2023-02-02",
                        "1-5 placeholders": "1",
                        "6-10 placeholders": "0",
                        "11-15 placeholders": "0",
                        "16-20 placeholders": "0",
                        "21+ placeholders": "0"
                        },
-                 "1": {"time_period": "23-02-03",
+                 "1": {"time_period": "2023-02-03",
                        "1-5 placeholders": "0",
                        "6-10 placeholders": "1",
                        "11-15 placeholders": "0",
                        "16-20 placeholders": "0",
                        "21+ placeholders": "0"
                        },
-                 "2": {"time_period": "23-02-04",
+                 "2": {"time_period": "2023-02-04",
                        "1-5 placeholders": "0",
                        "6-10 placeholders": "0",
                        "11-15 placeholders": "1",
                        "16-20 placeholders": "0",
                        "21+ placeholders": "0"
                        },
-                 "3": {"time_period": "23-02-05",
+                 "3": {"time_period": "2023-02-05",
                        "1-5 placeholders": "0",
                        "6-10 placeholders": "0",
                        "11-15 placeholders": "0",
                        "16-20 placeholders": "1",
                        "21+ placeholders": "0"
                        },
-                 "4": {"time_period": "23-02-06",
+                 "4": {"time_period": "2023-02-06",
                        "1-5 placeholders": "0",
                        "6-10 placeholders": "0",
                        "11-15 placeholders": "0",
                        "16-20 placeholders": "0",
                        "21+ placeholders": "1"
                        },
-                 "5": {"time_period": "23-02-08",
+                 "5": {"time_period": "2023-02-08",
                        "1-5 placeholders": "1",
                        "6-10 placeholders": "0",
                        "11-15 placeholders": "0",
@@ -176,7 +176,7 @@ class TestPlaceholderTrendingBreakdownGraph(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize("time_period, expected_output", [
-        ("month", {"0": {"time_period": "23-02",
+        ("month", {"0": {"time_period": "2023-02",
                          "1-5 placeholders": "33.33",
                          "6-10 placeholders": "16.67",
                          "11-15 placeholders": "16.67",
@@ -184,14 +184,14 @@ class TestPlaceholderTrendingBreakdownGraph(TestBase):
                          "21+ placeholders": "16.67"}
                    }
          ),
-        ("week", {"0": {"time_period": "23-02-05",
+        ("week", {"0": {"time_period": "2023-Wk05",
                         "1-5 placeholders": "25.00",
                         "6-10 placeholders": "25.00",
                         "11-15 placeholders": "25.00",
                         "16-20 placeholders": "25.00",
                         "21+ placeholders": "0.00"
                         },
-                  "1": {"time_period": "23-02-06",
+                  "1": {"time_period": "2023-Wk06",
                         "1-5 placeholders": "50.00",
                         "6-10 placeholders": "0.00",
                         "11-15 placeholders": "0.00",
@@ -200,42 +200,42 @@ class TestPlaceholderTrendingBreakdownGraph(TestBase):
                         }
                   }
          ),
-        ("day", {"0": {"time_period": "23-02-02",
+        ("day", {"0": {"time_period": "2023-02-02",
                        "1-5 placeholders": "100.00",
                        "6-10 placeholders": "0.00",
                        "11-15 placeholders": "0.00",
                        "16-20 placeholders": "0.00",
                        "21+ placeholders": "0.00"
                        },
-                 "1": {"time_period": "23-02-03",
+                 "1": {"time_period": "2023-02-03",
                        "1-5 placeholders": "0.00",
                        "6-10 placeholders": "100.00",
                        "11-15 placeholders": "0.00",
                        "16-20 placeholders": "0.00",
                        "21+ placeholders": "0.00"
                        },
-                 "2": {"time_period": "23-02-04",
+                 "2": {"time_period": "2023-02-04",
                        "1-5 placeholders": "0.00",
                        "6-10 placeholders": "0.00",
                        "11-15 placeholders": "100.00",
                        "16-20 placeholders": "0.00",
                        "21+ placeholders": "0.00"
                        },
-                 "3": {"time_period": "23-02-05",
+                 "3": {"time_period": "2023-02-05",
                        "1-5 placeholders": "0.00",
                        "6-10 placeholders": "0.00",
                        "11-15 placeholders": "0.00",
                        "16-20 placeholders": "100.00",
                        "21+ placeholders": "0.00"
                        },
-                 "4": {"time_period": "23-02-06",
+                 "4": {"time_period": "2023-02-06",
                        "1-5 placeholders": "0.00",
                        "6-10 placeholders": "0.00",
                        "11-15 placeholders": "0.00",
                        "16-20 placeholders": "0.00",
                        "21+ placeholders": "100.00"
                        },
-                 "5": {"time_period": "23-02-08",
+                 "5": {"time_period": "2023-02-08",
                        "1-5 placeholders": "100.00",
                        "6-10 placeholders": "0.00",
                        "11-15 placeholders": "0.00",
