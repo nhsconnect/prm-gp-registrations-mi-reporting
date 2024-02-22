@@ -17,9 +17,9 @@ gp2gp_placeholder_report_trending_base %}
     numPlaceholders >=21, "21+ placeholders")
 
 | eval time_period = case(
-                          "$time_period$"=="month", strftime(_time,"%y-%m"),
-                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
-                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
                           )
 
 | chart count by time_period, numPlaceholdersPerTransfer
@@ -28,7 +28,3 @@ gp2gp_placeholder_report_trending_base %}
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
 | fields time_period, "1-5 placeholders", "6-10 placeholders", "11-15 placeholders", "16-20 placeholders", "21+ placeholders"
 | fields - total_per_month
-
-
-
-
