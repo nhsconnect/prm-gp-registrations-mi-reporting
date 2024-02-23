@@ -28,6 +28,9 @@ filter_conversations_by_start_and_end_times_and_cutoff
 | spath output=reason path=payload.ehr.placeholders{}.reason
 | spath output=original_mime_type path=payload.ehr.placeholders{}.originalMimeType
 
+| spath output=dts_matched path=payload.demographicTraceStatus.matched
+| eval is_dts_matched = if(dts_matched="true",1, 0)
+
 | eval placeholder_count = mvzip(generated_by, mvzip(clinical_type, mvzip(reason, original_mime_type)))
 | mvexpand placeholder_count
 | rex field=placeholder_count "^(?<generated_by_c>[^,]+),(?<clinical_type_c>[^,]+),(?<reason_c>[^,]+),(?<original_mime_type_c>.*)$"
