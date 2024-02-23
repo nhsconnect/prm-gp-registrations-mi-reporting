@@ -220,50 +220,50 @@ class TestPlaceholderTrendingOutputs(TestBase):
 
     @pytest.mark.parametrize("report_type, time_period, output",
                              [
-                                 ("count", "day", {"0": {"time_period": "23-07-01",
+                                 ("count", "day", {"0": {"time_period": "2023-07-01",
                                                          "Transferred with placeholders": "0",
                                                          "Transferred with no placeholders": "1"},
-                                                   "1": {"time_period": "23-07-02",
+                                                   "1": {"time_period": "2023-07-02",
                                                          "Transferred with placeholders": "1",
                                                          "Transferred with no placeholders": "0"},
-                                                   "2": {"time_period": "23-07-08",
+                                                   "2": {"time_period": "2023-07-08",
                                                          "Transferred with placeholders": "1",
                                                          "Transferred with no placeholders": "0"}
                                                    }
                                   ),
-                                 ("count", "week", {"0": {"time_period": "23-07-26",
+                                 ("count", "week", {"0": {"time_period": "2023-Wk26",
                                                           "Transferred with placeholders": "1",
                                                           "Transferred with no placeholders": "1"},
-                                                    "1": {"time_period": "23-07-27",
+                                                    "1": {"time_period": "2023-Wk27",
                                                           "Transferred with placeholders": "1",
                                                           "Transferred with no placeholders": "0"}
                                                     }
                                   ),
-                                 ("count", "month", {"0": {"time_period": "23-07",
+                                 ("count", "month", {"0": {"time_period": "2023-07",
                                                            "Transferred with placeholders": "2",
                                                            "Transferred with no placeholders": "1"}
                                                      }
                                   ),
-                                 ("percentages", "day", {"0": {"time_period": "23-07-01",
+                                 ("percentages", "day", {"0": {"time_period": "2023-07-01",
                                                                "Transferred with placeholders": "0.00",
                                                                "Transferred with no placeholders": "100.00"},
-                                                         "1": {"time_period": "23-07-02",
+                                                         "1": {"time_period": "2023-07-02",
                                                                "Transferred with placeholders": "100.00",
                                                                "Transferred with no placeholders": "0.00"},
-                                                         "2": {"time_period": "23-07-08",
+                                                         "2": {"time_period": "2023-07-08",
                                                                "Transferred with placeholders": "100.00",
                                                                "Transferred with no placeholders": "0.00"}
                                                          }
                                   ),
-                                 ("percentages", "week", {"0": {"time_period": "23-07-26",
+                                 ("percentages", "week", {"0": {"time_period": "2023-Wk26",
                                                                 "Transferred with placeholders": "50.00",
                                                                 "Transferred with no placeholders": "50.00"},
-                                                          "1": {"time_period": "23-07-27",
+                                                          "1": {"time_period": "2023-Wk27",
                                                                 "Transferred with placeholders": "100.00",
                                                                 "Transferred with no placeholders": "0.00"}
                                                           }
                                   ),
-                                 ("percentages", "month", {"0": {"time_period": "23-07",
+                                 ("percentages", "month", {"0": {"time_period": "2023-07",
                                                                  "Transferred with placeholders": "66.67",
                                                                  "Transferred with no placeholders": "33.33"}
                                                            }
