@@ -80,7 +80,9 @@
     registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 1, "Technical failure",
     registrationStatus == "ELIGIBLE_FOR_TRANSFER" AND has_errors == 0, "In progress",
     registrationStatus == "NOT_ELIGIBLE_FOR_ELECTRONIC_TRANSFER", "Not eligible for electronic transfer",
-    registrationStatus == "REGISTRATION" AND is_dts_matched==0, "Not eligible for electronic transfer",
+    registrationStatus == "REGISTRATION" AND is_dts_matched == 0, "Not eligible for electronic transfer",
+    registrationStatus == "REGISTRATION" AND has_errors == 1, "Not eligible for electronic transfer",
+    registrationStatus == "UNKNOWN" AND has_errors == 1, "Not eligible for electronic transfer",
     1=1, "Unknown")
 {% endmacro %}
 
