@@ -8,8 +8,8 @@ gp2gp_placeholder_report_trending_base %}
 | where (registrationStatus=="READY_TO_INTEGRATE" OR registrationStatus=="INTEGRATION")
 | eval placeholderStatus = if(numPlaceholders > 0, "Transferred with placeholders", "Transferred with no placeholders")
 | eval time_period = case(
-                          "$time_period$"=="month", strftime(_time,"%y-%m"), 
-                          "$time_period$"=="week", strftime(_time,"%y-%m-%W"),
-                          "$time_period$"=="day", strftime(_time,"%y-%m-%d")
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
                           )
 | chart count by time_period, placeholderStatus
