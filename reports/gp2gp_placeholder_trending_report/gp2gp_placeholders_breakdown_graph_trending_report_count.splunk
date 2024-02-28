@@ -7,8 +7,6 @@ gp2gp_placeholder_report_trending_base %}
 
 
 | WHERE numPlaceholders > 0
-| spath output=placeholders path=payload.ehr.placeholders{}
-
 
 | eval numPlaceholdersPerTransfer = case(
     numPlaceholders >=1 AND numPlaceholders <=5, "1-5 placeholders",
