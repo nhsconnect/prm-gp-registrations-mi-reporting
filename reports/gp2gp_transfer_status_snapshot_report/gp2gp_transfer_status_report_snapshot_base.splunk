@@ -48,8 +48,6 @@ has_errors %}
 {{ calculate_sla_status() }}
 {{ calculate_outcome() }}
 
-| table registrationStatus, outcome, is_dts_matched
-
 {% endmacro %}
 
 index="$index$"
