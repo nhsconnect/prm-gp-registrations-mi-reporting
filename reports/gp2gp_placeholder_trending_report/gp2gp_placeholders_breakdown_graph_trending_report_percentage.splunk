@@ -6,8 +6,6 @@ gp2gp_placeholder_report_trending_base %}
 {{ gp2gp_placeholder_report_trending_base() }}
 
 | WHERE numPlaceholders > 0
-| spath output=placeholders path=payload.ehr.placeholders{}
-
 
 | eval numPlaceholdersPerTransfer = case(
     numPlaceholders >=1 AND numPlaceholders <=5, "1-5 placeholders",
@@ -26,5 +24,5 @@ gp2gp_placeholder_report_trending_base %}
 
 | addtotals fieldname="total_per_month"
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
-| fields time_period, "1-5 placeholders", "6-10 placeholders", "11-15 placeholders", "16-20 placeholders", "21+ placeholders"
 | fields - total_per_month
+| fields time_period, "1-5 placeholders", "6-10 placeholders", "11-15 placeholders", "16-20 placeholders", "21+ placeholders"
