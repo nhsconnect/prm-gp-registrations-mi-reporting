@@ -543,29 +543,29 @@ class TestErrorsSnapshotReportOutputs(TestBase):
             # Assert
             # has to be this order as "chart" command arranges columns in alphabetical order
             expected_values = {"0": {"errorCode": str(NUM_OF_ERROR_TYPES["registrations_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["registrations_error"][0] * 100/total_num_errors, 2)
                                      )},
                                "1": {"errorCode": str(NUM_OF_ERROR_TYPES["transfer_compatibility_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["transfer_compatibility_error"][0]
                                                * 100/total_num_errors, 2)
                                                )},
                                "2": {"errorCode": str(NUM_OF_ERROR_TYPES["ehr_request_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["ehr_request_error"][0] * 100/total_num_errors, 2)
                                                )},
                                "3": {"errorCode": str(NUM_OF_ERROR_TYPES["ehr_response_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["ehr_response_error"][0] * 100/total_num_errors, 2)
                                                )},
                                "4": {"errorCode": str(NUM_OF_ERROR_TYPES["ready_to_integrate_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["ready_to_integrate_error"][0]
                                                * 100/total_num_errors, 2)
                                                )},
                                "5": {"errorCode": str(NUM_OF_ERROR_TYPES["integration_error"][1]),
-                                     "count": str(
+                                     "percentage": str(
                                          round(NUM_OF_ERROR_TYPES["integration_error"][0] * 100/total_num_errors, 2)
                                                )}
                                }
@@ -662,9 +662,9 @@ class TestErrorsSnapshotReportOutputs(TestBase):
             # Assert
             # has to be this order as "chart" command arranges columns in alphabetical order
             expected_values = {"0": {"errorCode": "06",
-                                     "count": "50.00"},
+                                     "percentage": "50.00"},
                                "1": {"errorCode": "07",
-                                     "count": "50.00"},
+                                     "percentage": "50.00"},
                                }
 
             for row, row_values in expected_values.items():
@@ -777,8 +777,8 @@ class TestErrorsSnapshotReportOutputs(TestBase):
                              [("06", {"failure_point": "EHR Response", "count": "1"}),
                               ("09", {"failure_point": "Other", "count": "1"})])
     def test_gp2gp_errors_snapshot_report_failure_point_graph_count_2_failure_points_1_conv(self,
-                                                                                                        clicked_column,
-                                                                                                        expected_val):
+                                                                                            clicked_column,
+                                                                                            expected_val):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)
@@ -968,7 +968,7 @@ class TestErrorsSnapshotReportOutputs(TestBase):
                     sourcetype="myevent")
 
                 # need to be this order as chart organises columns by alphabetical order
-                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "count": "100.00"}
+                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "percentage": "100.00"}
 
             elif clicked_column == "Unknown":
 
@@ -1001,7 +1001,7 @@ class TestErrorsSnapshotReportOutputs(TestBase):
                     ),
                     sourcetype="myevent")
 
-                expected_vals["0"] = {"failure_point": "UNKNOWN", "count": "100.00"}
+                expected_vals["0"] = {"failure_point": "UNKNOWN", "percentage": "100.00"}
 
             else:
                 # order needs to be alphabetical for test to pass as chart orders columns in this way
@@ -1046,7 +1046,7 @@ class TestErrorsSnapshotReportOutputs(TestBase):
                             sourcetype="myevent")
 
                     expected_vals[idx] = {"failure_point": failure_point,
-                                          "count": f'{(amount / total_events) * 100:.2f}'}
+                                          "percentage": f'{(amount / total_events) * 100:.2f}'}
 
             # awaiting_integration
             index.submit(
@@ -1090,11 +1090,11 @@ class TestErrorsSnapshotReportOutputs(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize("clicked_column, expected_val",
-                             [("06", {"failure_point": "EHR Response", "count": "100.00"}),
-                              ("09", {"failure_point": "Other", "count": "100.00"})])
+                             [("06", {"failure_point": "EHR Response", "percentage": "100.00"}),
+                              ("09", {"failure_point": "Other", "percentage": "100.00"})])
     def test_gp2gp_errors_snapshot_report_failure_point_graph_percentage_2_failure_points_1_conv(self,
-                                                                                                             clicked_column,
-                                                                                                             expected_val):
+                                                                                                 clicked_column,
+                                                                                                 expected_val):
 
         # reporting window
         report_start = datetime.today().date().replace(day=1)

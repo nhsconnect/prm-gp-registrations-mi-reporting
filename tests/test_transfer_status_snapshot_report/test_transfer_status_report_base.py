@@ -317,7 +317,7 @@ class TestTransferStatusReportBase(TestBase):
             telemetry = get_telemetry_from_splunk(
                 self.savedsearch(test_query), self.splunk_service
             )
-            self.LOG.info(f"telemetry: {telemetry}")
+            # self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
 
