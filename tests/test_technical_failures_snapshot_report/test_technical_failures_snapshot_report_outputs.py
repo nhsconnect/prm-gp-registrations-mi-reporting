@@ -512,13 +512,13 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
             # Assert
             # has to be this order as "chart" command arranges columns in alphabetical order
             expected_values = {"0": {"technical_failure_reason": "06",
-                                     "count": "20.00"},
+                                     "percentage": "20.00"},
                                "1": {"technical_failure_reason": "07",
-                                     "count": "30.00"},
+                                     "percentage": "30.00"},
                                "2": {"technical_failure_reason": "09",
-                                     "count": "10.00"},
+                                     "percentage": "10.00"},
                                "3": {"technical_failure_reason": "Integration failure",
-                                     "count": "40.00"},
+                                     "percentage": "40.00"},
                                }
 
             for row, row_values in expected_values.items():
@@ -613,9 +613,9 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
             # Assert
             # has to be this order as "chart" command arranges columns in alphabetical order
             expected_values = {"0": {"technical_failure_reason": "06",
-                                     "count": "100.00"},
+                                     "percentage": "100.00"},
                                "1": {"technical_failure_reason": "07",
-                                     "count": "100.00"},
+                                     "percentage": "100.00"},
                                }
 
             for row, row_values in expected_values.items():
@@ -984,7 +984,7 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
                     sourcetype="myevent")
 
                 # need to be this order as chart organises columns by alphabetical order
-                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "count": "100.00"}
+                expected_vals["0"] = {"failure_point": "EHR_INTEGRATION", "percentage": "100.00"}
 
             elif clicked_column == "Unknown":
 
@@ -1017,7 +1017,7 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
                     ),
                     sourcetype="myevent")
 
-                expected_vals["0"] = {"failure_point": "UNKNOWN", "count": "100.00"}
+                expected_vals["0"] = {"failure_point": "UNKNOWN", "percentage": "100.00"}
 
             else:
                 # order needs to be alphabetical for test to pass as chart orders columns in this way
@@ -1062,7 +1062,7 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
                             sourcetype="myevent")
 
                     expected_vals[idx] = {"failure_point": failure_point,
-                                          "count": f'{(amount / total_events) * 100:.2f}'}
+                                          "percentage": f'{(amount / total_events) * 100:.2f}'}
 
             # awaiting_integration
             index.submit(
@@ -1106,9 +1106,9 @@ class TestTechnicalFailuresSnapshotReportOutputs(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize("clicked_column, expected_val",
-                             [("06", {"failure_point": "EHR Response", "count": "100.00"}),
-                              ("09", {"failure_point": "Other", "count": "100.00"}),
-                              ("Integration failure", {"failure_point": "EHR_INTEGRATION", "count": "100.00"})])
+                             [("06", {"failure_point": "EHR Response", "percentage": "100.00"}),
+                              ("09", {"failure_point": "Other", "percentage": "100.00"}),
+                              ("Integration failure", {"failure_point": "EHR_INTEGRATION", "percentage": "100.00"})])
     def test_gp2gp_technical_failures_snapshot_report_failure_point_graph_percentage_2_failure_points_1_conv(self,
                                                                                                         clicked_column,
                                                                                                         expected_val):
