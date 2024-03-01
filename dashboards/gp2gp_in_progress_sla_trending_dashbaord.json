@@ -223,7 +223,7 @@
     "ds_Ydo5Amd9": {
       "type": "ds.search",
       "options": {
-        "query": "| savedsearch gp2gp_in_progress_sla_trending_report_in_progress_sla_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\" column=\"$column$\" line=\"$line$\"",
+        "query": "| savedsearch gp2gp_in_progress_sla_trending_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\" column=\"$column$\" line=\"$line$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
