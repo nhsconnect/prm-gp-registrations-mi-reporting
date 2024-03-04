@@ -10,6 +10,7 @@ gp2gp_document_attachments_snapshot_base %}
 | spath output=mimeType path=payload.attachment.mimeType
 
 | eval conversation_id = conversationId
+| eval report_supplier_name = reportingSystemSupplier
 | eval requesting_supplier_name = requestingSupplierName
 | eval sending_supplier_name = sendingSupplierName
 | eval reporting_practice_ods_code = reportingPracticeOdsCode
@@ -31,6 +32,7 @@ gp2gp_document_attachments_snapshot_base %}
 
 | table
     conversation_id,
+    report_supplier_name,
     requesting_supplier_name,
     sending_supplier_name,
     reporting_practice_ods_code,
