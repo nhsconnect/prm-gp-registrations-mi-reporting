@@ -5,7 +5,7 @@ gp2gp_document_attachments_snapshot_base %}
 
 {{ gp2gp_document_attachments_snapshot_base() }}
 
-| eval migration_outcome = if( successfulDocumentMigration=="true", "Success", "Fail")
+| eval migration_outcome = if( successfulDocumentMigration=="true", "Successful", "Unsuccessful")
 | eval clinical_type = documentMigrationClinicalType
 
 | chart count by clinical_type, migration_outcome
