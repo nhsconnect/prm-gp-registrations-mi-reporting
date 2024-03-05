@@ -25,8 +25,8 @@ gp2gp_document_attachments_snapshot_base %}
 | fillnull value="N/A"
 
 | where attachment_type = "$column$"
-| where case( "$legend$" == "Success", integrated_successfully=="true",
-              "$legend$" == "Fail", integrated_successfully=="false",
+| where case( "$legend$" == "Successful", integrated_successfully=="true",
+              "$legend$" == "Unsuccessful", integrated_successfully=="false",
               1=1, 1=0
               )
 
