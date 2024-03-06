@@ -90,7 +90,7 @@ class TestDocumentAttachmentsRawDatatable(TestBase):
                     "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                     "$cutoff$": cutoff,
                     "$column$": "SCANNED_DOCUMENT",
-                    "$legend$": "Fail",
+                    "$legend$": "Unsuccessful",
                 },
             )
 
