@@ -119,8 +119,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .count_of_placeholders_with_same_content == "6")'
                 + f'| select( .generated_by == "{placeholder["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder["originalMimeType"]}")'
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
                 + f'| select( .sending_practice_ods_code == "B00157")',
                 telemetry,
@@ -229,8 +231,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .count_of_placeholders_with_same_content == "2")'
                 + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
                 + f'| select( .sending_practice_ods_code == "B00157")',
                 telemetry,
@@ -245,8 +249,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .count_of_placeholders_with_same_content == "4")'
                 + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
                 + f'| select( .sending_practice_ods_code == "B00157")',
                 telemetry,
@@ -390,8 +396,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .count_of_placeholders_with_same_content == "3")'
                 + f'| select( .generated_by == "{placeholder_2["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder_2["originalMimeType"]}")'
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
                 + f'| select( .sending_practice_ods_code == "B00157")',
                 telemetry,
@@ -406,8 +414,10 @@ class TestPlaceholderRawDataTable(TestBase):
                 + f'| select( .count_of_placeholders_with_same_content == "3")'
                 + f'| select( .generated_by == "{placeholder_1["generatedBy"]}")'
                 + f'| select( .original_mime_type == "{placeholder_1["originalMimeType"]}")'
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER")'
                 + f'| select( .requesting_supplier_name == "TEST_SUPPLIER")'
                 + f'| select( .sending_supplier_name == "TEST_SUPPLIER2")'
+                + f'| select( .reporting_practice_ods_code == "A00029")'
                 + f'| select( .requesting_practice_ods_code == "A00029")'
                 + f'| select( .sending_practice_ods_code == "B00157")',
                 telemetry,
