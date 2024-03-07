@@ -34,7 +34,7 @@
         "viz_aTPox228": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Count of placeholders within the time period\nGraph showing the total number of records transferred over time, with the number of transfers with no placeholders and the number of transfers with at least 1 placeholder.",
+                "markdown": "#### Count of transfers with placeholders\n\nGraph showing the number of transfers with no placeholders and the number of transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -42,7 +42,7 @@
         "viz_EDmOTwmV": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Percentage of placeholders within the time period\nGraph showing the percentage of records transferred over time with no missing attachments and the percentage with at least 1 missing attachment.\n\nPercentage is calculated with respect to the total number of eligible transfers within the same time period.",
+                "markdown": "#### Percentage of transfers with placeholders\n\nGraph showing the percentage of transfers with no placeholders and the number of transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -75,12 +75,29 @@
                 "xAxisTitleText": "Time period",
                 "yAxisTitleText": "Count"
             },
-            "title": ""
+            "title": "",
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_gfv4ABsq": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Count of number of placeholders per transfer within the selected time period\n\nGraph showing a count of records transferred with placeholders broken down by the number of placeholders per transfer over the selected time period",
+                "markdown": "#### Count of placeholders per transfer\n\nGraph showing the count of transfers with placeholders broken down by the number of placeholders per transfer, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -88,7 +105,7 @@
         "viz_FHl9RP6D": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Percentage of placeholders broken down per transfer within the selected time period\n\nGraph showing a percentage of records transferred with placeholders broken down by the number of placeholders per transfer over the selected time period.\n\nPercentage is calculated with respect to the total number of eligible transfers within the same time period.",
+                "markdown": "#### Percentage of placeholders per transfer\n\nGraph showing the percentage of transfers with placeholders broken down by the number of placeholders per transfer, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -139,6 +156,13 @@
                 "legendDisplay": "bottom"
             },
             "title": ""
+        },
+        "viz_QVTz920G": {
+            "type": "splunk.table",
+            "options": {},
+            "dataSources": {
+                "primary": "ds_3pWeGrj3"
+            }
         }
     },
     "dataSources": {
@@ -186,17 +210,6 @@
             },
             "name": "gp2gp_placeholders_breakdown_graph_trending_report_count"
         },
-        "ds_gnQXnOeE_ds_uGaAnEM4": {
-            "type": "ds.search",
-            "options": {
-                "query": "|  savedsearch gp2gp_placeholder_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
-                "queryParameters": {
-                    "earliest": "0",
-                    "latest": ""
-                }
-            },
-            "name": "gp2gp_placeholder_trending_report_count copy 1"
-        },
         "ds_9AYxUpqf_ds_E6IQ4DK5": {
             "type": "ds.search",
             "options": {
@@ -208,16 +221,16 @@
             },
             "name": "gp2gp_placeholders_breakdown_graph_trending_report_percentage"
         },
-        "ds_E0T1pwBO_ds_uGaAnEM4": {
+        "ds_3pWeGrj3": {
             "type": "ds.search",
             "options": {
-                "query": "|  savedsearch gp2gp_placeholder_trending_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "query": "| savedsearch gp2gp_placeholder_trending_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\" column=\"$column$\" line=\"$line$\"",
                 "queryParameters": {
                     "earliest": "0",
                     "latest": ""
                 }
             },
-            "name": "gp2gp_placeholder_trending_report_count copy 2"
+            "name": "gp2gp_placeholder_trending_report_raw_data_table"
         }
     },
     "defaults": {
@@ -279,7 +292,7 @@
         "options": {
             "display": "auto-scale",
             "backgroundColor": "#ffffff",
-            "height": 2000,
+            "height": 2400,
             "showTitleAndDescription": false
         },
         "structure": [
@@ -318,9 +331,9 @@
                 "type": "block",
                 "position": {
                     "x": 10,
-                    "y": 630,
+                    "y": 620,
                     "w": 1180,
-                    "h": 90
+                    "h": 100
                 }
             },
             {
@@ -358,9 +371,9 @@
                 "type": "block",
                 "position": {
                     "x": 10,
-                    "y": 1440,
+                    "y": 1430,
                     "w": 1180,
-                    "h": 90
+                    "h": 100
                 }
             },
             {
@@ -381,6 +394,16 @@
                     "y": 720,
                     "w": 1180,
                     "h": 250
+                }
+            },
+            {
+                "item": "viz_QVTz920G",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 1880,
+                    "w": 1180,
+                    "h": 410
                 }
             }
         ],
