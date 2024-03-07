@@ -1,7 +1,7 @@
 {
   "visualizations": {
     "viz_Yrz79jnn": {
-      "type": "splunk.bar",
+      "type": "splunk.column",
       "options": {
         "seriesColors": [
           "#003087",
@@ -19,7 +19,8 @@
         "xAxisTitleVisibility": "hide",
         "legendDisplay": "off",
         "backgroundColor": "#ECF1F2",
-        "xAxisTitleText": ""
+        "xAxisTitleText": "",
+        "yAxisTitleText": "Count"
       },
       "dataSources": {
         "primary": "ds_qBafRzi3"
@@ -37,7 +38,7 @@
       }
     },
     "viz_nrRMTa9E": {
-      "type": "splunk.bar",
+      "type": "splunk.column",
       "dataSources": {
         "primary": "ds_wBXZ14Ef"
       },
@@ -55,13 +56,14 @@
         "yAxisLabelVisibility": "show",
         "xAxisMajorTickVisibility": "hide",
         "legendDisplay": "off",
-        "backgroundColor": "#ECF1F2"
+        "backgroundColor": "#ECF1F2",
+        "yAxisTitleText": "Percentage"
       }
     },
     "viz_ysvkHFbs": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Count of placeholders\nGraph showing the total number of records transferred along with the number of transfers which had no placeholders and the number of transfers which had at least 1 placeholder.",
+        "markdown": "#### Count of transfers with placeholders\n\nGraph showing the number of transfers with no placeholders and the number of transfers with **at least** 1 placeholder.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
@@ -70,7 +72,7 @@
     "viz_VXusQloW": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Percentage of placeholders\nGraph showing the percentage of all transfers which had no placeholders along with the percentage which had at least 1 placeholder.\n",
+        "markdown": "#### Percentage of transfers with placeholders\n\nGraph showing the percentage of transfers with no placeholders and the number of transfers with **at least** 1 placeholder.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.\n",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
@@ -107,9 +109,9 @@
         "legendDisplay": "off",
         "backgroundColor": "#ECF1F2",
         "xAxisLabelVisibility": "show",
-        "xAxisTitleVisibility": "hide",
         "showYAxisWithZero": true,
-        "dataValuesDisplay": "all"
+        "yAxisTitleText": "Count",
+        "xAxisTitleText": "Number of placeholders"
       },
       "dataSources": {
         "primary": "ds_X8UmRB1b"
@@ -131,12 +133,11 @@
         "xAxisLineVisibility": "show",
         "xAxisMajorTickVisibility": "hide",
         "xAxisMajorTickSize": 8,
-        "xAxisTitleVisibility": "hide",
         "legendDisplay": "off",
         "backgroundColor": "#ECF1F2",
-        "xAxisTitleText": "",
+        "xAxisTitleText": "Number of placeholders",
         "showYAxisWithZero": true,
-        "dataValuesDisplay": "all"
+        "yAxisTitleText": "Count"
       },
       "dataSources": {
         "primary": "ds_cy1hRWGw"
@@ -145,7 +146,7 @@
     "viz_WAlqLHTW": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Count of placeholders\nGraph showing a count records transferred with placeholders broken down by the number of placeholders per transfer.",
+        "markdown": "#### Count of placeholders per transfer\n\nGraph showing the count of transfers with placeholders broken down by the number of placeholders per transfer.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
@@ -154,10 +155,17 @@
     "viz_R90jIhI2": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "#### Percentage of placeholders\nGraph showing the percentage of records transferred with placeholders broken down by the number of placeholders per transfer.\n",
+        "markdown": "#### Percentage of placeholders per transfer\n\nGraph showing the percentage of transfers with placeholders broken down by the number of placeholders per transfer.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.",
         "fontColor": "#000000",
         "backgroundColor": "#ECF1F2",
         "fontSize": "large"
+      }
+    },
+    "viz_yiZgEGXN": {
+      "type": "splunk.table",
+      "options": {},
+      "dataSources": {
+        "primary": "ds_LZFT7SV0"
       }
     }
   },
@@ -187,13 +195,13 @@
     "ds_bA8S89J3": {
       "type": "ds.search",
       "options": {
-        "query": "|  savedsearch gp2gp_placeholder_snapshot_report_total_records_transferred index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "query": "|  savedsearch gp2gp_total_records_transferred index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
         "queryParameters": {
           "earliest": "0",
           "latest": ""
         }
       },
-      "name": "gp2gp_placeholder_snapshot_report_total_records_transferred"
+      "name": "gp2gp_total_records_transferred"
     },
     "ds_X8UmRB1b": {
       "type": "ds.search",
@@ -216,6 +224,17 @@
         }
       },
       "name": "gp2gp_placeholders_breakdown_graph_snapshot_report_percentage"
+    },
+    "ds_LZFT7SV0": {
+      "type": "ds.search",
+      "options": {
+        "query": "|  savedsearch gp2gp_placeholder_snapshot_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+        "queryParameters": {
+          "earliest": "0",
+          "latest": ""
+        }
+      },
+      "name": "gp2gp_placeholder_snapshot_report_raw_data_table"
     }
   },
   "defaults": {
@@ -255,16 +274,16 @@
     "options": {
       "display": "auto",
       "backgroundColor": "#ffffff",
-      "height": 1400
+      "height": 1900
     },
     "structure": [
       {
         "item": "viz_Yrz79jnn",
         "type": "block",
         "position": {
-          "x": 5,
-          "y": 330,
-          "w": 590,
+          "x": 10,
+          "y": 360,
+          "w": 580,
           "h": 380
         }
       },
@@ -282,8 +301,8 @@
         "item": "viz_nrRMTa9E",
         "type": "block",
         "position": {
-          "x": 605,
-          "y": 330,
+          "x": 600,
+          "y": 360,
           "w": 590,
           "h": 380
         }
@@ -292,20 +311,20 @@
         "item": "viz_ysvkHFbs",
         "type": "block",
         "position": {
-          "x": 5,
+          "x": 10,
           "y": 220,
-          "w": 590,
-          "h": 110
+          "w": 580,
+          "h": 140
         }
       },
       {
         "item": "viz_VXusQloW",
         "type": "block",
         "position": {
-          "x": 605,
+          "x": 600,
           "y": 220,
           "w": 590,
-          "h": 110
+          "h": 140
         }
       },
       {
@@ -322,9 +341,9 @@
         "item": "viz_9fg5QVxA",
         "type": "block",
         "position": {
-          "x": 5,
-          "y": 940,
-          "w": 590,
+          "x": 10,
+          "y": 900,
+          "w": 580,
           "h": 380
         }
       },
@@ -332,8 +351,8 @@
         "item": "viz_kpUX4jIF",
         "type": "block",
         "position": {
-          "x": 605,
-          "y": 940,
+          "x": 600,
+          "y": 900,
           "w": 590,
           "h": 380
         }
@@ -342,20 +361,30 @@
         "item": "viz_WAlqLHTW",
         "type": "block",
         "position": {
-          "x": 5,
-          "y": 830,
-          "w": 590,
-          "h": 110
+          "x": 10,
+          "y": 760,
+          "w": 580,
+          "h": 140
         }
       },
       {
         "item": "viz_R90jIhI2",
         "type": "block",
         "position": {
-          "x": 605,
-          "y": 830,
+          "x": 600,
+          "y": 760,
           "w": 590,
-          "h": 110
+          "h": 140
+        }
+      },
+      {
+        "item": "viz_yiZgEGXN",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1330,
+          "w": 1160,
+          "h": 550
         }
       }
     ],
