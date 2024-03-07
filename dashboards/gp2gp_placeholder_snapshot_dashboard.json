@@ -137,7 +137,7 @@
         "backgroundColor": "#ECF1F2",
         "xAxisTitleText": "Number of placeholders",
         "showYAxisWithZero": true,
-        "yAxisTitleText": "Count"
+        "yAxisTitleText": "Percentage"
       },
       "dataSources": {
         "primary": "ds_cy1hRWGw"
