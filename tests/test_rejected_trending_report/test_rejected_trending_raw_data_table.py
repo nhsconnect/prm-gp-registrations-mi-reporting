@@ -39,7 +39,7 @@ class TestRejectedTrendingRawDataTable(TestBase):
         cutoff = "0"
 
         try:
-            column = (datetime_utc_now() - timedelta(hours=td_hours)).strftime("%y-%m-%d")
+            column = (datetime_utc_now() - timedelta(hours=td_hours)).strftime("%Y-%m-%d")
             self.LOG.info(f"column: {column}")
 
             for idx in range(num_events):
@@ -126,7 +126,7 @@ class TestRejectedTrendingRawDataTable(TestBase):
         cutoff = "0"
 
         try:
-            column = datetime_utc_now().strftime("%y-%m-%d")
+            column = datetime_utc_now().strftime("%Y-%m-%d")
 
             for idx in range(num_events):
                 index.submit(
