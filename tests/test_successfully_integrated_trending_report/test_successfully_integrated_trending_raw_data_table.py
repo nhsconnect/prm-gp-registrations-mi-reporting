@@ -18,9 +18,9 @@ class TestSuccessfullyIntegratedTrendingRawDataTable(TestBase):
     @pytest.mark.parametrize(
         "time_period, expected_column_format, expected_number_of_events",
         [
-            ("month", "%y-%m", 4),
-            ("week", "%y-%m-%W", 3),
-            ("day", "%y-%m-%d", 2),
+            ("month", "%Y-%m", 4),
+            ("week", "%Y-Wk%W", 3),
+            ("day", "%Y-%m-%d", 2),
         ]
     )
     def test_gp2gp_successfully_integrated_trending_raw_data_table_column_token(self, time_period,
@@ -129,12 +129,12 @@ class TestSuccessfullyIntegratedTrendingRawDataTable(TestBase):
     @pytest.mark.parametrize(
         "time_period, expected_date_format, line, expected_number_of_events",
         [
-            ("month", "%y-%m", "Successfully integrated", 6),
-            ("month", "%y-%m", "Not successfully integrated", 5),
-            ("week", "%y-%m-%W", "Successfully integrated", 4),
-            ("week", "%y-%m-%W", "Not successfully integrated", 3),
-            ("day", "%y-%m-%d", "Successfully integrated", 2),
-            ("day", "%y-%m-%d", "Not successfully integrated", 1),
+            ("month", "%Y-%m", "Successfully integrated", 6),
+            ("month", "%Y-%m", "Not successfully integrated", 5),
+            ("week", "%Y-Wk%W", "Successfully integrated", 4),
+            ("week", "%Y-Wk%W", "Not successfully integrated", 3),
+            ("day", "%Y-%m-%d", "Successfully integrated", 2),
+            ("day", "%Y-%m-%d", "Not successfully integrated", 1),
         ]
     )
     def test_gp2gp_successfully_integrated_trending_raw_data_table_line_token(self, time_period,
