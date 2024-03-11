@@ -13,39 +13,39 @@ from helpers.datetime_helper import create_date_time
 class TestSuccessfullyIntegratedTrendingReportOutputs(TestBase):
 
     @pytest.mark.parametrize("time_period, expected_output", [
-        ("month", {"0": {"time_period": "23-10",
+        ("month", {"0": {"time_period": "2023-10",
                          "Not successfully integrated": "1",
                          "Successfully integrated": "5"
                          }
                    }
          ),
-        ("week", {"0": {"time_period": "23-10-39",
+        ("week", {"0": {"time_period": "2023-Wk39",
                         "Not successfully integrated": "1",
                         "Successfully integrated": "1"
                         },
-                  "1": {"time_period": "23-10-40",
+                  "1": {"time_period": "2023-Wk40",
                         "Not successfully integrated": "0",
                         "Successfully integrated": "4"
                         },
                   }
          ),
-        ("day", {"0": {"time_period": "23-10-01",
+        ("day", {"0": {"time_period": "2023-10-01",
                        "Not successfully integrated": "1",
                        "Successfully integrated": "1"
                        },
-                 "1": {"time_period": "23-10-02",
+                 "1": {"time_period": "2023-10-02",
                        "Not successfully integrated": "0",
                        "Successfully integrated": "1"
                        },
-                 "2": {"time_period": "23-10-03",
+                 "2": {"time_period": "2023-10-03",
                        "Not successfully integrated": "0",
                        "Successfully integrated": "1"
                        },
-                 "3": {"time_period": "23-10-04",
+                 "3": {"time_period": "2023-10-04",
                        "Not successfully integrated": "0",
                        "Successfully integrated": "1"
                        },
-                 "4": {"time_period": "23-10-05",
+                 "4": {"time_period": "2023-10-05",
                        "Not successfully integrated": "0",
                        "Successfully integrated": "1"
                        },
@@ -139,39 +139,39 @@ class TestSuccessfullyIntegratedTrendingReportOutputs(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize("time_period, expected_output", [
-        ("month", {"0": {"time_period": "23-10",
+        ("month", {"0": {"time_period": "2023-10",
                          "Not successfully integrated": "16.67",
                          "Successfully integrated": "83.33"
                          }
                    }
          ),
-        ("week", {"0": {"time_period": "23-10-39",
+        ("week", {"0": {"time_period": "2023-Wk39",
                         "Not successfully integrated": "50.00",
                         "Successfully integrated": "50.00"
                         },
-                  "1": {"time_period": "23-10-40",
+                  "1": {"time_period": "2023-Wk40",
                         "Not successfully integrated": "0.00",
                         "Successfully integrated": "100.00"
                         },
                   }
          ),
-        ("day", {"0": {"time_period": "23-10-01",
+        ("day", {"0": {"time_period": "2023-10-01",
                        "Not successfully integrated": "50.00",
                        "Successfully integrated": "50.00"
                        },
-                 "1": {"time_period": "23-10-02",
+                 "1": {"time_period": "2023-10-02",
                        "Not successfully integrated": "0.00",
                        "Successfully integrated": "100.00"
                        },
-                 "2": {"time_period": "23-10-03",
+                 "2": {"time_period": "2023-10-03",
                        "Not successfully integrated": "0.00",
                        "Successfully integrated": "100.00"
                        },
-                 "3": {"time_period": "23-10-04",
+                 "3": {"time_period": "2023-10-04",
                        "Not successfully integrated": "0.00",
                        "Successfully integrated": "100.00"
                        },
-                 "4": {"time_period": "23-10-05",
+                 "4": {"time_period": "2023-10-05",
                        "Not successfully integrated": "0.00",
                        "Successfully integrated": "100.00"
                        },
