@@ -38,7 +38,7 @@ class TestInProgressSlaTrendingRawDataTable(TestBase):
         cutoff = "0"
 
         try:
-            column = (datetime_utc_now() - timedelta(hours=td_hours)).strftime("%y-%m-%d")
+            column = (datetime_utc_now() - timedelta(hours=td_hours)).strftime("%Y-%m-%d")
             self.LOG.info(f"column: {column}")
 
             # Broken 24h sla
@@ -228,7 +228,7 @@ class TestInProgressSlaTrendingRawDataTable(TestBase):
                     sourcetype="myevent",
                 )
 
-            column = (datetime_utc_now() - timedelta(minutes=2)).strftime("%y-%m-%d")
+            column = (datetime_utc_now() - timedelta(minutes=2)).strftime("%Y-%m-%d")
             self.LOG.info(f"column: {column}")
 
             # Act

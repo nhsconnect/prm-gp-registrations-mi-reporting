@@ -589,7 +589,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            time_period_month_str = datetime_utc_now().strftime("%y-%m")
+            time_period_month_str = datetime_utc_now().strftime("%Y-%m")
             expected_values = {
                 "0": {"time_period": time_period_month_str,
                       "IF": "1",
@@ -1183,7 +1183,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            time_period_month_str = datetime_utc_now().strftime("%y-%m")
+            time_period_month_str = datetime_utc_now().strftime("%Y-%m")
             expected_values = {
                 "0": {"time_period": time_period_month_str,
                       "IF": "10.00",
@@ -1510,8 +1510,8 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            time_period_month_this_month = datetime_utc_now().strftime("%y-%m")
-            time_period_month_last_month = (datetime_utc_now() - timedelta(days=32)).strftime("%y-%m")
+            time_period_month_this_month = datetime_utc_now().strftime("%Y-%m")
+            time_period_month_last_month = (datetime_utc_now() - timedelta(days=32)).strftime("%Y-%m")
             expected_values = {
                 "0": {"time_period": time_period_month_last_month,
                       "IF": "0",
@@ -1609,7 +1609,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                                datetime_utc_now() - timedelta(days=7, hours=25)
+                                datetime_utc_now() - timedelta(days=7)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.TRANSFER_COMPATIBILITY_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -1629,7 +1629,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                                datetime_utc_now() - timedelta(days=7, hours=25)
+                                datetime_utc_now() - timedelta(days=7)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_REQUESTS.value,
                         sendingSupplierName="EMIS",
@@ -1649,7 +1649,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                                datetime_utc_now() - timedelta(days=7, hours=25)
+                                datetime_utc_now() - timedelta(days=7)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.EHR_RESPONSES.value,
                         sendingSupplierName="EMIS",
@@ -1664,7 +1664,7 @@ class TestTrendingInProgressSlaGraph(TestBase):
                     create_sample_event(
                         conversation_id=broken_24hr_sla_conversation_id,
                         registration_event_datetime=(
-                                datetime_utc_now() - timedelta(days=7)
+                                datetime_utc_now() - timedelta(days=5)
                         ).strftime("%Y-%m-%dT%H:%M:%S%z"),
                         event_type=EventType.READY_TO_INTEGRATE_STATUSES.value,
                         sendingSupplierName="EMIS",
@@ -1839,10 +1839,10 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            time_period_week_this_week = datetime_utc_now().strftime("%y-%m-%W")
-            time_period_week_this_week_less_one_week = (datetime_utc_now() - timedelta(days=7)).strftime("%y-%m-%W")
-            time_period_week_this_week_less_two_week = (datetime_utc_now() - timedelta(days=14)).strftime("%y-%m-%W")
-            time_period_week_this_week_less_three_week = (datetime_utc_now() - timedelta(days=21)).strftime("%y-%m-%W")
+            time_period_week_this_week = datetime_utc_now().strftime("%Y-Wk%W")
+            time_period_week_this_week_less_one_week = (datetime_utc_now() - timedelta(days=7)).strftime("%Y-Wk%W")
+            time_period_week_this_week_less_two_week = (datetime_utc_now() - timedelta(days=14)).strftime("%Y-Wk%W")
+            time_period_week_this_week_less_three_week = (datetime_utc_now() - timedelta(days=21)).strftime("%Y-Wk%W")
             expected_values = {
                 "0": {"time_period": time_period_week_this_week_less_three_week,
                       "IF": "0",
@@ -2182,10 +2182,10 @@ class TestTrendingInProgressSlaGraph(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            time_period_day_today = datetime_utc_now().strftime("%y-%m-%d")
-            time_period_day_today_less_one_day = (datetime_utc_now() - timedelta(days=1)).strftime("%y-%m-%d")
-            time_period_day_today_less_two_day = (datetime_utc_now() - timedelta(days=2)).strftime("%y-%m-%d")
-            time_period_day_today_less_three_day = (datetime_utc_now() - timedelta(days=3)).strftime("%y-%m-%d")
+            time_period_day_today = datetime_utc_now().strftime("%Y-%m-%d")
+            time_period_day_today_less_one_day = (datetime_utc_now() - timedelta(days=1)).strftime("%Y-%m-%d")
+            time_period_day_today_less_two_day = (datetime_utc_now() - timedelta(days=2)).strftime("%Y-%m-%d")
+            time_period_day_today_less_three_day = (datetime_utc_now() - timedelta(days=3)).strftime("%Y-%m-%d")
             expected_values = {
                 "0": {"time_period": time_period_day_today_less_three_day,
                       "IF": "0",
