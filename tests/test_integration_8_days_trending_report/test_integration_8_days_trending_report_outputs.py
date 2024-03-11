@@ -139,7 +139,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
@@ -152,7 +152,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
@@ -165,7 +165,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "0",
                                 "Integrated on time": "0",
                                 "Integrated after 8 days": "2",
@@ -174,7 +174,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             },
                         "1":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "0",
@@ -191,7 +191,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "2",
@@ -203,7 +203,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "0",
                                 "Integrated on time": "0",
                                 "Integrated after 8 days": "2",
@@ -212,7 +212,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             },
                         "1":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "1",
                                 "Integrated on time": "2",
                                 "Integrated after 8 days": "0",
@@ -224,7 +224,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                 expected_output = {
                     "0":
                         {
-                            "time_period": f'{late_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{late_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "0",
                             "Integrated on time": "0",
                             "Integrated after 8 days": "2",
@@ -233,7 +233,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                         },
                     "1":
                         {
-                            "time_period": f'{on_time_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{on_time_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "1",
                             "Integrated on time": "2",
                             "Integrated after 8 days": "0",
@@ -380,7 +380,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
@@ -393,7 +393,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
@@ -407,7 +407,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "0.00",
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "50.00",
@@ -416,7 +416,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             },
                         "1":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "25.00",
                                 "Integrated on time": "50.00",
                                 "Integrated after 8 days": "0.00",
@@ -433,7 +433,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "12.50",
                                 "Integrated on time": "25.00",
                                 "Integrated after 8 days": "25.00",
@@ -447,7 +447,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                     expected_output = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "0.00",
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "50.00",
@@ -456,7 +456,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                             },
                         "1":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "25.00",
                                 "Integrated on time": "50.00",
                                 "Integrated after 8 days": "0.00",
@@ -470,7 +470,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                 expected_output = {
                     "0":
                         {
-                            "time_period": f'{late_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{late_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "0.00",
                             "Integrated on time": "0.00",
                             "Integrated after 8 days": "50.00",
@@ -479,7 +479,7 @@ class TestIntegrationEightDaysTrendingReportOutputs(TestBase):
                         },
                     "1":
                         {
-                            "time_period": f'{on_time_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{on_time_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "25.00",
                             "Integrated on time": "50.00",
                             "Integrated after 8 days": "0.00",

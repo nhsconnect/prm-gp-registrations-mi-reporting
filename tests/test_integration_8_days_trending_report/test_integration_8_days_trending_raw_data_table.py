@@ -35,11 +35,11 @@ class TestIntegrationEightDaysTrendingRawDataTableOutputs(TestBase):
         event_datetime = datetime_utc_now() - timedelta(days=time_delta)
 
         if time_period == "day":
-            column = event_datetime.strftime("%y-%m-%d")
+            column = event_datetime.strftime("%Y-%m-%d")
         elif time_period == "week":
-            column = event_datetime.strftime("%y-%m-%W")
+            column = event_datetime.strftime("%Y-Wk%W")
         elif time_period == "month":
-            column = event_datetime.strftime("%y-%m")
+            column = event_datetime.strftime("%Y-%m")
 
         self.LOG.info(f"column for {time_period}: {column}")
 
@@ -135,11 +135,11 @@ class TestIntegrationEightDaysTrendingRawDataTableOutputs(TestBase):
         event_datetime = datetime_utc_now() - timedelta(days=time_delta)
 
         if time_period == "day":
-            column = event_datetime.strftime("%y-%m-%d")
+            column = event_datetime.strftime("%Y-%m-%d")
         elif time_period == "week":
-            column = event_datetime.strftime("%y-%m-%W")
+            column = event_datetime.strftime("%Y-Wk%W")
         elif time_period == "month":
-            column = event_datetime.strftime("%y-%m")
+            column = event_datetime.strftime("%Y-%m")
 
         self.LOG.info(f"column: {column}")
         ehr_integration_datetime = datetime_utc_now()
