@@ -139,7 +139,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "33.33",
                                 "Not integrated after 8 days": "66.67",
                             },
@@ -149,7 +149,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "33.33",
                                 "Not integrated after 8 days": "66.67",
                             },
@@ -160,13 +160,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-%m")}',
                                 "In flight": "0.00",
                                 "Not integrated after 8 days": "100.00",
                             },
                         "1":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "In flight": "100.00",
                                 "Not integrated after 8 days": "0.00",
                             },
@@ -180,7 +180,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "33.33",
                                 "Not integrated after 8 days": "66.67",
                             },
@@ -191,13 +191,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "0.00",
                                 "Not integrated after 8 days": "100.00",
                             },
                         "1":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-Wk%W")}',
                                 "In flight": "100.00",
                                 "Not integrated after 8 days": "0.00",
                             }
@@ -208,13 +208,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                 expected_values = {
                     "0":
                         {
-                            "time_period": f'{late_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{late_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "0.00",
                             "Not integrated after 8 days": "100.00",
                         },
                     "1":
                         {
-                            "time_period": f'{on_time_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{on_time_event_datetime.strftime("%Y-%m-%d")}',
                             "In flight": "100.00",
                             "Not integrated after 8 days": "0.00",
                         },
@@ -364,7 +364,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "Integrated on time": "60.00",
                                 "Integrated after 8 days": "40.00",
                             },
@@ -374,7 +374,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-%m")}',
                                 "Integrated on time": "60.00",
                                 "Integrated after 8 days": "40.00",
                             },
@@ -385,13 +385,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-%m")}',
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "100.00",
                             },
                         "1":
                             {
-                                "time_period": f'{datetime_utc_now().strftime("%y-%m")}',
+                                "time_period": f'{datetime_utc_now().strftime("%Y-%m")}',
                                 "Integrated on time": "100.00",
                                 "Integrated after 8 days": "0.00",
                             },
@@ -405,7 +405,7 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "Integrated on time": "60.00",
                                 "Integrated after 8 days": "40.00",
                             },
@@ -416,13 +416,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                     expected_values = {
                         "0":
                             {
-                                "time_period": f'{late_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{late_event_datetime.strftime("%Y-Wk%W")}',
                                 "Integrated on time": "0.00",
                                 "Integrated after 8 days": "100.00",
                             },
                         "1":
                             {
-                                "time_period": f'{on_time_event_datetime.strftime("%y-%m-%W")}',
+                                "time_period": f'{on_time_event_datetime.strftime("%Y-Wk%W")}',
                                 "Integrated on time": "100.00",
                                 "Integrated after 8 days": "0.00",
                             }
@@ -433,13 +433,13 @@ class TestIntegrationEightDaysTrendingOutcomePercentages(TestBase):
                 expected_values = {
                     "0":
                         {
-                            "time_period": f'{late_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{late_event_datetime.strftime("%Y-%m-%d")}',
                             "Integrated on time": "0.00",
                             "Integrated after 8 days": "100.00",
                         },
                     "1":
                         {
-                            "time_period": f'{on_time_event_datetime.strftime("%y-%m-%d")}',
+                            "time_period": f'{on_time_event_datetime.strftime("%Y-%m-%d")}',
                             "Integrated on time": "100.00",
                             "Integrated after 8 days": "0.00",
                         },
