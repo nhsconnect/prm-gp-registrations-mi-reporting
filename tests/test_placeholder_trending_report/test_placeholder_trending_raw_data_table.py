@@ -24,9 +24,9 @@ class TestPlaceholderTrendingRawDataTable(TestBase):
     @pytest.mark.parametrize(
         "time_period, expected_column_format, expected_number_of_placeholders",
         [
-            ("month", "%y-%m", 4),
-            ("week", "%y-%m-%W", 3),
-            ("day", "%y-%m-%d", 2),
+            ("month", "%Y-%m", 4),
+            ("week", "%Y-Wk%W", 3),
+            ("day", "%Y-%m-%d", 2),
         ]
     )
     def test_gp2gp_placeholder_trending_report_raw_data_table_column_token(self, time_period, expected_column_format,
@@ -199,11 +199,11 @@ class TestPlaceholderTrendingRawDataTable(TestBase):
     @pytest.mark.parametrize(
         "time_period, expected_date_format, line, expected_total_number_of_placeholders",
         [
-            ("month", "%y-%m", "1-5 placeholders", 4),
-            ("month", "%y-%m", "6-10 placeholders", 8),
-            ("week", "%y-%m-%W", "11-15 placeholders", 14),
-            ("week", "%y-%m-%W", "16-20 placeholders", 18),
-            ("day", "%y-%m-%d", "21+ placeholders", 24),
+            ("month", "%Y-%m", "1-5 placeholders", 4),
+            ("month", "%Y-%m", "6-10 placeholders", 8),
+            ("week", "%Y-Wk%W", "11-15 placeholders", 14),
+            ("week", "%Y-Wk%W", "16-20 placeholders", 18),
+            ("day", "%Y-%m-%d", "21+ placeholders", 24),
         ]
     )
     def test_gp2gp_placeholder_trending_report_raw_data_table_line_token(self, time_period, expected_date_format,
@@ -479,7 +479,7 @@ class TestPlaceholderTrendingRawDataTable(TestBase):
                     "$end_time$": report_end.strftime("%Y-%m-%dT%H:%m:%s"),
                     "$cutoff$": cutoff,
                     "$time_period$": "month",
-                    "$column$": event_datetime.strftime("%y-%m"),
+                    "$column$": event_datetime.strftime("%Y-%m"),
                     "$line$": line
                 },
             )
