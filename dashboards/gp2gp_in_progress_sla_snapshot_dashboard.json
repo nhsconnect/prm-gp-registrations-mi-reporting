@@ -1,385 +1,385 @@
 {
-	"visualizations": {
-		"viz_Yrz79jnn": {
-			"type": "splunk.column",
-			"options": {
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"yAxisLabelVisibility": "show",
-				"xAxisMajorTickVisibility": "hide",
-				"legendDisplay": "off",
-				"backgroundColor": "#ECF1F2",
-				"yAxisTitleText": "Count",
-				"xAxisTitleVisibility": "hide"
-			},
-			"dataSources": {
-				"primary": "ds_qBafRzi3"
-			},
-			"title": "",
-			"showProgressBar": false,
-			"showLastUpdated": false,
-			"description": "",
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.sla_status.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_RYPhSk8c": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "## In-progress SLA snapshot report\n### Counts",
-				"fontSize": "extraLarge"
-			}
-		},
-		"viz_nrRMTa9E": {
-			"type": "splunk.column",
-			"dataSources": {
-				"primary": "ds_wBXZ14Ef"
-			},
-			"title": "",
-			"options": {
-				"seriesColors": [
-					"#003087",
-					"#7C2855",
-					"#D5281B",
-					"#FFB81C",
-					"#CCE3F5",
-					"#768692"
-				],
-				"xAxisTitleVisibility": "hide",
-				"yAxisLabelVisibility": "show",
-				"xAxisMajorTickVisibility": "hide",
-				"legendDisplay": "off",
-				"backgroundColor": "#ECF1F2",
-				"yAxisTitleText": "Percentage"
-			},
-			"showProgressBar": false,
-			"showLastUpdated": false,
-			"eventHandlers": [
-				{
-					"type": "drilldown.setToken",
-					"options": {
-						"tokens": [
-							{
-								"token": "column",
-								"key": "row.sla_status.value"
-							}
-						]
-					}
-				}
-			]
-		},
-		"viz_ysvkHFbs": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Count of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA \n\nClicking on this graph populates the table below with the corresponding conversations.",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2",
-				"fontSize": "large"
-			}
-		},
-		"viz_VXusQloW": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "#### Percentage of SLA breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\nThe key for the graph is as follows:\n\nIF = In flight\n\nB24 = Broken 24h SLA\n\nBEhrS = Broken EHR sending SLA\n\nBEhrR = Broken EHR requesting SLA\n\nPercentage is take with regard to the total number of records that are eligible for electronic transfer.\n\nClicking on this graph populates the table below with the corresponding conversations.\n",
-				"fontColor": "#000000",
-				"backgroundColor": "#ECF1F2",
-				"fontSize": "large"
-			}
-		},
-		"viz_KKkIX6xn": {
-			"type": "splunk.singlevalue",
-			"options": {
-				"majorColor": "#000000",
-				"trendColor": "#000000",
-				"sparklineDisplay": "off",
-				"majorFontSize": 50,
-				"unit": "",
-				"trendDisplay": "off"
-			},
-			"dataSources": {
-				"primary": "ds_bA8S89J3"
-			},
-			"title": "Total records currently in-progress"
-		},
-		"viz_C7qrM833": {
-			"type": "splunk.table",
-			"dataSources": {
-				"primary": "ds_Ydo5Amd9"
-			}
-		},
-		"viz_iodmYizw": {
-			"type": "splunk.singlevalue",
-			"options": {
-				"majorColor": "#000000",
-				"trendColor": "#000000",
-				"sparklineDisplay": "off",
-				"majorFontSize": 50,
-				"unit": "",
-				"trendDisplay": "off"
-			},
-			"dataSources": {
-				"primary": "ds_M7LG4EPh_ds_bA8S89J3"
-			},
-			"title": "Total eligible for electronic transfer"
-		},
-		"viz_un9BlRsK": {
-			"type": "splunk.markdown",
-			"options": {
-				"markdown": "**Go to: 'In-progress SLA trending dashboard'**",
-				"backgroundColor": "#003087",
-				"fontColor": "#ffffff",
-				"fontSize": "extraLarge"
-			},
-			"eventHandlers": [
-				{
-					"type": "drilldown.linkToDashboard",
-					"options": {
-						"app": "nhsd_gp2gp_all_sh_all_viz",
-						"dashboard": "gp2gp_in_progress_sla_trending_dashboard"
-					}
-				}
-			]
-		}
-	},
-	"dataSources": {
-		"ds_qBafRzi3": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_in_progress_sla_snapshot_report_count"
-		},
-		"ds_wBXZ14Ef": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_in_progress_sla_snapshot_report_percentage"
-		},
-		"ds_bA8S89J3": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress"
-		},
-		"ds_X8UmRB1b": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_placeholders_breakdown_graph_snapshot_report_count"
-		},
-		"ds_cy1hRWGw": {
-			"type": "ds.search",
-			"options": {
-				"query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_placeholders_breakdown_graph_snapshot_report_percentage"
-		},
-		"ds_Ydo5Amd9": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_in_progress_sla_snapshot_report_in_progress_sla_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_in_progress_sla_snapshot_report_in_progress_sla_raw_data_table"
-		},
-		"ds_M7LG4EPh_ds_bA8S89J3": {
-			"type": "ds.search",
-			"options": {
-				"query": "| savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
-				"queryParameters": {
-					"earliest": "0",
-					"latest": ""
-				}
-			},
-			"name": "gp2gp_total_eligible_transfers_count"
-		}
-	},
-	"defaults": {
-		"dataSources": {
-			"ds.search": {
-				"options": {
-					"queryParameters": {
-						"latest": "$global_time.latest$",
-						"earliest": "$global_time.earliest$"
-					}
-				}
-			}
-		},
-		"tokens": {
-			"default": {
-				"column": {
-					"value": "None"
-				}
-			}
-		}
-	},
-	"inputs": {
-		"input_x1LK7THX": {
-			"options": {
-				"defaultValue": 0,
-				"token": "cutoff",
-				"min": 0,
-				"max": 14
-			},
-			"title": "Cutoff (days)",
-			"type": "input.number"
-		},
-		"input_udP1B2BG": {
-			"options": {
-				"defaultValue": "0,",
-				"token": "time_range"
-			},
-			"title": "Time Range",
-			"type": "input.timerange"
-		}
-	},
-	"layout": {
-		"type": "absolute",
-		"options": {
-			"display": "auto",
-			"backgroundColor": "#ffffff",
-			"height": 1600,
-			"showTitleAndDescription": false
-		},
-		"structure": [
-			{
-				"item": "viz_Yrz79jnn",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 530,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_RYPhSk8c",
-				"type": "block",
-				"position": {
-					"x": 10,
-					"y": 10,
-					"w": 920,
-					"h": 100
-				}
-			},
-			{
-				"item": "viz_nrRMTa9E",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 530,
-					"w": 590,
-					"h": 380
-				}
-			},
-			{
-				"item": "viz_ysvkHFbs",
-				"type": "block",
-				"position": {
-					"x": 5,
-					"y": 220,
-					"w": 590,
-					"h": 310
-				}
-			},
-			{
-				"item": "viz_VXusQloW",
-				"type": "block",
-				"position": {
-					"x": 600,
-					"y": 220,
-					"w": 590,
-					"h": 310
-				}
-			},
-			{
-				"item": "viz_KKkIX6xn",
-				"type": "block",
-				"position": {
-					"x": 270,
-					"y": 110,
-					"w": 260,
-					"h": 90
-				}
-			},
-			{
-				"item": "viz_C7qrM833",
-				"type": "block",
-				"position": {
-					"x": 40,
-					"y": 950,
-					"w": 1120,
-					"h": 610
-				}
-			},
-			{
-				"item": "viz_iodmYizw",
-				"type": "block",
-				"position": {
-					"x": 10,
-					"y": 110,
-					"w": 260,
-					"h": 90
-				}
-			},
-			{
-				"item": "viz_un9BlRsK",
-				"type": "block",
-				"position": {
-					"x": 810,
-					"y": 30,
-					"w": 370,
-					"h": 30
-				}
-			}
-		],
-		"globalInputs": [
-			"input_udP1B2BG",
-			"input_x1LK7THX"
-		]
-	},
-	"description": "",
-	"title": "gp2gp_in_progress_sla_snapshot_dashboard"
+    "visualizations": {
+        "viz_Yrz79jnn": {
+            "type": "splunk.column",
+            "options": {
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "yAxisLabelVisibility": "show",
+                "xAxisMajorTickVisibility": "hide",
+                "legendDisplay": "off",
+                "backgroundColor": "#ECF1F2",
+                "yAxisTitleText": "Count",
+                "xAxisTitleText": "SLA status"
+            },
+            "dataSources": {
+                "primary": "ds_qBafRzi3"
+            },
+            "title": "",
+            "showProgressBar": false,
+            "showLastUpdated": false,
+            "description": "",
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.sla_status.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_RYPhSk8c": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "## Service level agreement (SLA) snapshot report\n### Counts",
+                "fontSize": "extraLarge"
+            }
+        },
+        "viz_nrRMTa9E": {
+            "type": "splunk.column",
+            "dataSources": {
+                "primary": "ds_wBXZ14Ef"
+            },
+            "title": "",
+            "options": {
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "yAxisLabelVisibility": "show",
+                "xAxisMajorTickVisibility": "hide",
+                "legendDisplay": "off",
+                "backgroundColor": "#ECF1F2",
+                "yAxisTitleText": "Percentage",
+                "xAxisTitleText": "SLA status"
+            },
+            "showProgressBar": false,
+            "showLastUpdated": false,
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.sla_status.value"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "viz_ysvkHFbs": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Count of service level agreement (SLA) breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\". \n\n**N.B.**: A record may be in-progress, meaning the transfer is still ongoing, but it has already breached SLAs. Results in this graph may include data about transfers that have gone on to fail/be integrated.\n\nThe key for the graph is as follows:\n\n`IF` = In flight\n\n`B24` = Broken 24h SLA\n\n`BEhrS` = Broken EHR sending SLA\n\n`BEhrR` = Broken EHR requesting SLA \n\nClicking on this graph populates the table below with the corresponding conversations.",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2",
+                "fontSize": "large"
+            }
+        },
+        "viz_VXusQloW": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "#### Percentage of service level agreement (SLA) breaches\nGraph showing the count of conversations that are \"in flight\" or breached different SLAs. If no SLAs were breached the conversation is \"In flight\".\n\n**N.B.**: A record may be in-progress, meaning the transfer is still ongoing, but it has already breached SLAs. Results in this graph may include data about transfers that have gone on to fail/be integrated.\n\nThe key for the graph is as follows:\n\n`IF` = In flight\n\n`B24` = Broken 24h SLA\n\n`BEhrS` = Broken EHR sending SLA\n\n`BEhrR` = Broken EHR requesting SLA \n\nPercentage is take with regard to the total number of records that are eligible for electronic transfer.\n\nClicking on this graph populates the table below with the corresponding conversations.\n",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2",
+                "fontSize": "large"
+            }
+        },
+        "viz_KKkIX6xn": {
+            "type": "splunk.singlevalue",
+            "options": {
+                "majorColor": "#000000",
+                "trendColor": "#000000",
+                "sparklineDisplay": "off",
+                "majorFontSize": 50,
+                "unit": "",
+                "trendDisplay": "off"
+            },
+            "dataSources": {
+                "primary": "ds_bA8S89J3"
+            },
+            "title": "Total records currently in-progress"
+        },
+        "viz_C7qrM833": {
+            "type": "splunk.table",
+            "dataSources": {
+                "primary": "ds_Ydo5Amd9"
+            }
+        },
+        "viz_iodmYizw": {
+            "type": "splunk.singlevalue",
+            "options": {
+                "majorColor": "#000000",
+                "trendColor": "#000000",
+                "sparklineDisplay": "off",
+                "majorFontSize": 50,
+                "unit": "",
+                "trendDisplay": "off"
+            },
+            "dataSources": {
+                "primary": "ds_M7LG4EPh_ds_bA8S89J3"
+            },
+            "title": "Total eligible for electronic transfer"
+        },
+        "viz_un9BlRsK": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "**Go to: 'In-progress SLA trending dashboard'**",
+                "backgroundColor": "#003087",
+                "fontColor": "#ffffff",
+                "fontSize": "extraLarge"
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.linkToDashboard",
+                    "options": {
+                        "app": "nhsd_gp2gp_all_sh_all_viz",
+                        "dashboard": "gp2gp_in_progress_sla_trending_dashboard"
+                    }
+                }
+            ]
+        }
+    },
+    "dataSources": {
+        "ds_qBafRzi3": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_in_progress_sla_snapshot_report_count"
+        },
+        "ds_wBXZ14Ef": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_in_progress_sla_snapshot_report_percentage"
+        },
+        "ds_bA8S89J3": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_in_progress_sla_snapshot_report_total_num_records_in_progress"
+        },
+        "ds_X8UmRB1b": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_placeholders_breakdown_graph_snapshot_report_count"
+        },
+        "ds_cy1hRWGw": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_placeholders_breakdown_graph_snapshot_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_placeholders_breakdown_graph_snapshot_report_percentage"
+        },
+        "ds_Ydo5Amd9": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_in_progress_sla_snapshot_report_in_progress_sla_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" column=\"$column$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_in_progress_sla_snapshot_report_in_progress_sla_raw_data_table"
+        },
+        "ds_M7LG4EPh_ds_bA8S89J3": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_total_eligible_transfers_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_total_eligible_transfers_count"
+        }
+    },
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "latest": "$global_time.latest$",
+                        "earliest": "$global_time.earliest$"
+                    }
+                }
+            }
+        },
+        "tokens": {
+            "default": {
+                "column": {
+                    "value": "None"
+                }
+            }
+        }
+    },
+    "inputs": {
+        "input_x1LK7THX": {
+            "options": {
+                "defaultValue": 0,
+                "token": "cutoff",
+                "min": 0,
+                "max": 14
+            },
+            "title": "Cutoff (days)",
+            "type": "input.number"
+        },
+        "input_udP1B2BG": {
+            "options": {
+                "defaultValue": "0,",
+                "token": "time_range"
+            },
+            "title": "Time Range",
+            "type": "input.timerange"
+        }
+    },
+    "layout": {
+        "type": "absolute",
+        "options": {
+            "display": "auto",
+            "backgroundColor": "#ffffff",
+            "height": 1600,
+            "showTitleAndDescription": false
+        },
+        "structure": [
+            {
+                "item": "viz_Yrz79jnn",
+                "type": "block",
+                "position": {
+                    "x": 5,
+                    "y": 580,
+                    "w": 590,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_RYPhSk8c",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 10,
+                    "w": 920,
+                    "h": 100
+                }
+            },
+            {
+                "item": "viz_nrRMTa9E",
+                "type": "block",
+                "position": {
+                    "x": 600,
+                    "y": 580,
+                    "w": 590,
+                    "h": 380
+                }
+            },
+            {
+                "item": "viz_ysvkHFbs",
+                "type": "block",
+                "position": {
+                    "x": 5,
+                    "y": 220,
+                    "w": 590,
+                    "h": 360
+                }
+            },
+            {
+                "item": "viz_VXusQloW",
+                "type": "block",
+                "position": {
+                    "x": 600,
+                    "y": 220,
+                    "w": 590,
+                    "h": 360
+                }
+            },
+            {
+                "item": "viz_KKkIX6xn",
+                "type": "block",
+                "position": {
+                    "x": 270,
+                    "y": 110,
+                    "w": 260,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_C7qrM833",
+                "type": "block",
+                "position": {
+                    "x": 40,
+                    "y": 980,
+                    "w": 1120,
+                    "h": 610
+                }
+            },
+            {
+                "item": "viz_iodmYizw",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 110,
+                    "w": 260,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_un9BlRsK",
+                "type": "block",
+                "position": {
+                    "x": 810,
+                    "y": 30,
+                    "w": 370,
+                    "h": 30
+                }
+            }
+        ],
+        "globalInputs": [
+            "input_udP1B2BG",
+            "input_x1LK7THX"
+        ]
+    },
+    "description": "",
+    "title": "gp2gp_in_progress_sla_snapshot_dashboard"
 }
