@@ -95,7 +95,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "In progress": "2"}
                                }
 
@@ -192,7 +192,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
+            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%Y-%m"),
                                      "In progress": "2"}
                                }
 
@@ -270,7 +270,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "In progress": "1"}
                                }
 
@@ -351,7 +351,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "Awaiting integration": "1"}
                                }
 
@@ -447,9 +447,9 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "Awaiting integration": "1"},
-                               "1": {"time_period": "23-04",
+                               "1": {"time_period": "2023-04",
                                      "Awaiting integration": "1"},
                                }
 
@@ -545,9 +545,9 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03-10",
+            expected_values = {"0": {"time_period": "2023-Wk10",
                                      "Awaiting integration": "1"},
-                               "1": {"time_period": "23-03-11",
+                               "1": {"time_period": "2023-Wk11",
                                      "Awaiting integration": "1"},
                                }
 
@@ -639,7 +639,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "In progress": "100.00"}
                                }
 
@@ -736,7 +736,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%y-%m"),
+            expected_values = {"0": {"time_period": now_minus_2_days.strftime("%Y-%m"),
                                      "In progress": "100.00"}
                                }
 
@@ -814,7 +814,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "In progress": "100.00"}
                                }
 
@@ -895,7 +895,7 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "Awaiting integration": "100.00"}
                                }
 
@@ -991,9 +991,9 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03",
+            expected_values = {"0": {"time_period": "2023-03",
                                      "Awaiting integration": "100.00"},
-                               "1": {"time_period": "23-04",
+                               "1": {"time_period": "2023-04",
                                      "Awaiting integration": "100.00"},
                                }
 
@@ -1089,9 +1089,9 @@ class TestTransferStatusReportTrendingOutputs(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
-            expected_values = {"0": {"time_period": "23-03-10",
+            expected_values = {"0": {"time_period": "2023-Wk10",
                                      "Awaiting integration": "100.00"},
-                               "1": {"time_period": "23-03-11",
+                               "1": {"time_period": "2023-Wk11",
                                      "Awaiting integration": "100.00"},
                                }
 
