@@ -1,0 +1,16 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_trending_report/gp2gp_document_attachments_trending_report_base.splunk' import
+gp2gp_document_attachments_trending_base %}
+
+{{ gp2gp_document_attachments_trending_base() }}
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
+
+| eval migration_outcome = if(successfulDocumentMigration=="true", "Successful", "Unsuccessful")
+
+| chart count by time_period, migration_outcome
