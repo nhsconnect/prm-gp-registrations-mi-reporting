@@ -1,0 +1,22 @@
+{% macro gp2gp_document_attachments_trending_base () %}
+
+{% from 'functions.splunk' import
+set_time_to_registration_datetime,
+generate_report_start_and_end_time,
+filter_conversations_by_start_and_end_times_and_cutoff
+%}
+
+{{ set_time_to_registration_datetime() }}
+
+{{ generate_report_start_and_end_time() }}
+{{ filter_conversations_by_start_and_end_times_and_cutoff() }}
+
+| spath output=successfulDocumentMigration path=payload.documentMigration.successful
+| spath output=documentMigrationClinicalType path=payload.attachment.clinicalType
+
+| where eventType="DOCUMENT_RESPONSES"
+
+{% endmacro %}
+
+index="$index$"
+{{ gp2gp_document_attachments_trending_base() }}
