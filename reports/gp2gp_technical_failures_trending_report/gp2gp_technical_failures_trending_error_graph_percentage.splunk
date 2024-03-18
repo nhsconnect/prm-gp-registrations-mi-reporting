@@ -1,0 +1,22 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_trending_report/gp2gp_technical_failures_trending_base.splunk' import
+gp2gp_technical_failures_trending_report_base %}
+
+
+{{ gp2gp_technical_failures_trending_report_base() }}
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
+| eval technical_failure_reason =
+    case (integrationOutcome = "FAILED_TO_INTEGRATE", "Integration failure",
+          1=1, errorCode
+          )
+
+| chart count by time_period, technical_failure_reason
+| addtotals fieldname="total_per_month"
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
+| fields - total_per_month
