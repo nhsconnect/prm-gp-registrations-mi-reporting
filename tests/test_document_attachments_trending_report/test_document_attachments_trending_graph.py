@@ -1,5 +1,4 @@
 import json
-import random
 from datetime import timedelta, datetime
 from time import sleep
 
@@ -107,87 +106,24 @@ class TestTrendingDocumentAttachmentsGraph(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize(
-        "report_type, migration_outcome, time_period, expected_output",
+        "report_type, migration_outcome, time_period, expected_time_format",
         [
-            ("count", "unsuccessful", "month",
-             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "6", "EDI_MESSAGE": "3", "IMAGE": "7",
-                    "NOT_AVAILABLE": "2", "OCR_TEXT_DOCUMENT": "8", "ORIGINAL_TEXT_DOCUMENT": "9", "OTHER": "1",
-                    "OTHER_AUDIO": "5", "OTHER_DIGITAL_SIGNAL": "4", "SCANNED_DOCUMENT": "10"}
-              }
-             ),
-            ("count", "unsuccessful", "week",
-             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "6", "EDI_MESSAGE": "3", "IMAGE": "7",
-                    "NOT_AVAILABLE": "2", "OCR_TEXT_DOCUMENT": "8", "ORIGINAL_TEXT_DOCUMENT": "9", "OTHER": "1",
-                    "OTHER_AUDIO": "5", "OTHER_DIGITAL_SIGNAL": "4", "SCANNED_DOCUMENT": "10"}
-              }
-             ),
-            ("count", "unsuccessful", "day",
-             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "6", "EDI_MESSAGE": "3", "IMAGE": "7",
-                    "NOT_AVAILABLE": "2", "OCR_TEXT_DOCUMENT": "8", "ORIGINAL_TEXT_DOCUMENT": "9", "OTHER": "1",
-                    "OTHER_AUDIO": "5", "OTHER_DIGITAL_SIGNAL": "4", "SCANNED_DOCUMENT": "10"}
-              }
-             ),
-            ("percentage", "unsuccessful", "month",
-             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "10.91", "EDI_MESSAGE": "5.45", "IMAGE": "12.73",
-                    "NOT_AVAILABLE": "3.64", "OCR_TEXT_DOCUMENT": "14.55", "ORIGINAL_TEXT_DOCUMENT": "16.36",
-                    "OTHER": "1.82", "OTHER_AUDIO": "9.09", "OTHER_DIGITAL_SIGNAL": "7.27", "SCANNED_DOCUMENT": "18.18"}
-              }
-             ),
-            ("percentage", "unsuccessful", "week",
-             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "10.91", "EDI_MESSAGE": "5.45", "IMAGE": "12.73",
-                    "NOT_AVAILABLE": "3.64", "OCR_TEXT_DOCUMENT": "14.55", "ORIGINAL_TEXT_DOCUMENT": "16.36",
-                    "OTHER": "1.82", "OTHER_AUDIO": "9.09", "OTHER_DIGITAL_SIGNAL": "7.27", "SCANNED_DOCUMENT": "18.18"}
-              }
-             ),
-            ("percentage", "unsuccessful", "day",
-             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "10.91", "EDI_MESSAGE": "5.45", "IMAGE": "12.73",
-                    "NOT_AVAILABLE": "3.64", "OCR_TEXT_DOCUMENT": "14.55", "ORIGINAL_TEXT_DOCUMENT": "16.36",
-                    "OTHER": "1.82", "OTHER_AUDIO": "9.09", "OTHER_DIGITAL_SIGNAL": "7.27", "SCANNED_DOCUMENT": "18.18"}
-              }
-             ),
-            ("count", "successful", "month",
-             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
-                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
-                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
-              }
-             ),
-            ("count", "successful", "week",
-             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
-                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
-                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
-              }
-             ),
-            ("count", "successful", "day",
-             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
-                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
-                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
-              }
-             ),
-            ("percentage", "successful", "month",
-             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
-                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
-                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
-                    "SCANNED_DOCUMENT": "1.82"}
-              }
-             ),
-            ("percentage", "successful", "week",
-             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
-                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
-                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
-                    "SCANNED_DOCUMENT": "1.82"}
-              }
-             ),
-            ("percentage", "successful", "day",
-             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
-                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
-                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
-                    "SCANNED_DOCUMENT": "1.82"}
-              }
-             ),
+            ("count", "unsuccessful", "month", "2023-02"),
+            ("count", "unsuccessful", "week", "2023-Wk05"),
+            ("count", "unsuccessful", "day", "2023-02-04"),
+            ("percentage", "unsuccessful", "month", "2023-02"),
+            ("percentage", "unsuccessful", "week", "2023-Wk05"),
+            ("percentage", "unsuccessful", "day", "2023-02-04"),
+            ("count", "successful", "month", "2023-02"),
+            ("count", "successful", "week", "2023-Wk05"),
+            ("count", "successful", "day", "2023-02-04"),
+            ("percentage", "successful", "month", "2023-02"),
+            ("percentage", "successful", "week", "2023-Wk05"),
+            ("percentage", "successful", "day", "2023-02-04")
         ]
     )
     def test_trending_document_attachment_clinical_type_report(self, report_type, migration_outcome, time_period,
-                                                               expected_output):
+                                                               expected_time_format):
         # Arrange
         index_name, index = self.create_index()
 
@@ -273,6 +209,39 @@ class TestTrendingDocumentAttachmentsGraph(TestBase):
             self.LOG.info(f'telemetry: {telemetry}')
 
             # Assert
+            expected_output = {}
+
+            if report_type == "count":
+                if migration_outcome == "unsuccessful":
+                    expected_output = {
+                        "0": {"time_period": f"{expected_time_format}", "AUDIO_DICTATION": "6", "EDI_MESSAGE": "3",
+                              "IMAGE": "7", "NOT_AVAILABLE": "2", "OCR_TEXT_DOCUMENT": "8",
+                              "ORIGINAL_TEXT_DOCUMENT": "9", "OTHER": "1", "OTHER_AUDIO": "5",
+                              "OTHER_DIGITAL_SIGNAL": "4", "SCANNED_DOCUMENT": "10"}
+                    }
+                elif migration_outcome == "successful":
+                    expected_output = {
+                        "0": {"time_period": f"{expected_time_format}", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8",
+                              "IMAGE": "4", "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3",
+                              "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10", "OTHER_AUDIO": "6",
+                              "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
+                    }
+            elif report_type == "percentage":
+                if migration_outcome == "unsuccessful":
+                    expected_output = {
+                        "0": {"time_period": f"{expected_time_format}", "AUDIO_DICTATION": "10.91",
+                              "EDI_MESSAGE": "5.45", "IMAGE": "12.73", "NOT_AVAILABLE": "3.64",
+                              "OCR_TEXT_DOCUMENT": "14.55", "ORIGINAL_TEXT_DOCUMENT": "16.36", "OTHER": "1.82",
+                              "OTHER_AUDIO": "9.09", "OTHER_DIGITAL_SIGNAL": "7.27", "SCANNED_DOCUMENT": "18.18"}
+                    }
+                elif migration_outcome == "successful":
+                    expected_output = {
+                        "0": {"time_period": f"{expected_time_format}", "AUDIO_DICTATION": "9.09",
+                              "EDI_MESSAGE": "14.55", "IMAGE": "7.27", "NOT_AVAILABLE": "16.36",
+                              "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64", "OTHER": "18.18",
+                              "OTHER_AUDIO": "10.91",  "OTHER_DIGITAL_SIGNAL": "12.73", "SCANNED_DOCUMENT": "1.82"}
+                    }
+
             for row, row_values in expected_output.items():
                 row_values_as_jq_str = ' '.join(
                     [f"| select(.\"{key}\"==\"{value}\") " for key, value in row_values.items()]
