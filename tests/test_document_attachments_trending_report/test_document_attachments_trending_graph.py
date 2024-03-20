@@ -145,10 +145,49 @@ class TestTrendingDocumentAttachmentsGraph(TestBase):
                     "OTHER": "1.82", "OTHER_AUDIO": "9.09", "OTHER_DIGITAL_SIGNAL": "7.27", "SCANNED_DOCUMENT": "18.18"}
               }
              ),
+            ("count", "successful", "month",
+             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
+                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
+                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
+              }
+             ),
+            ("count", "successful", "week",
+             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
+                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
+                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
+              }
+             ),
+            ("count", "successful", "day",
+             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "5", "EDI_MESSAGE": "8", "IMAGE": "4",
+                    "NOT_AVAILABLE": "9", "OCR_TEXT_DOCUMENT": "3", "ORIGINAL_TEXT_DOCUMENT": "2", "OTHER": "10",
+                    "OTHER_AUDIO": "6", "OTHER_DIGITAL_SIGNAL": "7", "SCANNED_DOCUMENT": "1"}
+              }
+             ),
+            ("percentage", "successful", "month",
+             {"0": {"time_period": "2023-02", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
+                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
+                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
+                    "SCANNED_DOCUMENT": "1.82"}
+              }
+             ),
+            ("percentage", "successful", "week",
+             {"0": {"time_period": "2023-Wk05", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
+                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
+                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
+                    "SCANNED_DOCUMENT": "1.82"}
+              }
+             ),
+            ("percentage", "successful", "day",
+             {"0": {"time_period": "2023-02-04", "AUDIO_DICTATION": "9.09", "EDI_MESSAGE": "14.55", "IMAGE": "7.27",
+                    "NOT_AVAILABLE": "16.36", "OCR_TEXT_DOCUMENT": "5.45", "ORIGINAL_TEXT_DOCUMENT": "3.64",
+                    "OTHER": "18.18", "OTHER_AUDIO": "10.91", "OTHER_DIGITAL_SIGNAL": "12.73",
+                    "SCANNED_DOCUMENT": "1.82"}
+              }
+             ),
         ]
     )
-    def test_trending_document_attachment_unsuccessful_clinical_type_report(self, report_type, migration_outcome,
-                                                                            time_period, expected_output):
+    def test_trending_document_attachment_clinical_type_report(self, report_type, migration_outcome, time_period,
+                                                               expected_output):
         # Arrange
         index_name, index = self.create_index()
 

@@ -1,0 +1,21 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_trending_report/gp2gp_document_attachments_trending_report_base.splunk' import
+gp2gp_document_attachments_trending_base %}
+
+{{ gp2gp_document_attachments_trending_base() }}
+
+| where successfulDocumentMigration == "true"
+
+| eval clinical_type = documentMigrationClinicalType
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
+
+| chart count by time_period, clinical_type
+| addtotals fieldname="total_successful_migrations"
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_successful_migrations*100, 2))]
+| fields - total_successful_migrations
