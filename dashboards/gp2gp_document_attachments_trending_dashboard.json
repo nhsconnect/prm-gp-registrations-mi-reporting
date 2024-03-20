@@ -1,0 +1,564 @@
+{
+    "visualizations": {
+        "viz_Wypzt1As": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "## Document attachments trending report\n### Counts",
+                "fontSize": "extraLarge"
+            }
+        },
+        "viz_Es4z4wUh": {
+            "type": "splunk.singlevalue",
+            "options": {
+                "majorColor": "#000000",
+                "trendDisplay": "off",
+                "sparklineDisplay": "off",
+                "majorFontSize": 50
+            },
+            "dataSources": {
+                "primary": "ds_xUO2sUz4"
+            },
+            "title": "Number of successfully integrated attachments"
+        },
+        "viz_6JbCOsHY": {
+            "type": "splunk.singlevalue",
+            "dataSources": {
+                "primary": "ds_jCNWYZT0"
+            },
+            "title": "Number of unsuccessfully integrated attachments",
+            "options": {
+                "trendDisplay": "off",
+                "sparklineDisplay": "off",
+                "majorColor": "#000000",
+                "majorFontSize": 50
+            }
+        },
+        "viz_ToaG5NGC": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Count"
+            },
+            "dataSources": {
+                "primary": "ds_UEoT8zzD"
+            }
+        },
+        "viz_wxxQFAVt": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": ""
+            }
+        },
+        "viz_j6fyujEm": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Count of document attachment migrations\n\nGraph showing the count of successful and unsuccessful document attachment integrations during the time period selected above.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_ZUYI281p": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Percentage"
+            },
+            "dataSources": {
+                "primary": "ds_j8I0EjoF_ds_UEoT8zzD"
+            }
+        },
+        "viz_b0XAFwtO": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Percentage of document attachment migrations\n\nGraph showing the percentage of successful and unsuccessful document attachment integrations during the time period selected above.\n\nPercentage is calculated with respect to the total number of document attachments within the selected time period.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_s9NjRQVv": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Count"
+            },
+            "dataSources": {
+                "primary": "ds_UALoCpDQ_ds_UEoT8zzD"
+            }
+        },
+        "viz_H9fgAPRl": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Count of unsuccessful document attachment migrations\n\nGraph showing the count of unsuccessful document attachment migrations broken down by the document type during the time period selected above.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_8KTv73US": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Percentage"
+            },
+            "dataSources": {
+                "primary": "ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD"
+            }
+        },
+        "viz_wkMtPZWP": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Percentage of unsuccessful document attachment migrations\n\nGraph showing the percentage of unsuccessful document attachment migrations, broken down by the document type during the time period selected above.\n\nPercentage is calculated with respect to the total number of unsuccessful document attachments within the selected time period.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_r7MCJojk": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Count"
+            },
+            "dataSources": {
+                "primary": "ds_ofgQXROj_ds_UALoCpDQ_ds_UEoT8zzD"
+            }
+        },
+        "viz_Ov6UA4Nv": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Count of successful document attachment migrations\n\nGraph showing the count of successful document attachment migrations broken down by the document type during the time period selected above.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_HSBFFFlR": {
+            "type": "splunk.line",
+            "options": {
+                "backgroundColor": "#ECF1F2",
+                "seriesColors": [
+                    "#003087",
+                    "#7C2855",
+                    "#D5281B",
+                    "#FFB81C",
+                    "#CCE3F5",
+                    "#768692"
+                ],
+                "markerDisplay": "outlined",
+                "legendDisplay": "bottom",
+                "legendTruncation": "ellipsisOff",
+                "xAxisTitleText": "Time period",
+                "xAxisLineVisibility": "show",
+                "showXMajorGridLines": true,
+                "yAxisTitleText": "Percentage"
+            },
+            "dataSources": {
+                "primary": "ds_Kx1R0fOF_ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD"
+            }
+        },
+        "viz_VXCfujNY": {
+            "type": "splunk.markdown",
+            "options": {
+                "markdown": "### Percentage of successful document attachment migrations\n\nGraph showing the percentage of successful document attachment migrations, broken down by the document type during the time period selected above.\n\nPercentage is calculated with respect to the total number of successful document attachments within the selected time period.",
+                "fontSize": "large",
+                "fontColor": "#000000",
+                "backgroundColor": "#ECF1F2"
+            }
+        }
+    },
+    "dataSources": {
+        "ds_xUO2sUz4": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_integrated_successfully_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_snapshot_report_integrated_successfully_count"
+        },
+        "ds_jCNWYZT0": {
+            "type": "ds.search",
+            "options": {
+                "query": "|  savedsearch gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_snapshot_report_integrated_unsuccessfully_count"
+        },
+        "ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_migration_outcome_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_migration_outcome_count"
+        },
+        "ds_j8I0EjoF_ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_migration_outcome_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_migration_outcome_percentage"
+        },
+        "ds_UALoCpDQ_ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_unsuccessful_clinical_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_unsuccessful_clinical_report_count"
+        },
+        "ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_unsuccessful_clinical_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_unsuccessful_clinical_report_percentage"
+        },
+        "ds_ofgQXROj_ds_UALoCpDQ_ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_successful_clinical_report_count index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_successful_clinical_report_count"
+        },
+        "ds_Kx1R0fOF_ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_successful_clinical_report_percentage index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_successful_clinical_report_percentage"
+        }
+    },
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "latest": "$global_time.latest$",
+                        "earliest": "$global_time.earliest$"
+                    }
+                }
+            }
+        }
+    },
+    "inputs": {
+        "input_global_trp": {
+            "type": "input.timerange",
+            "options": {
+                "token": "time_range",
+                "defaultValue": "0,"
+            },
+            "title": "Time Range"
+        },
+        "input_GvzOu149": {
+            "options": {
+                "defaultValue": 0,
+                "token": "cutoff",
+                "min": 0,
+                "max": 14
+            },
+            "title": "Cutoff (days)",
+            "type": "input.number"
+        },
+        "input_GZCxT06v": {
+            "options": {
+                "items": [
+                    {
+                        "label": "Month",
+                        "value": "month"
+                    },
+                    {
+                        "label": "Week",
+                        "value": "week"
+                    },
+                    {
+                        "label": "Day",
+                        "value": "day"
+                    }
+                ],
+                "defaultValue": "month",
+                "token": "time_period"
+            },
+            "title": "Time Period",
+            "type": "input.dropdown"
+        }
+    },
+    "layout": {
+        "type": "absolute",
+        "options": {
+            "width": 2200,
+            "height": 2000,
+            "display": "auto",
+            "backgroundColor": "#ffffff",
+            "showTitleAndDescription": false
+        },
+        "structure": [
+            {
+                "item": "viz_Wypzt1As",
+                "type": "block",
+                "position": {
+                    "x": 10,
+                    "y": 10,
+                    "w": 920,
+                    "h": 100
+                }
+            },
+            {
+                "item": "viz_Es4z4wUh",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 110,
+                    "w": 340,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_6JbCOsHY",
+                "type": "block",
+                "position": {
+                    "x": 360,
+                    "y": 110,
+                    "w": 340,
+                    "h": 90
+                }
+            },
+            {
+                "item": "viz_ToaG5NGC",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 330,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_wxxQFAVt",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 220,
+                    "w": 300,
+                    "h": 300
+                }
+            },
+            {
+                "item": "viz_j6fyujEm",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 220,
+                    "w": 1060,
+                    "h": 110
+                }
+            },
+            {
+                "item": "viz_ZUYI281p",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 330,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_b0XAFwtO",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 220,
+                    "w": 1060,
+                    "h": 110
+                }
+            },
+            {
+                "item": "viz_s9NjRQVv",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 930,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_H9fgAPRl",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 820,
+                    "w": 1060,
+                    "h": 110
+                }
+            },
+            {
+                "item": "viz_8KTv73US",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 930,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_wkMtPZWP",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 820,
+                    "w": 1060,
+                    "h": 110
+                }
+            },
+            {
+                "item": "viz_r7MCJojk",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 1530,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_Ov6UA4Nv",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 1420,
+                    "w": 1060,
+                    "h": 110
+                }
+            },
+            {
+                "item": "viz_HSBFFFlR",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 1530,
+                    "w": 1060,
+                    "h": 450
+                }
+            },
+            {
+                "item": "viz_VXCfujNY",
+                "type": "block",
+                "position": {
+                    "x": 1120,
+                    "y": 1420,
+                    "w": 1060,
+                    "h": 110
+                }
+            }
+        ],
+        "globalInputs": [
+            "input_global_trp",
+            "input_GvzOu149",
+            "input_GZCxT06v"
+        ]
+    },
+    "description": "",
+    "title": "gp2gp_document_attachments_trending_dashboard"
+}
