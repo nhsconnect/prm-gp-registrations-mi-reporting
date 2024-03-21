@@ -1,0 +1,24 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_trending_report/gp2gp_technical_failures_trending_base.splunk' import
+gp2gp_technical_failures_trending_report_base %}
+
+
+{{ gp2gp_technical_failures_trending_report_base() }}
+
+| mvexpand error_code_failure_point_mv
+| eval error_code=mvindex(split(error_code_failure_point_mv, ","),0),
+       failure_point=mvindex(split(error_code_failure_point_mv, ","),1)
+
+
+| where case ( "$errorGraphColumn$" ==  "Integration failure", failure_point = "EHR_INTEGRATION",
+               "$errorGraphColumn$" ==  "Unknown", error_code = "UNKNOWN",
+               1=1, error_code = "$errorGraphColumn$")
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
+
+| chart count by time_period, failure_point
