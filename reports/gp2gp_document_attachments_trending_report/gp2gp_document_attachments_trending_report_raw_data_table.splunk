@@ -1,0 +1,61 @@
+index="$index$"
+
+{% from 'gp2gp_document_attachments_trending_report/gp2gp_document_attachments_trending_report_base.splunk' import
+gp2gp_document_attachments_trending_base %}
+
+{{ gp2gp_document_attachments_trending_base() }}
+
+| spath output=reason path=payload.documentMigration.reason
+| spath output=sizeBytes path=payload.attachment.sizeBytes
+| spath output=mimeType path=payload.attachment.mimeType
+
+| eval conversation_id = conversationId
+| eval reporting_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+| eval attachment_type = documentMigrationClinicalType
+| eval integrated_successfully = successfulDocumentMigration
+| eval failed_to_integrate_reason = if(reason="null", "N/A", reason) ```needed because "null" values cause a problem when displaying in table format on dashboard```
+| eval size_greater_than_100mb = if(sizeBytes > 100 * 1048576, "true", "false")
+| eval mime_type = mimeType
+
+| fillnull value="N/A"
+
+| eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "week", relative_time(strptime(substr("$column$",1,4)+"-01-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "day", relative_time(strptime("$column$"+"T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
+                                     )
+
+| eval weeks_str = if("$time_period$" = "week", substr("$column$",8,9), 0)
+| eval weeks_int = if("$time_period$" = "week", tonumber(weeks_str), 0)
+| eval weeks_in_seconds = if("$time_period$" = "week", (weeks_int-1) * 604800, 0)
+| eval time_window_start_epoch = if( "$time_period$" = "week", time_window_start_epoch + weeks_in_seconds, time_window_start_epoch)
+
+| eval time_window_end_epoch = case( "$time_period$" = "month", relative_time(time_window_start_epoch, "+1mon"),
+                                       "$time_period$" = "week", relative_time(time_window_start_epoch, "+1w"),
+                                       "$time_period$" = "day", relative_time(time_window_start_epoch, "+1d")
+                                     )
+
+| where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
+
+| where case("$line$" == "Successful", integrated_successfully=="true",
+             "$line$" == "Unsuccessful", integrated_successfully=="false",
+             "$line$" == attachment_type, attachment_type == "$line$",
+             1=1, 1=0)
+
+| table
+    conversation_id,
+    reporting_supplier_name,
+    requesting_supplier_name,
+    sending_supplier_name,
+    reporting_practice_ods_code,
+    requesting_practice_ods_code,
+    sending_practice_ods_code,
+    attachment_type,
+    integrated_successfully,
+    failed_to_integrate_reason,
+    size_greater_than_100mb,
+    mime_type
