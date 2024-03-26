@@ -41,10 +41,11 @@ gp2gp_document_attachments_trending_base %}
 
 | where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
 
-| where case("$line$" == "Successful", integrated_successfully=="true",
-             "$line$" == "Unsuccessful", integrated_successfully=="false",
-             "$line$" == attachment_type, attachment_type == "$line$",
+| where case("$category$" == "Successful", integrated_successfully=="true",
+             "$category$" == "Unsuccessful", integrated_successfully=="false",
              1=1, 1=0)
+
+| where attachment_type == "$line$"
 
 | table
     conversation_id,
