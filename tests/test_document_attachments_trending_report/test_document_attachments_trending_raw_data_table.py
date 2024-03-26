@@ -13,15 +13,16 @@ from tests.test_base import EventType, TestBase
 
 class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
     @pytest.mark.parametrize(
-        "time_period, expected_column_format, expected_number_of_events",
+        "time_period, column_date_format, expected_number_of_events",
         [
             ("month", "%Y-%m", 4),
             ("week", "%Y-Wk%W", 3),
             ("day", "%Y-%m-%d", 2),
         ]
     )
-    def test_document_attachments_trending_raw_data_table_column_token(self, time_period, expected_column_format,
-                                                                       expected_number_of_events):
+    def test_document_attachments_trending_raw_data_table_returns_results_for_specific_date(self, time_period,
+                                                                                            column_date_format,
+                                                                                            expected_number_of_events):
         # Arrange
         index_name, index = self.create_index()
 
@@ -34,7 +35,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         category = "Unsuccessful"
 
         event_datetime = datetime(year=2023, month=10, day=15)
-        selected_column = event_datetime.strftime(expected_column_format)
+        selected_column = event_datetime.strftime(column_date_format)
 
         self.LOG.info(f"column: {selected_column}")
 
@@ -141,7 +142,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize(
-        "time_period, expected_date_format, line, category",
+        "time_period, column_date_format, line, category",
         [
             ("month", "%Y-%m", "SCANNED_DOCUMENT", "Successful"),
             ("month", "%Y-%m", "ORIGINAL_TEXT_DOCUMENT", "Unsuccessful"),
@@ -155,8 +156,9 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
             ("day", "%Y-%m-%d", "OTHER", "Unsuccessful"),
         ]
     )
-    def test_document_attachments_trending_raw_data_table_line_token(self, time_period, expected_date_format, line,
-                                                                     category):
+    def test_document_attachments_trending_raw_data_table_returns_results_filtered_by_combined_tokens(
+            self, time_period, column_date_format, line, category):
+
         # Arrange
         index_name, index = self.create_index()
 
@@ -166,7 +168,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         cutoff = "0"
 
         event_datetime = datetime(year=2023, month=10, day=15)
-        selected_column = event_datetime.strftime(expected_date_format)
+        selected_column = event_datetime.strftime(column_date_format)
         self.LOG.info(f"selected column for {line} data: {selected_column}")
 
         migration_outcomes = {"Successful": True, "Unsuccessful": False}
