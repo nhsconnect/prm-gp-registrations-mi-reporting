@@ -45,7 +45,9 @@ gp2gp_document_attachments_trending_base %}
              "$category$" == "Unsuccessful", integrated_successfully=="false",
              1=1, 1=0)
 
-| where attachment_type == "$line$"
+| where case("$line$" == attachment_type, attachment_type == "$line$",
+             "$line$" == "none", attachment_type != "none",
+             1=1, 1=0)
 
 | table
     conversation_id,
