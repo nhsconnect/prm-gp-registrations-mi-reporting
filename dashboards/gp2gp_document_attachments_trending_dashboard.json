@@ -55,7 +55,28 @@
             },
             "dataSources": {
                 "primary": "ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "category",
+                                "key": "name"
+                            },
+                            {
+                                "token": "line",
+                                "value": "none"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_wxxQFAVt": {
             "type": "splunk.markdown",
@@ -66,7 +87,7 @@
         "viz_j6fyujEm": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of document attachment migrations\n\nGraph showing the count of successful and unsuccessful document attachment integrations during the time period selected above.",
+                "markdown": "### Count of document attachment migrations\n\nGraph showing the count of document attachment migrations broken down by the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -94,12 +115,33 @@
             },
             "dataSources": {
                 "primary": "ds_j8I0EjoF_ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "category",
+                                "key": "name"
+                            },
+                            {
+                                "token": "line",
+                                "value": "none"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_b0XAFwtO": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of document attachment migrations\n\nGraph showing the percentage of successful and unsuccessful document attachment integrations during the time period selected above.\n\nPercentage is calculated with respect to the total number of document attachments within the selected time period.",
+                "markdown": "### Percentage of document attachment migrations\n\nGraph showing the percentage of document attachment migrations broken down by the time period selected above.\n\nPercentage is calculated from the total number of document attachments during the time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -127,12 +169,33 @@
             },
             "dataSources": {
                 "primary": "ds_UALoCpDQ_ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            },
+                            {
+                                "token": "category",
+                                "value": "Unsuccessful"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_H9fgAPRl": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of unsuccessful document attachment migrations\n\nGraph showing the count of unsuccessful document attachment migrations broken down by the document type during the time period selected above.",
+                "markdown": "### Count of unsuccessful document attachment migrations\n\nGraph showing the count of unsuccessful document attachment migrations broken down by the document type and the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -160,12 +223,33 @@
             },
             "dataSources": {
                 "primary": "ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            },
+                            {
+                                "token": "category",
+                                "value": "Unsuccessful"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_wkMtPZWP": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of unsuccessful document attachment migrations\n\nGraph showing the percentage of unsuccessful document attachment migrations, broken down by the document type during the time period selected above.\n\nPercentage is calculated with respect to the total number of unsuccessful document attachments within the selected time period.",
+                "markdown": "### Percentage of unsuccessful document attachment migrations\n\nGraph showing the percentage of unsuccessful document attachment migrations, broken down by the document type and the time period selected above.\n\nPercentage is calculated from the total number of unsuccessfully integrated attachments during the selected time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -193,12 +277,33 @@
             },
             "dataSources": {
                 "primary": "ds_ofgQXROj_ds_UALoCpDQ_ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            },
+                            {
+                                "token": "category",
+                                "value": "Successful"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_Ov6UA4Nv": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of successful document attachment migrations\n\nGraph showing the count of successful document attachment migrations broken down by the document type during the time period selected above.",
+                "markdown": "### Count of successful document attachment migrations\n\nGraph showing the count of successful document attachment migrations broken down by the document type and the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -226,15 +331,43 @@
             },
             "dataSources": {
                 "primary": "ds_Kx1R0fOF_ds_kn7l0lcs_ds_j8I0EjoF_ds_UEoT8zzD"
-            }
+            },
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            },
+                            {
+                                "token": "category",
+                                "value": "Successful"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_VXCfujNY": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of successful document attachment migrations\n\nGraph showing the percentage of successful document attachment migrations, broken down by the document type during the time period selected above.\n\nPercentage is calculated with respect to the total number of successful document attachments within the selected time period.",
+                "markdown": "### Percentage of successful document attachment migrations\n\nGraph showing the percentage of successful document attachment migrations, broken down by the document type and the time period selected above.\n\nPercentage is calculated from the total number of successfully integrated attachments during the selected time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
+            }
+        },
+        "viz_K5laKQe3": {
+            "type": "splunk.table",
+            "options": {},
+            "dataSources": {
+                "primary": "ds_5J9r8Sbp"
             }
         }
     },
@@ -326,6 +459,17 @@
                 }
             },
             "name": "gp2gp_document_attachments_trending_report_successful_clinical_report_percentage"
+        },
+        "ds_5J9r8Sbp": {
+            "type": "ds.search",
+            "options": {
+                "query": "| savedsearch gp2gp_document_attachments_trending_report_raw_data_table index=\"logs_itoc_gp2gp_dev\" start_time=\"$time_range.earliest$\" end_time=\"$time_range.latest$\" cutoff=\"$cutoff$\" time_period=\"$time_period$\" column=\"$column$\" line=\"$line$\" category=\"$category$\"",
+                "queryParameters": {
+                    "earliest": "0",
+                    "latest": ""
+                }
+            },
+            "name": "gp2gp_document_attachments_trending_report_raw_data_table"
         }
     },
     "defaults": {
@@ -386,7 +530,7 @@
         "type": "absolute",
         "options": {
             "width": 2200,
-            "height": 2000,
+            "height": 2600,
             "display": "auto",
             "backgroundColor": "#ffffff",
             "showTitleAndDescription": false
@@ -550,6 +694,16 @@
                     "y": 1420,
                     "w": 1060,
                     "h": 110
+                }
+            },
+            {
+                "item": "viz_K5laKQe3",
+                "type": "block",
+                "position": {
+                    "x": 20,
+                    "y": 2020,
+                    "w": 2160,
+                    "h": 450
                 }
             }
         ],
