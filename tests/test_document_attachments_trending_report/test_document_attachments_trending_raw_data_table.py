@@ -30,7 +30,8 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         report_end = datetime(year=2023, month=10, day=31)
         cutoff = "0"
 
-        line = "Unsuccessful"
+        line = "SCANNED_DOCUMENT"
+        category = "Unsuccessful"
 
         event_datetime = datetime(year=2023, month=10, day=15)
         selected_column = event_datetime.strftime(expected_column_format)
@@ -104,6 +105,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                     "$time_period$": time_period,
                     "$column$": selected_column,
                     "$line$": line,
+                    "$category$": category
                 },
             )
 
@@ -139,21 +141,22 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize(
-        "time_period, expected_date_format, line",
+        "time_period, expected_date_format, line, category",
         [
-            ("month", "%Y-%m", "SCANNED_DOCUMENT"),
-            ("month", "%Y-%m", "ORIGINAL_TEXT_DOCUMENT"),
-            ("week", "%Y-Wk%W", "OCR_TEXT_DOCUMENT"),
-            ("week", "%Y-Wk%W", "IMAGE"),
-            ("day", "%Y-%m-%d", "AUDIO_DICTATION"),
-            ("day", "%Y-%m-%d", "OTHER_AUDIO"),
-            ("week", "%Y-Wk%W", "OTHER_DIGITAL_SIGNAL"),
-            ("week", "%Y-Wk%W", "EDI_MESSAGE"),
-            ("day", "%Y-%m-%d", "NOT_AVAILABLE"),
-            ("day", "%Y-%m-%d", "OTHER"),
+            ("month", "%Y-%m", "SCANNED_DOCUMENT", "Successful"),
+            ("month", "%Y-%m", "ORIGINAL_TEXT_DOCUMENT", "Unsuccessful"),
+            ("week", "%Y-Wk%W", "OCR_TEXT_DOCUMENT", "Successful"),
+            ("week", "%Y-Wk%W", "IMAGE", "Unsuccessful"),
+            ("day", "%Y-%m-%d", "AUDIO_DICTATION", "Successful"),
+            ("day", "%Y-%m-%d", "OTHER_AUDIO", "Unsuccessful"),
+            ("week", "%Y-Wk%W", "OTHER_DIGITAL_SIGNAL", "Successful"),
+            ("week", "%Y-Wk%W", "EDI_MESSAGE", "Unsuccessful"),
+            ("day", "%Y-%m-%d", "NOT_AVAILABLE", "Successful"),
+            ("day", "%Y-%m-%d", "OTHER", "Unsuccessful"),
         ]
     )
-    def test_document_attachments_trending_raw_data_table_line_token(self, time_period, expected_date_format, line):
+    def test_document_attachments_trending_raw_data_table_line_token(self, time_period, expected_date_format, line,
+                                                                     category):
         # Arrange
         index_name, index = self.create_index()
 
@@ -166,7 +169,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         selected_column = event_datetime.strftime(expected_date_format)
         self.LOG.info(f"selected column for {line} data: {selected_column}")
 
-        migration_outcomes = {"successfully": True, "unsuccessfully": False}
+        migration_outcomes = {"Successful": True, "Unsuccessful": False}
 
         if time_period == "day":
             other_event_datetime = event_datetime + timedelta(days=1, hours=8)
@@ -183,7 +186,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                 index.submit(
                     json.dumps(
                         create_sample_event(
-                            conversation_id=f'document_attachment_conv_integrated_{outcome}',
+                            conversation_id=f'document_attachment_conv_integrated_{outcome}ly',
                             registration_event_datetime=event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
                             event_type=EventType.DOCUMENT_RESPONSES.value,
                             sendingSupplierName="EMIS",
@@ -209,7 +212,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                         sendingSupplierName="EMIS",
                         requestingSupplierName="TPP",
                         payload=create_document_response_payload(
-                            successful=False,
+                            successful=migration_outcomes[category],
                             clinical_type=line,
                             reason="test reason",
                             size_bytes=4096,
@@ -235,6 +238,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                     "$time_period$": time_period,
                     "$column$": selected_column,
                     "$line$": line,
+                    "$category$": category
                 },
             )
 
@@ -246,25 +250,24 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
             self.LOG.info(f"telemetry: {telemetry}")
 
             # Assert
-            assert len(telemetry) == 2
+            assert len(telemetry) == 1
 
-            for outcome in migration_outcomes:
-                assert jq.all(
-                    f".[] "
-                    + f'| select( .conversation_id == "document_attachment_conv_integrated_{outcome}") '
-                    + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER") '
-                    + f'| select( .requesting_supplier_name == "TPP") '
-                    + f'| select( .sending_supplier_name == "EMIS") '
-                    + f'| select( .reporting_practice_ods_code == "A00029") '
-                    + f'| select( .requesting_practice_ods_code == "A00029") '
-                    + f'| select( .sending_practice_ods_code == "B00157") '
-                    + f'| select( .attachment_type == "{line}") '
-                    + f'| select( .integrated_successfully == "{str(migration_outcomes[outcome]).lower()}") '
-                    + f'| select( .failed_to_integrate_reason == "test reason") '
-                    + f'| select( .size_greater_than_100mb == "false") '
-                    + f'| select( .mime_type == "application/pdf") '
-                    , telemetry
-                )
+            assert jq.all(
+                f".[] "
+                + f'| select( .conversation_id == "document_attachment_conv_integrated_{category}ly") '
+                + f'| select( .reporting_supplier_name == "TEST_SYSTEM_SUPPLIER") '
+                + f'| select( .requesting_supplier_name == "TPP") '
+                + f'| select( .sending_supplier_name == "EMIS") '
+                + f'| select( .reporting_practice_ods_code == "A00029") '
+                + f'| select( .requesting_practice_ods_code == "A00029") '
+                + f'| select( .sending_practice_ods_code == "B00157") '
+                + f'| select( .attachment_type == "{line}") '
+                + f'| select( .integrated_successfully == "{str(migration_outcomes[category]).lower()}") '
+                + f'| select( .failed_to_integrate_reason == "test reason") '
+                + f'| select( .size_greater_than_100mb == "false") '
+                + f'| select( .mime_type == "application/pdf") '
+                , telemetry
+            )
 
         finally:
             self.delete_index(index_name)
