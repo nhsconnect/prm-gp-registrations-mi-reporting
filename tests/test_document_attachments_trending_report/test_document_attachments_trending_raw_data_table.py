@@ -171,7 +171,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         selected_column = event_datetime.strftime(column_date_format)
         self.LOG.info(f"selected column for {line} data: {selected_column}")
 
-        migration_outcomes = {"Successful": True, "Unsuccessful": False}
+        integration_outcomes = {"Successful": True, "Unsuccessful": False}
 
         if time_period == "day":
             other_event_datetime = event_datetime + timedelta(days=1, hours=8)
@@ -184,7 +184,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         self.LOG.info(f"other_event: {other_event_datetime.strftime('%Y-%m-%dT%H:%M:%S%z')}")
 
         try:
-            for outcome in migration_outcomes:
+            for outcome in integration_outcomes:
                 index.submit(
                     json.dumps(
                         create_sample_event(
@@ -194,7 +194,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                             sendingSupplierName="EMIS",
                             requestingSupplierName="TPP",
                             payload=create_document_response_payload(
-                                successful=migration_outcomes[outcome],
+                                successful=integration_outcomes[outcome],
                                 clinical_type=line,
                                 reason="test reason",
                                 size_bytes=4096,
@@ -205,25 +205,25 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                     sourcetype="myevent",
                 )
 
-            index.submit(
-                json.dumps(
-                    create_sample_event(
-                        conversation_id=f'conv_should_not_appear_id',
-                        registration_event_datetime=other_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
-                        event_type=EventType.DOCUMENT_RESPONSES.value,
-                        sendingSupplierName="EMIS",
-                        requestingSupplierName="TPP",
-                        payload=create_document_response_payload(
-                            successful=migration_outcomes[category],
-                            clinical_type=line,
-                            reason="test reason",
-                            size_bytes=4096,
-                            mime_type="application/pdf"
-                        ),
-                    )
-                ),
-                sourcetype="myevent",
-            )
+                index.submit(
+                    json.dumps(
+                        create_sample_event(
+                            conversation_id=f'conv_should_not_appear_id_{outcome}',
+                            registration_event_datetime=other_event_datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                            event_type=EventType.DOCUMENT_RESPONSES.value,
+                            sendingSupplierName="EMIS",
+                            requestingSupplierName="TPP",
+                            payload=create_document_response_payload(
+                                successful=integration_outcomes[outcome],
+                                clinical_type=line,
+                                reason="test reason",
+                                size_bytes=4096,
+                                mime_type="application/pdf"
+                            ),
+                        )
+                    ),
+                    sourcetype="myevent",
+                )
 
             # Act
             test_query = self.generate_splunk_query_from_report(
@@ -264,7 +264,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                 + f'| select( .requesting_practice_ods_code == "A00029") '
                 + f'| select( .sending_practice_ods_code == "B00157") '
                 + f'| select( .attachment_type == "{line}") '
-                + f'| select( .integrated_successfully == "{str(migration_outcomes[category]).lower()}") '
+                + f'| select( .integrated_successfully == "{str(integration_outcomes[category]).lower()}") '
                 + f'| select( .failed_to_integrate_reason == "test reason") '
                 + f'| select( .size_greater_than_100mb == "false") '
                 + f'| select( .mime_type == "application/pdf") '
@@ -282,7 +282,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
             ("day", "%Y-%m-%d", "none", "Successful"),
         ]
     )
-    def test_document_attachments_trending_raw_data_table_returns_all_results_if_not_filtered_by_clinical_type(
+    def test_document_attachments_trending_raw_data_table_returns_all_document_types_if_line_token_is_set_to_none(
             self, time_period, column_date_format, line, category):
 
         # Arrange
@@ -308,10 +308,10 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
         self.LOG.info(f"other_event: {other_event_datetime.strftime('%Y-%m-%dT%H:%M:%S%z')}")
 
         sample_clinical_types = ["AUDIO_DICTATION", "ORIGINAL_TEXT_DOCUMENT", "SCANNED_DOCUMENT"]
-        migration_outcomes = {"Successful": True, "Unsuccessful": False}
+        integration_outcomes = {"Successful": True, "Unsuccessful": False}
 
         try:
-            for outcome in migration_outcomes:
+            for outcome in integration_outcomes:
                 for idx, clinical_type in enumerate(sample_clinical_types):
                     index.submit(
                         json.dumps(
@@ -322,7 +322,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                                 sendingSupplierName="EMIS",
                                 requestingSupplierName="TPP",
                                 payload=create_document_response_payload(
-                                    successful=migration_outcomes[outcome],
+                                    successful=integration_outcomes[outcome],
                                     clinical_type=clinical_type,
                                     reason="test reason",
                                     size_bytes=4096,
@@ -342,7 +342,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                                 sendingSupplierName="EMIS",
                                 requestingSupplierName="TPP",
                                 payload=create_document_response_payload(
-                                    successful=migration_outcomes[outcome],
+                                    successful=integration_outcomes[outcome],
                                     clinical_type=clinical_type,
                                     reason="test reason",
                                     size_bytes=4096,
@@ -397,7 +397,7 @@ class TestDocumentAttachmentsTrendingRawDataTable(TestBase):
                     + f'| select( .requesting_practice_ods_code == "A00029") '
                     + f'| select( .sending_practice_ods_code == "B00157") '
                     + f'| select( .attachment_type == "{expected_info[idx][1]}") '
-                    + f'| select( .integrated_successfully == "{str(migration_outcomes[category]).lower()}") '
+                    + f'| select( .integrated_successfully == "{str(integration_outcomes[category]).lower()}") '
                     + f'| select( .failed_to_integrate_reason == "test reason") '
                     + f'| select( .size_greater_than_100mb == "false") '
                     + f'| select( .mime_type == "application/pdf") '

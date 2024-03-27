@@ -18,14 +18,14 @@
             "dataSources": {
                 "primary": "ds_xUO2sUz4"
             },
-            "title": "Number of successfully integrated attachments"
+            "title": "Number of attachments successfully integrated"
         },
         "viz_6JbCOsHY": {
             "type": "splunk.singlevalue",
             "dataSources": {
                 "primary": "ds_jCNWYZT0"
             },
-            "title": "Number of unsuccessfully integrated attachments",
+            "title": "Number of attachments unsuccessfully integrated",
             "options": {
                 "trendDisplay": "off",
                 "sparklineDisplay": "off",
@@ -87,7 +87,7 @@
         "viz_j6fyujEm": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of document attachment migrations\n\nGraph showing the count of document attachment migrations broken down by the time period selected above.",
+                "markdown": "### Count of document attachment integrations\n\nGraph showing the count of document attachment integrations broken down by the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -141,7 +141,7 @@
         "viz_b0XAFwtO": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of document attachment migrations\n\nGraph showing the percentage of document attachment migrations broken down by the time period selected above.\n\nPercentage is calculated from the total number of document attachments during the time period.",
+                "markdown": "### Percentage of document attachment integrations\n\nGraph showing the percentage of document attachment integrations broken down by the time period selected above.\n\nThe percentage is calculated from the total number of document attachments in the time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -195,7 +195,7 @@
         "viz_H9fgAPRl": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of unsuccessful document attachment migrations\n\nGraph showing the count of unsuccessful document attachment migrations broken down by the document type and the time period selected above.",
+                "markdown": "### Count of unsuccessful document attachment integrations\n\nGraph showing the count of unsuccessful document attachment integrations and their document type, broken down by the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -249,7 +249,7 @@
         "viz_wkMtPZWP": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of unsuccessful document attachment migrations\n\nGraph showing the percentage of unsuccessful document attachment migrations, broken down by the document type and the time period selected above.\n\nPercentage is calculated from the total number of unsuccessfully integrated attachments during the selected time period.",
+                "markdown": "### Percentage of unsuccessful document attachment integrations\n\nGraph showing the percentage of unsuccessful document attachment integrations and their document type, broken down by the time period selected above.\n\nThe percentage is calculated from the total number of attachments unsuccessfully integrated in the time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -303,7 +303,7 @@
         "viz_Ov6UA4Nv": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Count of successful document attachment migrations\n\nGraph showing the count of successful document attachment migrations broken down by the document type and the time period selected above.",
+                "markdown": "### Count of successful document attachment integrations\n\nGraph showing the count of successful document attachment integrations and their document type, broken down by the time period selected above.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
@@ -357,7 +357,7 @@
         "viz_VXCfujNY": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "### Percentage of successful document attachment migrations\n\nGraph showing the percentage of successful document attachment migrations, broken down by the document type and the time period selected above.\n\nPercentage is calculated from the total number of successfully integrated attachments during the selected time period.",
+                "markdown": "### Percentage of successful document attachment integrations\n\nGraph showing the percentage of successful document attachment integrations and their document type, broken down by the time period selected above.\n\nThe percentage is calculated from the total number of attachments successfully integrated in the time period.",
                 "fontSize": "large",
                 "fontColor": "#000000",
                 "backgroundColor": "#ECF1F2"
