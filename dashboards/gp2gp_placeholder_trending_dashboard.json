@@ -34,7 +34,7 @@
         "viz_aTPox228": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Count of transfers with placeholders\n\nGraph showing the number of transfers with no placeholders and the number of transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
+                "markdown": "#### Count of transfers with placeholders\n\nGraph showing the number of transfers with no placeholders and transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -42,7 +42,7 @@
         "viz_EDmOTwmV": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Percentage of transfers with placeholders\n\nGraph showing the percentage of transfers with no placeholders and the number of transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.",
+                "markdown": "#### Percentage of transfers with placeholders\n\nGraph showing the percentage of transfers with no placeholders and transfers with **at least** 1 placeholder, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total count of transferred records.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -52,7 +52,7 @@
             "dataSources": {
                 "primary": "ds_GF10eB9q"
             },
-            "title": "Total records transferred"
+            "title": "Count of transferred records"
         },
         "viz_j8thI5xv": {
             "type": "splunk.line",
@@ -97,7 +97,7 @@
         "viz_gfv4ABsq": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Count of placeholders per transfer\n\nGraph showing the count of transfers with placeholders broken down by the number of placeholders per transfer, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
+                "markdown": "#### Count of transfers grouped by the number of placeholders per transfer\n\nGraph showing the count of transfers with placeholders, grouped by the number of placeholders in each transfer, within the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -105,7 +105,7 @@
         "viz_FHl9RP6D": {
             "type": "splunk.markdown",
             "options": {
-                "markdown": "#### Percentage of placeholders per transfer\n\nGraph showing the percentage of transfers with placeholders broken down by the number of placeholders per transfer, broken down by the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the total records transferred.",
+                "markdown": "#### Percentage of transfers grouped by the number of placeholders per transfer\n\nGraph showing the percentage of transfers with placeholders, grouped by the number of placeholders per transfer, within the **time period selected above**.\n\nA placeholder is created when the sending system supplier fails to send an attachment to the requesting practice.\n\nThe percentage is taken with respect to the count of transferred records.",
                 "backgroundColor": "#ECF1F2",
                 "fontColor": "#000000"
             }
@@ -132,7 +132,24 @@
                 "yAxisTitleText": "Percentage",
                 "yAxisMin": 0
             },
-            "title": ""
+            "title": "",
+            "eventHandlers": [
+                {
+                    "type": "drilldown.setToken",
+                    "options": {
+                        "tokens": [
+                            {
+                                "token": "column",
+                                "key": "row.time_period.value"
+                            },
+                            {
+                                "token": "line",
+                                "key": "name"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "viz_fv3thLRB": {
             "type": "splunk.line",
@@ -152,7 +169,7 @@
                     "#768692"
                 ],
                 "xAxisTitleText": "Time period",
-                "yAxisTitleText": "Count",
+                "yAxisTitleText": "Percentage",
                 "legendDisplay": "bottom"
             },
             "title": ""
@@ -248,7 +265,7 @@
     "inputs": {
         "input_uKjxpglv": {
             "options": {
-                "defaultValue": "0,",
+                "defaultValue": "-1mon@mon,@mon",
                 "token": "time_range"
             },
             "title": "Time Range",
@@ -342,7 +359,7 @@
                 "position": {
                     "x": 10,
                     "y": 80,
-                    "w": 190,
+                    "w": 220,
                     "h": 120
                 }
             },
