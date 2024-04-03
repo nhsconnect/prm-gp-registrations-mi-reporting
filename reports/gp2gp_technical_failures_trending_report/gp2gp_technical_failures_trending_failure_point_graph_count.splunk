@@ -12,7 +12,6 @@ gp2gp_technical_failures_trending_report_base %}
 
 
 | where case ( "$errorGraphColumn$" ==  "Integration failure", failure_point = "EHR_INTEGRATION",
-               "$errorGraphColumn$" ==  "Unknown", error_code = "UNKNOWN",
                1=1, error_code = "$errorGraphColumn$")
 
 | eval time_period = case(
