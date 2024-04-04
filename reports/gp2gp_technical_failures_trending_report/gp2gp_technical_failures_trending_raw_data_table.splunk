@@ -1,0 +1,64 @@
+index="$index$"
+
+{% from 'gp2gp_technical_failures_trending_report/gp2gp_technical_failures_trending_base.splunk' import
+gp2gp_technical_failures_trending_report_base %}
+
+
+{{ gp2gp_technical_failures_trending_report_base() }}
+
+| eval conversation_id = conversationId
+| eval reporting_supplier_name = reportingSystemSupplier
+| eval requesting_supplier_name = requestingSupplierName
+| eval sending_supplier_name = sendingSupplierName
+| eval reporting_practice_ods_code = reportingPracticeOdsCode
+| eval requesting_practice_ods_code = requestingPracticeOdsCode
+| eval sending_practice_ods_code =  sendingPracticeOdsCode
+
+| mvexpand error_code_failure_point_error_desc_mv
+| eval error_code = mvindex(split(error_code_failure_point_error_desc_mv, ","),0),
+       failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),1),
+       other_failure_point = mvindex(split(error_code_failure_point_error_desc_mv, ","),2),
+       error_desc = mvindex(split(error_code_failure_point_error_desc_mv, ","),3)
+
+| eval broken_24h_sla = totalTransferTimeOutsideSla24Hours
+| eval broken_ehr_sending_sla = totalEhrSendingOutsideSla
+| eval broken_ehr_requesting_sla = totalEhrRequestingOutsideSla
+
+| where case("$error_code_line$" == "None" and "$failure_point_line$" == "None", 1=0,
+             "$error_code_line$" == "Integration failure", failure_point == "EHR_INTEGRATION",
+             "$error_code_line$" != "None" and "$failure_point_line$" == "None", error_code = "$error_code_line$",
+             "$error_code_line$" != "None" and "$failure_point_line$" != "None", error_code = "$error_code_line$" and failure_point == "$failure_point_line$",
+             1=1, 1=0)
+
+| eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "week", relative_time(strptime(substr("$column$",1,4)+"-01-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
+                                       "$time_period$" = "day", relative_time(strptime("$column$"+"T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
+                                     )
+
+| eval weeks_str = if("$time_period$" = "week", substr("$column$",8,9), 0)
+| eval weeks_int = if("$time_period$" = "week", tonumber(weeks_str), 0)
+| eval weeks_in_seconds = if("$time_period$" = "week", (weeks_int-1) * 604800, 0)
+| eval time_window_start_epoch = if( "$time_period$" = "week", time_window_start_epoch + weeks_in_seconds, time_window_start_epoch)
+
+
+| eval time_window_end_epoch = case( "$time_period$" = "month", relative_time(time_window_start_epoch, "+1mon"),
+                                       "$time_period$" = "week", relative_time(time_window_start_epoch, "+1w"),
+                                       "$time_period$" = "day", relative_time(time_window_start_epoch, "+1d")
+                                     )
+
+| where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
+
+| table conversation_id,
+        reporting_supplier_name,
+        requesting_supplier_name,
+        sending_supplier_name,
+        reporting_practice_ods_code,
+        requesting_practice_ods_code,
+        sending_practice_ods_code,
+        error_code,
+        failure_point,
+        other_failure_point,
+        error_desc,
+        broken_24h_sla,
+        broken_ehr_sending_sla,
+        broken_ehr_requesting_sla
