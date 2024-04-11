@@ -1,0 +1,18 @@
+index="$index$"
+
+{% from 'gp2gp_errors_trending_report/gp2gp_errors_trending_report_base.splunk' import
+gp2gp_errors_trending_report_base %}
+
+
+{{ gp2gp_errors_trending_report_base() }}
+
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
+
+| chart count by time_period, errorCode
+| addtotals fieldname="total_errors_in_time_period"
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_errors_in_time_period*100, 2))]
+| fields - total_errors_in_time_period
