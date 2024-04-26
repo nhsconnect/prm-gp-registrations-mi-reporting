@@ -12,4 +12,4 @@ gp2gp_errors_trending_report_base %}
                           "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
                           )
 
-| chart count by time_period, errorCode
+| chart limit=0 count by time_period, errorCode usenull=f

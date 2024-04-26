@@ -12,7 +12,7 @@ gp2gp_errors_trending_report_base %}
                           "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
                           )
 
-| chart count by time_period, errorCode
+| chart limit=0 count by time_period, errorCode usenull=f
 | addtotals fieldname="total_errors_in_time_period"
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_errors_in_time_period*100, 2))]
 | fields - total_errors_in_time_period
