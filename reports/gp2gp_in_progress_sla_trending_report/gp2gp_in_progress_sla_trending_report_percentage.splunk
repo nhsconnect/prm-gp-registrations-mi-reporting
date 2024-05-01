@@ -33,11 +33,10 @@ gp2gp_in_progress_sla_trending_report_base %}
                           totalEhrSendingOutsideSla==1
                               and outcome!="Technical failure", "BEhrS",
                           totalEhrRequestingOutsideSla==1
-                              and outcome!="Technical failure", "BEhrR",
-                          1=1, "other"
+                              and outcome!="Technical failure", "BEhrR"
                         )
 
-| chart count by time_period, sla_status
+| chart count by time_period, sla_status usenull=f
 | addtotals fieldname="total_per_month"
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
 | fields - total_per_month
