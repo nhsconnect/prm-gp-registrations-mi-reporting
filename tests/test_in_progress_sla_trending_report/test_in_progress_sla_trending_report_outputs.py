@@ -599,10 +599,11 @@ class TestTrendingInProgressSlaGraph(TestBase):
                       "B24 + BEhrS": "1",
                       "B24 + BEhrR": "1",
                       "BEhrS + BEhrR": "1",
-                      "B24 + BEhrS + BEhrR": "1",
-                      "other": "1",
+                      "B24 + BEhrS + BEhrR": "1"
                       },
             }
+
+            assert len(telemetry[0].keys()) == 9   # checking only expected fields returned
 
             for idx in range(len(expected_values)):
                 for key, value in expected_values[str(idx)].items():
@@ -1193,10 +1194,11 @@ class TestTrendingInProgressSlaGraph(TestBase):
                       "B24 + BEhrS": "20.00",
                       "B24 + BEhrR": "10.00",
                       "BEhrS + BEhrR": "20.00",
-                      "B24 + BEhrS + BEhrR": "10.00",
-                      "other": "5.00"
+                      "B24 + BEhrS + BEhrR": "10.00"
                       },
             }
+
+            assert len(telemetry[0].keys()) == 9   # checking only expected fields returned
 
             for idx in range(len(expected_values)):
                 for key, value in expected_values[str(idx)].items():
