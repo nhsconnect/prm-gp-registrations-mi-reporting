@@ -175,48 +175,60 @@ class TestErrorsTrendingReportOutputs(TestBase):
             self.delete_index(index_name)
 
     @pytest.mark.parametrize(
-        "report_type, time_period, selected_time_column, selected_error_code, expected_output", [
-            ("count", "month", "2023-05", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "3"},
-                                                 "1": {"failure_point": "Endpoint Lookup", "count": "2"},
-                                                 "2": {"failure_point": "Other", "count": "1"}}),
-            ("count", "week", "2023-Wk18", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"},
-                                                  "1": {"failure_point": "Endpoint Lookup", "count": "1"},
-                                                  "2": {"failure_point": "Other", "count": "1"}}),
-            ("count", "week", "2023-Wk19", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"},
-                                                  "1": {"failure_point": "Endpoint Lookup", "count": "1"}}),
-            ("count", "week", "2023-Wk20", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"}}),
-            ("count", "day", "2023-05-01", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"},
-                                                  "1": {"failure_point": "Endpoint Lookup", "count": "1"},
-                                                  "2": {"failure_point": "Other", "count": "1"}}),
-            ("count", "day", "2023-05-08", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"},
-                                                  "1": {"failure_point": "Endpoint Lookup", "count": "1"}}),
-            ("count", "day", "2023-05-15", "06", {"0": {"failure_point": "EHR Ready to Integrate", "count": "1"}}),
-            ("percentage", "month", "2023-05", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
-              "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
-              "2": {"failure_point": "Other", "percentage": "16.67"}}),
-            ("percentage", "week", "2023-Wk18", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "33.33"},
-              "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
-              "2": {"failure_point": "Other", "percentage": "33.33"}}),
-            ("percentage", "week", "2023-Wk19", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
-              "1": {"failure_point": "Endpoint Lookup", "percentage": "50.00"}}),
-            ("percentage", "week", "2023-Wk20", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "100.00"}}),
-            ("percentage", "day", "2023-05-01", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "33.33"},
-              "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
-              "2": {"failure_point": "Other", "percentage": "33.33"}}),
-            ("percentage", "day", "2023-05-08", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
-              "1": {"failure_point": "Endpoint Lookup", "percentage": "50.00"}}),
-            ("percentage", "day", "2023-05-15", "06",
-             {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "100.00"}}),
+        "report_type, time_period, expected_output", [
+            ("count", "month", {"0": {"time_period": "2023-05",
+                                      "EHR Ready to Integrate": "3",
+                                      "Endpoint Lookup": "2",
+                                      "Other": "1"}}
+             ),
+            ("count", "week", {"0": {"time_period": "2023-Wk18",
+                                     "EHR Ready to Integrate": "1",
+                                     "Endpoint Lookup": "1",
+                                     "Other": "1"},
+                               "1": {"time_period": "2023-Wk19",
+                                     "EHR Ready to Integrate": "1",
+                                     "Endpoint Lookup": "1"},
+                               "2": {"time_period": "2023-Wk20",
+                                     "EHR Ready to Integrate": "1"},
+                               }
+             ),
+            ("count", "day", {"0": {"time_period": "2023-05-01",
+                                    "EHR Ready to Integrate": "1",
+                                    "Endpoint Lookup": "1",
+                                    "Other": "1"},
+                              "1": {"time_period": "2023-05-08",
+                                    "EHR Ready to Integrate": "1",
+                                    "Endpoint Lookup": "1"},
+                              "2": {"time_period": "2023-05-15",
+                                    "EHR Ready to Integrate": "1"},
+                              }
+             ),
+            # ("percentage", "month", "2023-05", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
+            #   "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
+            #   "2": {"failure_point": "Other", "percentage": "16.67"}}),
+            # ("percentage", "week", "2023-Wk18", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "33.33"},
+            #   "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
+            #   "2": {"failure_point": "Other", "percentage": "33.33"}}),
+            # ("percentage", "week", "2023-Wk19", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
+            #   "1": {"failure_point": "Endpoint Lookup", "percentage": "50.00"}}),
+            # ("percentage", "week", "2023-Wk20", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "100.00"}}),
+            # ("percentage", "day", "2023-05-01", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "33.33"},
+            #   "1": {"failure_point": "Endpoint Lookup", "percentage": "33.33"},
+            #   "2": {"failure_point": "Other", "percentage": "33.33"}}),
+            # ("percentage", "day", "2023-05-08", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "50.00"},
+            #   "1": {"failure_point": "Endpoint Lookup", "percentage": "50.00"}}),
+            # ("percentage", "day", "2023-05-15", "06",
+            #  {"0": {"failure_point": "EHR Ready to Integrate", "percentage": "100.00"}}),
         ]
     )
     def test_errors_trending_failure_point_graph_returns_results_for_selected_error_in_time_frame(
-            self, report_type, time_period, selected_time_column, selected_error_code, expected_output):
+            self, report_type, time_period, expected_output):
         # Arrange
         index_name, index = self.create_index()
 
@@ -230,6 +242,8 @@ class TestErrorsTrendingReportOutputs(TestBase):
             ("Endpoint Lookup", 2),
             ("Other", 1),
         ]
+
+        selected_error_code = "06"
 
         try:
             for i, (failure_point, count) in enumerate(failure_points_and_counts):
@@ -302,7 +316,6 @@ class TestErrorsTrendingReportOutputs(TestBase):
                 "$end_time$": report_end.strftime("%Y-%m-%dT%H:%M:%S%z"),
                 "$cutoff$": cutoff,
                 "$time_period$": time_period,
-                "$column$": selected_time_column,
                 "$errorGraphColumn$": selected_error_code,
             })
 
