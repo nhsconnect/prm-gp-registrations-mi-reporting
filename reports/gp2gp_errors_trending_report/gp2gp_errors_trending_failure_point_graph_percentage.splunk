@@ -9,30 +9,16 @@ gp2gp_errors_trending_report_base %}
 | eval error_code=mvindex(split(error_code_failure_point_mv, ","),0),
        failure_point=mvindex(split(error_code_failure_point_mv, ","),1)
 
-| eval time_window_start_epoch = case( "$time_period$" = "month", relative_time(strptime("$column$"+"-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
-                                       "$time_period$" = "week", relative_time(strptime(substr("$column$",1,4)+"-01-01T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h"),
-                                       "$time_period$" = "day", relative_time(strptime("$column$"+"T00:00:00","%Y-%m-%dT%H:%M:%S"), tz_hours+"h")
-                                     )
+| eval time_period = case(
+                          "$time_period$"=="month", strftime(_time,"%Y-%m"),
+                          "$time_period$"=="week", strftime(_time,"%Y-Wk%W"),
+                          "$time_period$"=="day", strftime(_time,"%Y-%m-%d")
+                          )
 
-| eval weeks_str = if("$time_period$" = "week", substr("$column$",8,9), 0)
-| eval weeks_int = if("$time_period$" = "week", tonumber(weeks_str), 0)
-| eval weeks_in_seconds = if("$time_period$" = "week", (weeks_int-1) * 604800, 0)
-| eval time_window_start_epoch = if( "$time_period$" = "week", time_window_start_epoch + weeks_in_seconds, time_window_start_epoch)
-
-| eval time_window_end_epoch = case( "$time_period$" = "month", relative_time(time_window_start_epoch, "+1mon"),
-                                       "$time_period$" = "week", relative_time(time_window_start_epoch, "+1w"),
-                                       "$time_period$" = "day", relative_time(time_window_start_epoch, "+1d")
-                                     )
-
-| where conversationStart >= time_window_start_epoch AND conversationStart <= time_window_end_epoch
 | where error_code = "$errorGraphColumn$"
 
-| eventstats count(error_code) as total_num_selected_error
-| chart
-    first(total_num_selected_error) as total_num_selected_error
-    count as percentage by failure_point
-| foreach * [eval <<FIELD>>= case("<<FIELD>>" == "failure_point", <<FIELD>>,
-                                  "<<FIELD>>" == "total_num_selected_error", <<FIELD>>,
-                                  1=1, round('<<FIELD>>'*100/ total_num_selected_error, 2))]
-| fields - total_num_selected_error
+| chart count as percentage by time_period, failure_point
+| addtotals row=true
+| foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", <<FIELD>>, round('<<FIELD>>'*100/ Total, 2))]
+| fields - Total
 
