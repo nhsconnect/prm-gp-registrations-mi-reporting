@@ -16,7 +16,7 @@ gp2gp_technical_failures_trending_report_base %}
           1=1, errorCode
           )
 
-| chart count by time_period, technical_failure_reason
+| chart count by time_period, technical_failure_reason useother=f
 | addtotals fieldname="total_per_month"
 | foreach * [eval <<FIELD>>=if("<<FIELD>>" == "time_period", time_period, round('<<FIELD>>'/total_per_month*100, 2))]
 | fields - total_per_month

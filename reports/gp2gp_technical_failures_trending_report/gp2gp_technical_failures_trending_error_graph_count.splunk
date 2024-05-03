@@ -16,4 +16,4 @@ gp2gp_technical_failures_trending_report_base %}
           1=1, errorCode
           )
 
-| chart count by time_period, technical_failure_reason
+| chart count by time_period, technical_failure_reason useother=f
