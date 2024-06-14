@@ -17,6 +17,15 @@ export SPLUNK_TOKEN='YOUR_LOCAL_API_TOKEN'
 pytest
 ```
 
+## Generating the full Splunk query from a file
+
+After testing a Splunk query, run:
+```
+python3 -m generate_splunk_query -r <folder_name>/<file_name_where_query_is>
+```
+to generate a new file called `splunk_query` containing the full Splunk query, i.e., the entire query with the contents of any macros/functions used in the file.
+
+
 ## Deploying the reports and dashboards (manually)
 
 ![deployment](docs/registrations_mi_reports_and_dashboards.png)
